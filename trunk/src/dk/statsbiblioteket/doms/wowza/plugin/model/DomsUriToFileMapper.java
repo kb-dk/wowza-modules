@@ -1,7 +1,7 @@
 /**
  * 
  */
-package dk.statsbiblioteket.doms.wowza.plugin;
+package dk.statsbiblioteket.doms.wowza.plugin.model;
 
 import java.io.File;
 import java.text.ParseException;
