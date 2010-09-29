@@ -4,6 +4,8 @@ import com.wowza.wms.application.*;
 import com.wowza.wms.module.*;
 import com.wowza.wms.stream.*;
 
+import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
+
 
 public class DomsStreamingEventHandler extends ModuleBase {
 
