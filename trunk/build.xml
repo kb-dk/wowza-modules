@@ -112,5 +112,7 @@
 		<mkdir dir="${applications.package.build.dir}"/>
 		<!-- Zip content -->
 		<zip destfile="${core.build.dir}/${package.filename}" basedir="${package.build.dir}"/>
+		<!-- Copy deploy script next to zip-pakckage -->
+		<copy file="${scripts.package.build.dir}/deploy-on-server-from-local-machine.sh" todir="${core.build.dir}"/>
 	</target>
 </project>
