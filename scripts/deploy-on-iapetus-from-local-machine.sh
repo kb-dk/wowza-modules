@@ -4,7 +4,7 @@
 # The script is supposed to run from the local developer machine in the target folder
 
 PACKAGE_NAME=doms-wowza-install-package.zip
-SERVER_DEPLOY_SCRIPT=deploy-on-server-from-server.sh
+SERVER_DEPLOY_SCRIPT=deploy-on-iapetus-from-iapetus.sh
 
 echo Deploying Wowza plugin from developer machine
 
