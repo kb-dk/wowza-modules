@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="LARM-Authentication-Wowza-plugin" default="jar" basedir=".">
+<project name="DOMS-Authorization-Wowza-plugin" default="jar" basedir=".">
 	
 	<property name="wowza.lib.dir" value="/usr/local/WowzaMediaServer/lib"/>
 	<property name="jar.filename" value="doms-wowza-plugin.jar"/>
