@@ -98,7 +98,13 @@
 		<jar jarfile="${lib.package.build.dir}/${jar.filename}">
 			<fileset dir="${classes.build.dir}"/>
 		</jar>
-		<copy file="${core.lib.dir}/junit-4.8.1.jar" todir="${lib.package.build.dir}"/>
+        <copy file="${core.lib.dir}/junit-4.8.1.jar" todir="${lib.package.build.dir}"/>
+        <copy  todir="${lib.package.build.dir}">
+            <fileset dir="${core.lib.dir}/jersey-1.3/jars">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+
 		<!-- Package script files -->
 		<mkdir dir="${scripts.package.build.dir}"/>
 		<copy todir="${scripts.package.build.dir}" >  

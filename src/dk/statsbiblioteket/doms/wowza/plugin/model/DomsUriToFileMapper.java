@@ -4,15 +4,18 @@
 package dk.statsbiblioteket.doms.wowza.plugin.model;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.net.URLDecoder;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
 
 /**
  * TODO javadoc
@@ -23,6 +26,8 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
     private static SimpleDateFormat sdf
             = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+    TicketChecker ticketChecker;
 
     private WMSLogger wmsLogger;
 
@@ -42,6 +47,10 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         this.wmsLogger = wmslogger;
         this.defaultFileMapper = defaultFileMapper;
         this.storageDir = storageDir;
+
+        // TODO do not hardcode location, take from property instead
+        ticketChecker = new TicketChecker("http://alhena:7980/authchecker");
+
         wmslogger.info("Creating mapper...");
         wmslogger.info("Creating mapper: StorageDir=" + storageDir);
     }
@@ -68,8 +77,9 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
         try {
             // Extract filename from the query string
-            String queryString = stream.getClient().getQueryStr();
-            
+            String queryString = URLDecoder.decode(
+                    stream.getClient().getQueryStr(), "UTF-8");
+
             wmsLogger.info("queryString: '" + queryString + "'");
             String filename = extractFilename(queryString);
             wmsLogger.info("filename: '" + filename + "'");
@@ -84,7 +94,13 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         } catch (InvalidURIException e) {
             // No other means to signal Wowza that the request was wrong.
             // TODO Maybe here we wanna point to a video saying "access denied"
-            fileToStream = null;
+
+            //fileToStream = null;
+            fileToStream = new File(storageDir + "/" + "rck.mp4");
+        } catch (Exception e) {
+            // TODO better log level
+            wmsLogger.info("Unexpected error occurred", e);
+            fileToStream = new File(storageDir + "/" + "rck.mp4");
         }
 
         return fileToStream;
@@ -149,7 +165,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
-                "shard=http://www.statsbiblioteket.dk/doms/shard/uuid%3A([^&]*)"
+                "shard=http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*)"
                         + "&ticket=([^&]*)");
 
         // Match
@@ -178,21 +194,31 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      * played.
      */
     private void checkAuthorization(IMediaStream stream)
-            throws InvalidURIException {
+            throws InvalidURIException, UnsupportedEncodingException {
         wmsLogger.info("***Entered checkAuthorization(stream)");
-        String queryString = stream.getClient().getQueryStr();
+        String queryString = URLDecoder.decode(
+                stream.getClient().getQueryStr(), "UTF-8");
         String ipOfClientPlayer = stream.getClient().getIp();
         String ticket;
         String shardUrl;
+        boolean ticketIsValid;
 
         wmsLogger.info("queryString: " + queryString);
 
         ticket = getTicketFromQueryString(queryString);
         shardUrl = getShardUrlFromQueryString(queryString);
 
-        
-        //TODO ...
+        //TODO call ticket issuer via REST client with ipOfClientPlayer, ticket, shardUrl
 
+        ticketIsValid = ticketChecker.isTicketValid(ticket, shardUrl,
+                ipOfClientPlayer);
+
+        if (!ticketIsValid) {
+            wmsLogger.info("Ticket is invalid. ipOfClientPlayer='"
+                    + ipOfClientPlayer + "', ticket='" + ticket
+                    + "', shardUrl='" + shardUrl + "'");
+            throw new InvalidURIException("Ticket is not valid");
+        }
     }
 
     /**
@@ -210,7 +236,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
-                "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid%3A[^&]*)"
+                "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:[^&]*)"
                         + "&ticket=([^&]*)");
 
         // Match
@@ -245,7 +271,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
-                "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid%3A[^&]*)"
+                "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:[^&]*)"
                         + "&ticket=([^&]*)");
 
         // Match
