@@ -9,13 +9,10 @@ import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.client.IClient;
 
 import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
-import dk.statsbiblioteket.doms.wowza.plugin.model.InvalidURIException;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
- * TODO javadoc
+ * This class handles events that happen during streaming. Also sets up the file
+ * mapper that is needed for identifying the file to be played.
  *
  * @author heb + jrg
  */
@@ -27,10 +24,12 @@ public class DomsStreamingEventHandler extends ModuleBase {
 
     /**
      * Called when Wowza is started.
+     * We use this to set up the DomsUriToFileMapper which will decode the
+     * query string of the URL by which we were called, and on the basis of
+     * this query string identify the video to be played, and authorize the
+     * player against the ticket checker.
      *
-     * TODO javadoc
-     *
-     * @param appInstance
+     * @param appInstance The application running.
      */
 	public void onAppStart(IApplicationInstance appInstance) {
 		String fullname = appInstance.getApplication().getName() + "/"
@@ -49,9 +48,6 @@ public class DomsStreamingEventHandler extends ModuleBase {
 		appInstance.setStreamFileMapper(domsUriToFileMapper);
 		getLogger().info("onAppStart: StreamFileMapper: \""
                 + DomsUriToFileMapper.class.getName() + "\".");
-
-
-
 	}
 
     /**

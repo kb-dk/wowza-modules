@@ -18,7 +18,9 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
 
 /**
- * TODO javadoc
+ * This class decodes the query string of the URL by which we were called, and
+ * on the basis of this query string identifies the video to be played, and
+ * authorizes the player against the ticket checker.
  *
  * @author heb + jrg
  */
@@ -36,7 +38,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     private String storageDir;
 
     /**
-     * TODO javadoc
+     * Constructor
      *
      * @param storageDir
      * @param wmslogger
@@ -56,12 +58,13 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     }
 
     /**
-     * Get the file that should be streamed.
+     * Get the file that should be streamed. Extract its filename from query
+     * string, and check whether player is authorized to play it.
      *
-     * TODO javadoc
-     *
-     * @param stream
-     * @return
+     * @param stream The stream which we are about to provide to the client
+     * player.
+     * @return the file that should be streamed. In case the player was not
+     * authorized, an alternative video file, or just null, will be returned.
      */
     /* (non-Javadoc)
       * @see com.wowza.wms.stream.IMediaStreamFileMapper#streamToFileForRead(
@@ -208,8 +211,8 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         ticket = getTicketFromQueryString(queryString);
         shardUrl = getShardUrlFromQueryString(queryString);
 
-        //TODO call ticket issuer via REST client with ipOfClientPlayer, ticket, shardUrl
-
+        // Call ticket issuer via REST client with ipOfClientPlayer, ticket,
+        // shardUrl
         ticketIsValid = ticketChecker.isTicketValid(ticket, shardUrl,
                 ipOfClientPlayer);
 
