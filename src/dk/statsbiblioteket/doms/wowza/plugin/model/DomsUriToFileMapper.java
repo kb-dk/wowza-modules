@@ -29,6 +29,13 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     private static SimpleDateFormat sdf
             = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
+    private static String rickrollFilename = "rck.mp4";
+
+    // TODO do not hardcode location, take from property instead
+    private static String ticketCheckerLocation
+            = "http://alhena:7880/authchecker";
+
+
     TicketChecker ticketChecker;
 
     private WMSLogger wmsLogger;
@@ -50,8 +57,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         this.defaultFileMapper = defaultFileMapper;
         this.storageDir = storageDir;
 
-        // TODO do not hardcode location, take from property instead
-        ticketChecker = new TicketChecker("http://alhena:7980/authchecker");
+        ticketChecker = new TicketChecker(ticketCheckerLocation);
 
         wmslogger.info("Creating mapper...");
         wmslogger.info("Creating mapper: StorageDir=" + storageDir);
@@ -99,11 +105,11 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             // TODO Maybe here we wanna point to a video saying "access denied"
 
             //fileToStream = null;
-            fileToStream = new File(storageDir + "/" + "rck.mp4");
+            fileToStream = new File(storageDir + "/" + rickrollFilename);
         } catch (Exception e) {
             // TODO better log level
             wmsLogger.info("Unexpected error occurred", e);
-            fileToStream = new File(storageDir + "/" + "rck.mp4");
+            fileToStream = new File(storageDir + "/" + rickrollFilename);
         }
 
         return fileToStream;
