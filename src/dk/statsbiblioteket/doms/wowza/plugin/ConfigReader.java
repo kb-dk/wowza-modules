@@ -3,11 +3,18 @@ package dk.statsbiblioteket.doms.wowza.plugin;
 import java.util.HashMap;
 import java.io.*;
 
+/**
+ * TODO javadoc
+ */
 public class ConfigReader {
 
 
     private HashMap<String, String> hashmap;
 
+    /**
+     * TODO javadoc
+     * @param path
+     */
     public ConfigReader(String path) {
 
         hashmap = new HashMap<String, String>();
@@ -45,6 +52,11 @@ public class ConfigReader {
 
     }
 
+    /**
+     * TODO javadoc
+     * @param key
+     * @return object of key
+     */
     public String get(String key) {
         return hashmap.get(key);
     }
