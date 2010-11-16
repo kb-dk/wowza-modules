@@ -16,6 +16,7 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
+import dk.statsbiblioteket.doms.wowza.plugin.ConfigReader;
 
 /**
  * This class decodes the query string of the URL by which we were called, and
@@ -26,14 +27,12 @@ import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
  */
 public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
-    private static SimpleDateFormat sdf
-            = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private static SimpleDateFormat sdf;
 
-    private static String rickrollFilename = "rck.mp4";
+    private static String rickrollFilename;
 
     // TODO do not hardcode location, take from property instead
-    private static String ticketCheckerLocation
-            = "http://alhena:7880/authchecker";
+    private static String ticketCheckerLocation;
 
 
     TicketChecker ticketChecker;
@@ -53,6 +52,10 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      */
     public DomsUriToFileMapper(String storageDir, WMSLogger wmslogger,
                                IMediaStreamFileMapper defaultFileMapper) {
+        ConfigReader cr = new ConfigReader("conf/domswowzaconfig.xml");
+        sdf = new SimpleDateFormat(cr.get("sdf"));
+        rickrollFilename = cr.get("rickrollFilename");
+        ticketCheckerLocation = cr.get("ticketCheckerLocation ");
         this.wmsLogger = wmslogger;
         this.defaultFileMapper = defaultFileMapper;
         this.storageDir = storageDir;
