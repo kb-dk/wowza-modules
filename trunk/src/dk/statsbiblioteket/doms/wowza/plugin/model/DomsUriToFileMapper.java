@@ -55,7 +55,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         ConfigReader cr = new ConfigReader("conf/domswowzaconfig.xml");
         sdf = new SimpleDateFormat(cr.get("sdf"));
         rickrollFilename = cr.get("rickrollFilename");
-        ticketCheckerLocation = cr.get("ticketCheckerLocation ");
+        ticketCheckerLocation = cr.get("ticketCheckerLocation");
         this.wmsLogger = wmslogger;
         this.defaultFileMapper = defaultFileMapper;
         this.storageDir = storageDir;
