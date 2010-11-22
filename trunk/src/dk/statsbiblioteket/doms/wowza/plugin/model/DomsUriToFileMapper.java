@@ -51,21 +51,12 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
                                IMediaStreamFileMapper defaultFileMapper,
                                String applicationDir) {
         wmslogger.info("Entered DomsUriToFileMapper(...)");
-
-//        File dir1 = new File (".");
-//        try {
-//        wmslogger.info("Current dir : '" + dir1.getCanonicalPath() + "'");
-//        } catch (Exception e) {
-//            //
-//        }
+        String propertyFileLocation = applicationDir
+                + "/conf/doms/doms-wowza-plugin.properties";
 
         // Current working directory is /
-        wmslogger.info("applicationDir: '" + applicationDir + "'");
-        ConfigReader cr = new ConfigReader(applicationDir 
-                + "/conf/doms/domswowzaconfig.xml");
-        if (cr.get("sdf") == null) {
-            wmslogger.info("NULLLLLLLLLLLLLL");
-        }
+        wmslogger.info("propertyFileLocation: '" + propertyFileLocation + "'");
+        ConfigReader cr = new ConfigReader(propertyFileLocation);
         sdf = new SimpleDateFormat(cr.get("sdf"));
         rickrollFilename = cr.get("rickrollFilename");
         ticketCheckerLocation = cr.get("ticketCheckerLocation");
@@ -109,16 +100,12 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         try {
             // Extract filename from the query string and filetype from the
             // connection string.
-//            String connectionUri = URLDecoder.decode(
-//                    stream.getClient().getUri(), "UTF-8");
-//            String filetype = extractFiletype(connectionUri);
+            String filetype = stream.getExt();
             String queryString = URLDecoder.decode(
                     stream.getClient().getQueryStr(), "UTF-8");
-            String filetype = "mp4"; //
             String filename = extractFilename(queryString, filetype);
 
-//            wmsLogger.info("connectionUri: '" + connectionUri + "'");
-//            wmsLogger.info("filetype: '" + filetype + "'");
+            wmsLogger.info("filetype: '" + filetype + "'");
             wmsLogger.info("queryString: '" + queryString + "'");
             wmsLogger.info("filename: '" + filename + "'");
 
@@ -220,48 +207,16 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
                     + " format.");
         }
 
-//        if (filetype.equals("mp4")) {
-//            filenameExtension = "mp4";
-//        } else if (filetype.equals("flv")) {
-//            filenameExtension = "flv";
-//        } else {
+        if (filetype.equals("mp4")) {
+            filenameExtension = "mp4";
+        } else if (filetype.equals("flv")) {
+            filenameExtension = "flv";
+        } else {
             // Default to mp4
             filenameExtension = "mp4";
-//        }
-
-        return shardId + "." + filenameExtension;
-    }
-
-    /**
-     * Extract the filetype from the beginning of the connectionUri.
-     *
-     * @param connectionUri The full URI of the connection string
-     * @return The filetype / streamtype
-     * @throws InvalidURIException In case the received connectionUri was not of
-     * the expected format.
-     */
-    private String extractFiletype(String connectionUri)
-            throws InvalidURIException {
-        String filetype;
-        // Create a pattern to hit the header of a connectionUri
-        Pattern uriPattern = Pattern.compile(
-                "([^:]+)[:].*");
-
-        // Match
-        Matcher matcher = uriPattern.matcher(connectionUri);
-        boolean matchFound = matcher.find();
-
-        // Extract
-        if (matchFound) {
-            filetype = matcher.group(1);
-        } else {
-            wmsLogger.info("connectionUri did not match required format, "
-                    + "throwing exception");
-            throw new InvalidURIException("connectionUri is not of the expected"
-                    + " format.");
         }
 
-        return filetype;
+        return shardId + "." + filenameExtension;
     }
 
     /**

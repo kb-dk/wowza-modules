@@ -114,7 +114,6 @@
 		<mkdir dir="${conf.package.build.dir}"/>
 		<copy file="${conf.src.dir}/doms-wowza-plugin.properties" todir="${conf.package.build.dir}"/>
         <copy file="${conf.src.dir}/Application.xml" todir="${conf.package.build.dir}"/>
-        <copy file="${conf.src.dir}/domswowzaconfig.xml" todir="${conf.package.build.dir}"/>
 		<!-- Create applications folder -->
 		<mkdir dir="${applications.package.build.dir}"/>
 		<!-- Zip content -->
