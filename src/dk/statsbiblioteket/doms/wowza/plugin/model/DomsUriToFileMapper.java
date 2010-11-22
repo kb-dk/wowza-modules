@@ -23,17 +23,14 @@ import dk.statsbiblioteket.doms.wowza.plugin.ConfigReader;
  * on the basis of this query string identifies the video to be played, and
  * authorizes the player against the ticket checker.
  *
- * @author heb + jrg
+ * @author heb + jrg + mar
  */
 public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
     private static SimpleDateFormat sdf;
 
     private static String rickrollFilename;
-
-    // TODO do not hardcode location, take from property instead
     private static String ticketCheckerLocation;
-
 
     TicketChecker ticketChecker;
 
@@ -51,11 +48,33 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      * @param defaultFileMapper
      */
     public DomsUriToFileMapper(String storageDir, WMSLogger wmslogger,
-                               IMediaStreamFileMapper defaultFileMapper) {
-        ConfigReader cr = new ConfigReader("conf/domswowzaconfig.xml");
+                               IMediaStreamFileMapper defaultFileMapper,
+                               String applicationDir) {
+        wmslogger.info("Entered DomsUriToFileMapper(...)");
+
+//        File dir1 = new File (".");
+//        try {
+//        wmslogger.info("Current dir : '" + dir1.getCanonicalPath() + "'");
+//        } catch (Exception e) {
+//            //
+//        }
+
+        // Current working directory is /
+        wmslogger.info("applicationDir: '" + applicationDir + "'");
+        ConfigReader cr = new ConfigReader(applicationDir 
+                + "/conf/doms/domswowzaconfig.xml");
+        if (cr.get("sdf") == null) {
+            wmslogger.info("NULLLLLLLLLLLLLL");
+        }
         sdf = new SimpleDateFormat(cr.get("sdf"));
         rickrollFilename = cr.get("rickrollFilename");
         ticketCheckerLocation = cr.get("ticketCheckerLocation");
+        wmslogger.info("Config value sdf: '" + sdf.toString() + "'");
+        wmslogger.info("Config value rickrollFilename: '" + rickrollFilename
+                + "'");
+        wmslogger.info("Config value ticketCheckerLocation: '"
+                + ticketCheckerLocation + "'");
+        
         this.wmsLogger = wmslogger;
         this.defaultFileMapper = defaultFileMapper;
         this.storageDir = storageDir;
@@ -88,12 +107,19 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         File fileToStream;
 
         try {
-            // Extract filename from the query string
+            // Extract filename from the query string and filetype from the
+            // connection string.
+//            String connectionUri = URLDecoder.decode(
+//                    stream.getClient().getUri(), "UTF-8");
+//            String filetype = extractFiletype(connectionUri);
             String queryString = URLDecoder.decode(
                     stream.getClient().getQueryStr(), "UTF-8");
+            String filetype = "mp4"; //
+            String filename = extractFilename(queryString, filetype);
 
+//            wmsLogger.info("connectionUri: '" + connectionUri + "'");
+//            wmsLogger.info("filetype: '" + filetype + "'");
             wmsLogger.info("queryString: '" + queryString + "'");
-            String filename = extractFilename(queryString);
             wmsLogger.info("filename: '" + filename + "'");
 
             fileToStream = new File(storageDir + "/" + filename);
@@ -105,8 +131,6 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
         } catch (InvalidURIException e) {
             // No other means to signal Wowza that the request was wrong.
-            // TODO Maybe here we wanna point to a video saying "access denied"
-
             //fileToStream = null;
             fileToStream = new File(storageDir + "/" + rickrollFilename);
         } catch (Exception e) {
@@ -167,13 +191,15 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      *
      * @param queryString the query string of a stream, of the format:
      * "shard=http://www.statsbiblioteket.dk/doms/shard/<DOMS-PID>&ticket=<TICKET-ID>"
+     * @param filetype The type of the file for which we want the name
      * @return the filename of the movie clip that represents the program
      * @throws InvalidURIException if the URI is invalid
      */
-    protected String extractFilename(String queryString)
+    protected String extractFilename(String queryString, String filetype)
             throws InvalidURIException {
         wmsLogger.info("***Entered extractFilename('" + queryString + "')");
         String shardId;
+        String filenameExtension;
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
@@ -194,7 +220,48 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
                     + " format.");
         }
 
-        return shardId + ".mp4";
+//        if (filetype.equals("mp4")) {
+//            filenameExtension = "mp4";
+//        } else if (filetype.equals("flv")) {
+//            filenameExtension = "flv";
+//        } else {
+            // Default to mp4
+            filenameExtension = "mp4";
+//        }
+
+        return shardId + "." + filenameExtension;
+    }
+
+    /**
+     * Extract the filetype from the beginning of the connectionUri.
+     *
+     * @param connectionUri The full URI of the connection string
+     * @return The filetype / streamtype
+     * @throws InvalidURIException In case the received connectionUri was not of
+     * the expected format.
+     */
+    private String extractFiletype(String connectionUri)
+            throws InvalidURIException {
+        String filetype;
+        // Create a pattern to hit the header of a connectionUri
+        Pattern uriPattern = Pattern.compile(
+                "([^:]+)[:].*");
+
+        // Match
+        Matcher matcher = uriPattern.matcher(connectionUri);
+        boolean matchFound = matcher.find();
+
+        // Extract
+        if (matchFound) {
+            filetype = matcher.group(1);
+        } else {
+            wmsLogger.info("connectionUri did not match required format, "
+                    + "throwing exception");
+            throw new InvalidURIException("connectionUri is not of the expected"
+                    + " format.");
+        }
+
+        return filetype;
     }
 
     /**

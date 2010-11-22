@@ -36,12 +36,15 @@ public class DomsStreamingEventHandler extends ModuleBase {
 				+ appInstance.getName();
 		getLogger().info("***Entered onAppStart: " + fullname);
 
+        String vhostDir = appInstance.getVHost().getHomePath();
+
 		// Create File mapper
 		String storageDir = appInstance.getStreamStorageDir();
 		IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
+
 		DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-                storageDir, getLogger(), defaultFileMapper);
+                storageDir, getLogger(), defaultFileMapper, vhostDir);
 
 		// Set File mapper, which will be used to get name of the stream file
         // from the query string.

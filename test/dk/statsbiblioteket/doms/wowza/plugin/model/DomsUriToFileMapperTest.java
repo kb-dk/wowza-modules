@@ -44,18 +44,18 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testExtractFilenameValidRequest() throws InvalidURIException {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
-		String filename = mapper.extractFilename(validRequestedURI);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		String filename = mapper.extractFilename(validRequestedURI, "mp4");
 		String expectedResult = validFilename;
 		assertEquals("Filename not expected.", expectedResult, filename);
 	}
 
 	@Test
 	public void testExtractFilenameInvalidURI() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		String filename;
 		try {
-			filename = mapper.extractFilename("invalid_URI");
+			filename = mapper.extractFilename("invalid_URI", "mp4");
 			fail("Exception is expected to be thrown");
 		} catch (InvalidURIException e) {
 			String expectedMessage = "URI is not on the form <channel>_<from-date>_<to-date>";
@@ -65,13 +65,13 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testExtractFilenameInvalidDateInURI() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		String fromDateString = "2010-01-31-00-00-00";
 		String toDateString = "2010-15-32-00-30-00";
 		String uri = "DR1_" + fromDateString + "_" + toDateString;
 		String filename;
 		try {
-			filename = mapper.extractFilename(uri);
+			filename = mapper.extractFilename(uri, "mp4");
 			fail("Exception is expected to be thrown");
 		} catch (InvalidURIException e) {
 			String expectedMessage = "Elements of the URI are not of the expected format. URI was: DR1_2010-01-31-00-00-00_2010-15-32-00-30-00";
@@ -84,7 +84,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testValidateStringAsDateValidDate() throws ParseException {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		String inputDateString = "2010-01-31-00-00-00";
 		mapper.validateStringAsDate(inputDateString);
 		// No exception should be thrown
@@ -92,7 +92,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testValidateStringAsDateInvalidDate() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		String inputDateString = "2010-01-32-00-00-00";
 			try {
 				mapper.validateStringAsDate(inputDateString);
@@ -107,7 +107,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testStreamToFileForReadIMediaStream() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		wmsLogger.info("The input request: " + validRequestedURI);
 		IClientMock iClient = new IClientMock(wmsLogger, validRequestedURI);
 		IMediaStreamMock stream = new IMediaStreamMock(wmsLogger, "Stream name", iClient);
@@ -121,7 +121,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testStreamToFileForReadIMediaStreamWithArguments() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null);
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
 		IClientMock iClient = new IClientMock(wmsLogger, validRequestedURI);
 		IMediaStreamMock stream = new IMediaStreamMock(wmsLogger, "Stream name", iClient);
 		File fileToStream = mapper.streamToFileForRead(stream,
