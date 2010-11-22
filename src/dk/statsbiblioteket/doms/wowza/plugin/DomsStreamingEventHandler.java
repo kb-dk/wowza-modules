@@ -37,17 +37,17 @@ public class DomsStreamingEventHandler extends ModuleBase {
 		getLogger().info("***Entered onAppStart: " + fullname);
 
         String vhostDir = appInstance.getVHost().getHomePath();
-        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
-
-            @Override
-            public void onMediaStreamCreate(IMediaStream iMediaStream) {
-                iMediaStream.addClientListener(new StreamListener());
-            }
-
-            @Override
-            public void onMediaStreamDestroy(IMediaStream iMediaStream) {
-            }
-        });
+//        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
+//
+//            @Override
+//            public void onMediaStreamCreate(IMediaStream iMediaStream) {
+//                iMediaStream.addClientListener(new StreamListener());
+//            }
+//
+//            @Override
+//            public void onMediaStreamDestroy(IMediaStream iMediaStream) {
+//            }
+//        });
 
 		// Create File mapper
 		String storageDir = appInstance.getStreamStorageDir();
@@ -86,14 +86,6 @@ public class DomsStreamingEventHandler extends ModuleBase {
         
     }
 
-    /**
-     * To pass on ticket and shard url to ticket issuer, we have to get these
-     * from the query string.
-     * onConnect cannot access the query string, which we would have to get from
-     * the stream (which onConnect cannot access). So we have to do it in onPlay
-     * instead. So far it seems onPlay is not triggered.. so for now we handle
-     * authorization in the DomsUriToFileMapper class instead.
-     */
     class StreamListener  implements IMediaStreamActionNotify2 {
         public void onPlay(IMediaStream stream, String streamName,
                            double playStart, double playLen, int playReset) {
