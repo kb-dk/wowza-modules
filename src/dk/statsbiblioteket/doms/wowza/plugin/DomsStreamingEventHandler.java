@@ -37,6 +37,17 @@ public class DomsStreamingEventHandler extends ModuleBase {
 		getLogger().info("***Entered onAppStart: " + fullname);
 
         String vhostDir = appInstance.getVHost().getHomePath();
+        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
+
+            @Override
+            public void onMediaStreamCreate(IMediaStream iMediaStream) {
+                iMediaStream.addClientListener(new StreamListener());
+            }
+
+            @Override
+            public void onMediaStreamDestroy(IMediaStream iMediaStream) {
+            }
+        });
 
 		// Create File mapper
 		String storageDir = appInstance.getStreamStorageDir();
@@ -72,6 +83,7 @@ public class DomsStreamingEventHandler extends ModuleBase {
         getLogger().info("onConnect (page URI)      : " + client.getUri());
         getLogger().info("onConnect (Message)       : "
                 + function.getMessage().toString());
+        
     }
 
     /**
