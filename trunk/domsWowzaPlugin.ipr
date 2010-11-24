@@ -362,7 +362,9 @@
         <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-shoutcast.jar!/" />
         <root url="jar:///usr/local/WowzaMediaServer/lib/wms-ant.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/serverapidocs.zip!/serverapi" />
+      </JAVADOC>
       <SOURCES />
     </library>
     <library name="Jersey">
