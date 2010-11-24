@@ -7,7 +7,7 @@
 	<property name="package.filename" value="doms-wowza-install-package.zip"/>
 	<property name="java.src.dir" value="src"/>
 	<property name="test.src.dir" value="test"/>
-	<property name="conf.src.dir" value="conf/doms"/>
+	<property name="conf.src.dir" value="conf"/>
 	<property name="core.lib.dir" value="lib"/>
 	<property name="core.scripts.dir" value="scripts"/>
 	<!-- Build related folders -->
@@ -16,9 +16,9 @@
 	<property name="lib.build.dir" value="${core.build.dir}/lib"/>
 	<property name="package.build.dir" value="${core.build.dir}/package"/>
 	<!-- Wowza file structure to enable deploy by copying -->
-	<property name="applications.package.build.dir" value="${package.build.dir}/applications/doms"/>
+	<property name="applications.package.build.dir" value="${package.build.dir}/applications"/>
 	<property name="lib.package.build.dir" value="${package.build.dir}/lib"/>
-	<property name="conf.package.build.dir" value="${package.build.dir}/conf/doms"/>
+	<property name="conf.package.build.dir" value="${package.build.dir}/conf"/>
 	<property name="scripts.package.build.dir" value="${package.build.dir}/bin"/>
 
     <path id="classpath">
@@ -112,10 +112,12 @@
 		</copy>
 		<!-- Package configuration files -->
 		<mkdir dir="${conf.package.build.dir}"/>
-		<copy file="${conf.src.dir}/doms-wowza-plugin.properties" todir="${conf.package.build.dir}"/>
-        <copy file="${conf.src.dir}/Application.xml" todir="${conf.package.build.dir}"/>
+		<copy todir="${conf.package.build.dir}">
+            <fileset dir="${conf.src.dir}"/>
+        </copy>
 		<!-- Create applications folder -->
-		<mkdir dir="${applications.package.build.dir}"/>
+		<mkdir dir="${applications.package.build.dir}/doms"/>
+        		<mkdir dir="${applications.package.build.dir}/domslive"/>
 		<!-- Zip content -->
 		<zip destfile="${core.build.dir}/${package.filename}" basedir="${package.build.dir}"/>
 		<!-- Copy deploy script next to zip-pakckage -->
