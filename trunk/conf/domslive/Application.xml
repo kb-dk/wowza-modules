@@ -24,18 +24,18 @@
 			
 		-->
 		<Streams>
-			<StreamType>default</StreamType>
+			<StreamType>Live</StreamType>
             <!--<StorageDir>${com.wowza.wms.context.VHostConfigHome}/content</StorageDir>-->
-            <StorageDir>/home/larm/streamingContent</StorageDir>
+            <StorageDir>/home/larm/streamingContentLive</StorageDir>
 			<KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
 			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater -->
-			<LiveStreamPacketizers>cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater</LiveStreamPacketizers>
+			<LiveStreamPacketizers>cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer</LiveStreamPacketizers>
 			<!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
 			<Properties>
 			</Properties>
 		</Streams>
 		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming -->
-		<HTTPStreamers>cupertinostreaming,smoothstreaming</HTTPStreamers>			
+		<HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming</HTTPStreamers>			
 		<SharedObjects>
 			<StorageDir></StorageDir>
 		</SharedObjects>
