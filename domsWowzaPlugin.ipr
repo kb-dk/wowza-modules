@@ -338,34 +338,54 @@
   <component name="libraryTable">
     <library name="Wowza">
       <CLASSES>
-        <root url="jar:///usr/local/WowzaMediaServer/lib/commons-lang-2.4.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-mediawriter-flv.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-mediareader-mp3.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/bcprov-ext-jdk15-143.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-mediawriter-h264.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-mediareader-flv.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-core.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/jid3lib-0.5.4.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-httpstreamer-smoothstreaming.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-mediareader-h264.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-httpstreamer-cupertinostreaming.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/log4j-1.2.15.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-bootstrap.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-server.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-commons-modeler.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-rtp.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-record.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-live.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-file.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-jlayer.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-publish.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-stream-shoutcast.jar!/" />
-        <root url="jar:///usr/local/WowzaMediaServer/lib/wms-ant.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-jlayer.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-httpstreamer-cupertinostreaming.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-server.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-commons-modeler.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-httpstreamer-smoothstreaming.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-rtp.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-core.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-ant.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-shoutcast.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-record.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-mediareader-h264.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/commons-lang-2.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-publish.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-mediawriter-h264.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-mediawriter-flv.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/log4j-1.2.15.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/jid3lib-0.5.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-bootstrap.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-mediareader-flv.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-file.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-stream-live.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/wms-mediareader-mp3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/jars/bcprov-ext-jdk15-143.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/serverapidocs.zip!/serverapi" />
+        <root url="jar://$PROJECT_DIR$/build-libs/serverapidocs.zip!/serverapi" />
       </JAVADOC>
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-core.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-live.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-jlayer.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-mediareader-mp3.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-httpstreamer-smoothstreaming.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-mediareader-flv.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-rtp.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-mediawriter-flv.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-mediawriter-h264.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-publish.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-server.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-record.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-shoutcast.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-bootstrap.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-ant.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-commons-modeler.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-stream-file.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-mediareader-h264.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/wowza/src/wms-httpstreamer-cupertinostreaming.src.zip!/" />
+      </SOURCES>
     </library>
     <library name="Jersey">
       <CLASSES>
@@ -381,6 +401,17 @@
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.3/source/jersey-server-1.3-sources.zip!/" />
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.3/source/jersey-core-1.3-sources.zip!/" />
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.3/source/jsr311-api-1.1.1-sources.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="sbutil">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/sbutil-0.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/lib/sbutil-0.5.2/doc" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/sbutil-0.5.2-src.zip!/sbutil-0.5.2/src" />
       </SOURCES>
     </library>
   </component>

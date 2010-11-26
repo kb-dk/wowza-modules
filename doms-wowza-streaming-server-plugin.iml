@@ -19,6 +19,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="Wowza" level="project" />
     <orderEntry type="library" name="Jersey" level="project" />
+    <orderEntry type="library" name="sbutil" level="project" />
   </component>
 </module>
 

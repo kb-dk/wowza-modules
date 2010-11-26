@@ -1,14 +1,14 @@
 package dk.statsbiblioteket.doms.wowza.plugin.domslive;
 
-import com.wowza.wms.application.*;
-import com.wowza.wms.module.*;
-import com.wowza.wms.stream.*;
 import com.wowza.wms.amf.AMFDataList;
-import com.wowza.wms.amf.AMFPacket;
-import com.wowza.wms.request.RequestFunction;
+import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
-
-import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.module.ModuleBase;
+import com.wowza.wms.request.RequestFunction;
+import com.wowza.wms.stream.IMediaStreamFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.domslive.model.DomsUriToFileMapper;
 
 /* Other Events that can be included:
 
@@ -95,10 +95,12 @@ import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
  * @author heb + jrg
  */
 public class DomsStreamingEventHandler extends ModuleBase {
+    private IMediaStreamFileMapper defaultFileMapper;
 
-	public DomsStreamingEventHandler() {
-		super();
-	}
+
+    public DomsStreamingEventHandler() {
+        super();
+    }
 
     /**
      * Called when Wowza is started.
@@ -109,38 +111,29 @@ public class DomsStreamingEventHandler extends ModuleBase {
      *
      * @param appInstance The application running.
      */
-	public void onAppStart(IApplicationInstance appInstance) {
-		String fullname = appInstance.getApplication().getName() + "/"
-				+ appInstance.getName();
-		getLogger().info("***Entered onAppStart: " + fullname);
+    public void onAppStart(final IApplicationInstance appInstance) {
+        String fullname = appInstance.getApplication().getName() + "/"
+                          + appInstance.getName();
+        getLogger().info("***Entered onAppStart: " + fullname);
 
         String vhostDir = appInstance.getVHost().getHomePath();
-//        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
-//
-//            @Override
-//            public void onMediaStreamCreate(IMediaStream iMediaStream) {
-//                iMediaStream.addClientListener(new StreamListener());
-//            }
-//
-//            @Override
-//            public void onMediaStreamDestroy(IMediaStream iMediaStream) {
-//            }
-//        });
+        final String storageDir = appInstance.getStreamStorageDir()+"/files";
 
-		// Create File mapper
-		String storageDir = appInstance.getStreamStorageDir();
-		IMediaStreamFileMapper defaultFileMapper
-                = appInstance.getStreamFileMapper();
+        appInstance.addMediaStreamListener(new DynamicLiveStreaming(appInstance, new DomsUriToFileMapper(
+                storageDir, vhostDir)));
 
-		DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-                storageDir, getLogger(), defaultFileMapper, vhostDir);
 
-		// Set File mapper, which will be used to get name of the stream file
-        // from the query string.
-		appInstance.setStreamFileMapper(domsUriToFileMapper);
-		getLogger().info("onAppStart: StreamFileMapper: \""
-                + DomsUriToFileMapper.class.getName() + "\".");
-	}
+        getLogger().info("onAppStart: StreamFileMapper: \""
+                         + DomsUriToFileMapper.class.getName() + "\".");
+    }
+
+    public void onAppStop(IApplicationInstance appInstance) {
+        String fullname = appInstance.getApplication().getName() + "/"
+                          + appInstance.getName();
+        getLogger().info("onAppStop: " + fullname);
+        defaultFileMapper = null;
+    }
+
 
     /**
      * Called when a new video stream connection is started.
@@ -150,59 +143,23 @@ public class DomsStreamingEventHandler extends ModuleBase {
      * @param params
      */
     public void onConnect(IClient client, RequestFunction function,
-            AMFDataList params) {
+                          AMFDataList params) {
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
         getLogger().info("onConnect (properties)    : "
-                + client.getProperties());
+                         + client.getProperties());
         getLogger().info("onConnect (page URL)      : " + client.getPageUrl());
         getLogger().info("onConnect (protocol)      : " + client.getProtocol());
         getLogger().info("onConnect (referer)       : " + client.getReferrer());
         getLogger().info("onConnect (page URI)      : " + client.getUri());
         getLogger().info("onConnect (Message)       : "
-                + function.getMessage().toString());
+                         + function.getMessage().toString());
 
     }
 
-    class StreamListener  implements IMediaStreamActionNotify2 {
-        public void onPlay(IMediaStream stream, String streamName,
-                           double playStart, double playLen, int playReset) {
-            getLogger().info("***Entered onPlay(..., " + streamName
-                    + "..., ..., ...)");
-            getLogger().info("Stream Name: " + stream.getName());
-        }
-
-        public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
-            getLogger().info("onMetaData By: " + stream.getClientId());
-        }
-
-        public void onPauseRaw(IMediaStream stream, boolean isPause,
-                               double location) {
-            getLogger().info("onPauseRaw By: " + stream.getClientId());
-        }
-
-        public void onSeek(IMediaStream stream, double location) {
-            getLogger().info("onSeek");
-        }
-
-        public void onStop(IMediaStream stream) {
-            getLogger().info("onStop By: " + stream.getClientId());
-        }
-
-        public void onUnPublish(IMediaStream stream, String streamName,
-                                boolean isRecord, boolean isAppend) {
-            getLogger().info("onUnPublish");
-        }
-
-        public  void onPublish(IMediaStream stream, String streamName,
-                               boolean isRecord, boolean isAppend) {
-            getLogger().info("onPublish");
-        }
-
-        public void onPause(IMediaStream stream, boolean isPause,
-                            double location) {
-            getLogger().info("onPause");
-        }
+    protected static WMSLogger getLogger()
+    {
+        return WMSLoggerFactory.getLogger(DomsStreamingEventHandler.class);
     }
 
 }
