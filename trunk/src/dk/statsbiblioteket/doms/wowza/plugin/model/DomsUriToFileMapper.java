@@ -3,20 +3,20 @@
  */
 package dk.statsbiblioteket.doms.wowza.plugin.model;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.net.URLDecoder;
-
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
-import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
 import dk.statsbiblioteket.doms.wowza.plugin.ConfigReader;
+import dk.statsbiblioteket.doms.wowza.plugin.TicketChecker;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class decodes the query string of the URL by which we were called, and
@@ -122,7 +122,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             fileToStream = new File(storageDir + "/" + rickrollFilename);
         } catch (Exception e) {
             // TODO better log level
-            wmsLogger.info("Unexpected error occurred", e);
+            wmsLogger.info("Unexpected error "+e+"occurred");
             fileToStream = new File(storageDir + "/" + rickrollFilename);
         }
 

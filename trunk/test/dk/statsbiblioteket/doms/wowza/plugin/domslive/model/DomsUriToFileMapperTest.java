@@ -1,21 +1,16 @@
 package dk.statsbiblioteket.doms.wowza.plugin.domslive.model;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.nio.charset.MalformedInputException;
-import java.text.ParseException;
-
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import dk.statsbiblioteket.doms.wowza.plugin.domslive.mockobjects.IClientMock;
+import dk.statsbiblioteket.doms.wowza.plugin.domslive.mockobjects.IMediaStreamMock;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.wowza.wms.client.IClient;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-import com.wowza.wms.stream.IMediaStream;
-import dk.statsbiblioteket.doms.wowza.plugin.domslive.mockobjects.IMediaStreamMock;
-import dk.statsbiblioteket.doms.wowza.plugin.domslive.mockobjects.IClientMock;
+import java.io.File;
+import java.text.ParseException;
 
 
 public class DomsUriToFileMapperTest {
@@ -44,7 +39,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testExtractFilenameValidRequest() throws InvalidURIException {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		String filename = mapper.extractFilename(validRequestedURI, "mp4");
 		String expectedResult = validFilename;
 		assertEquals("Filename not expected.", expectedResult, filename);
@@ -52,7 +47,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testExtractFilenameInvalidURI() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		String filename;
 		try {
 			filename = mapper.extractFilename("invalid_URI", "mp4");
@@ -65,7 +60,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testExtractFilenameInvalidDateInURI() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		String fromDateString = "2010-01-31-00-00-00";
 		String toDateString = "2010-15-32-00-30-00";
 		String uri = "DR1_" + fromDateString + "_" + toDateString;
@@ -84,7 +79,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testValidateStringAsDateValidDate() throws ParseException {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		String inputDateString = "2010-01-31-00-00-00";
 		mapper.validateStringAsDate(inputDateString);
 		// No exception should be thrown
@@ -92,7 +87,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testValidateStringAsDateInvalidDate() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		String inputDateString = "2010-01-32-00-00-00";
 			try {
 				mapper.validateStringAsDate(inputDateString);
@@ -107,7 +102,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testStreamToFileForReadIMediaStream() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		wmsLogger.info("The input request: " + validRequestedURI);
 		IClientMock iClient = new IClientMock(wmsLogger, validRequestedURI);
 		IMediaStreamMock stream = new IMediaStreamMock(wmsLogger, "Stream name", iClient);
@@ -121,7 +116,7 @@ public class DomsUriToFileMapperTest {
 
 	@Test
 	public void testStreamToFileForReadIMediaStreamWithArguments() {
-		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", wmsLogger, null, "");
+		DomsUriToFileMapper mapper = new DomsUriToFileMapper("<storageDir>", "");
 		IClientMock iClient = new IClientMock(wmsLogger, validRequestedURI);
 		IMediaStreamMock stream = new IMediaStreamMock(wmsLogger, "Stream name", iClient);
 		File fileToStream = mapper.streamToFileForRead(stream,

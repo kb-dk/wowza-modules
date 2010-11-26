@@ -4,8 +4,10 @@
 package dk.statsbiblioteket.doms.wowza.plugin.domslive.model;
 
 import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
+import com.wowza.wms.client.IClient;
 import dk.statsbiblioteket.doms.wowza.plugin.domslive.ConfigReader;
 import dk.statsbiblioteket.doms.wowza.plugin.domslive.TicketChecker;
 
@@ -34,46 +36,39 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
     TicketChecker ticketChecker;
 
-    private WMSLogger wmsLogger;
-
-    // TODO: Remove default file mapper. Only for development purpose
-    private IMediaStreamFileMapper defaultFileMapper;
     private String storageDir;
 
     /**
      * Constructor
      *
      * @param storageDir
-     * @param wmslogger
-     * @param defaultFileMapper
+     * @param applicationDir
      */
-    public DomsUriToFileMapper(String storageDir, WMSLogger wmslogger,
-                               IMediaStreamFileMapper defaultFileMapper,
+    public DomsUriToFileMapper(String storageDir,
                                String applicationDir) {
-        wmslogger.info("Entered DomsUriToFileMapper(...)");
+        getLogger().info("Entered DomsUriToFileMapper(...)");
         String propertyFileLocation = applicationDir
-                + "/conf/doms/doms-wowza-plugin.properties";
+                                      + "/conf/domslive/doms-wowza-plugin.properties";
 
         // Current working directory is /
-        wmslogger.info("propertyFileLocation: '" + propertyFileLocation + "'");
+        getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
         ConfigReader cr = new ConfigReader(propertyFileLocation);
         sdf = new SimpleDateFormat(cr.get("sdf"));
         rickrollFilename = cr.get("rickrollFilename");
         ticketCheckerLocation = cr.get("ticketCheckerLocation");
-        wmslogger.info("Config value sdf: '" + sdf.toString() + "'");
-        wmslogger.info("Config value rickrollFilename: '" + rickrollFilename
-                + "'");
-        wmslogger.info("Config value ticketCheckerLocation: '"
-                + ticketCheckerLocation + "'");
+        getLogger().info("Config value sdf: '" + sdf.toString() + "'");
+        getLogger().info("Config value rickrollFilename: '" + rickrollFilename
+                         + "'");
+        getLogger().info("Config value ticketCheckerLocation: '"
+                         + ticketCheckerLocation + "'");
 
-        this.wmsLogger = wmslogger;
-        this.defaultFileMapper = defaultFileMapper;
+
         this.storageDir = storageDir;
 
         ticketChecker = new TicketChecker(ticketCheckerLocation);
 
-        wmslogger.info("Creating mapper...");
-        wmslogger.info("Creating mapper: StorageDir=" + storageDir);
+        getLogger().info("Creating mapper...");
+        getLogger().info("Creating mapper: StorageDir=" + storageDir);
     }
 
     /**
@@ -94,30 +89,40 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
       */
     @Override
     public File streamToFileForRead(IMediaStream stream) {
-        wmsLogger.info("***Entered streamToFileForRead(IMediaStream stream)");
+        getLogger().info("***Entered streamToFileForRead(IMediaStream stream)");
         File fileToStream;
 
         try {
             // Extract filename from the query string and filetype from the
             // connection string.
 
+
+            IClient client = stream.getClient();
+            if (client == null){
+                getLogger().info("No client, returning ",stream);
+                return null;
+            }
+            getLogger().info("onResolveFile (pageurl)     : " + client.getPageUrl());
+            getLogger().info("onResolveFile (querystring)  : " + client.getQueryStr());
+            getLogger().info("onResolveFile (uri)     : " + client.getUri());
+            getLogger().info("onResolveFile (referrer)     : " + client.getReferrer());
+
+
             String filetype = stream.getExt();
+            getLogger().info("filetype: '" + filetype + "'");
             String queryString = URLDecoder.decode(
-                    stream.getClient().getQueryStr(), "UTF-8");
+                    client.getQueryStr(), "UTF-8");
             String filename = extractFilename(queryString, filetype);
 
-            wmsLogger.info("filetype: '" + filetype + "'");
-            wmsLogger.info("queryString: '" + queryString + "'");
-            wmsLogger.info("filename: '" + filename + "'");
+
+            getLogger().info("queryString: '" + queryString + "'");
+            getLogger().info("filename: '" + filename + "'");
 
             fileToStream = new File(storageDir + "/" + filename);
-            wmsLogger.info("Got fileToStream");
-
-            stream.setVideoSize(2 * 1024 * 1024 * 100);
-            stream.setDataSize(2 * 1024 * 1024 * 100);
+            getLogger().info("Got fileToStream");
             // Authorization check will throw InvalidURIException if not
             // authorized.
-            checkAuthorization(stream);
+            //checkAuthorization(stream);
 
         } catch (InvalidURIException e) {
             // No other means to signal Wowza that the request was wrong.
@@ -125,7 +130,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             fileToStream = new File(storageDir + "/" + rickrollFilename);
         } catch (Exception e) {
             // TODO better log level
-            wmsLogger.info("Unexpected error occurred", e);
+            getLogger().error("Unexpected error "+e.toString()+" occurred '"+e.getMessage()+"'");
             fileToStream = new File(storageDir + "/" + rickrollFilename);
         }
 
@@ -154,15 +159,15 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     @Override
     public File streamToFileForRead(IMediaStream stream, String name,
                                     String ext, String query) {
-        wmsLogger.info("***Entered streamToFileForRead(IMediaStream stream, "
-                + "String name, String ext, String query)");
+        getLogger().info("***Entered streamToFileForRead(IMediaStream stream, "
+                         + "String name, String ext, String query)");
 
         return streamToFileForRead(stream);
     }
 
     @Override
     public File streamToFileForWrite(IMediaStream arg0) {
-        wmsLogger.info("***Entered streamToFileForWrite(IMediaStream arg0)");
+        getLogger().info("***Entered streamToFileForWrite(IMediaStream arg0)");
         // TODO Auto-generated method stub
         return null;
     }
@@ -170,8 +175,8 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     @Override
     public File streamToFileForWrite(IMediaStream arg0, String arg1,
                                      String arg2, String arg3) {
-        wmsLogger.info("***Entered streamToFileForWrite(IMediaStream arg0, "
-                + "String arg1, String arg2, String arg3");
+        getLogger().info("***Entered streamToFileForWrite(IMediaStream arg0, "
+                         + "String arg1, String arg2, String arg3");
         return null;
     }
 
@@ -187,14 +192,14 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      */
     protected String extractFilename(String queryString, String filetype)
             throws InvalidURIException {
-        wmsLogger.info("***Entered extractFilename('" + queryString + "')");
+        getLogger().info("***Entered extractFilename('" + queryString + "')");
         String shardId;
         String filenameExtension;
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
                 "shard=http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*)"
-                        + "&ticket=([^&]*)");
+                + "&ticket=([^&]*)");
 
         // Match
         Matcher matcher = queryPattern.matcher(queryString);
@@ -204,19 +209,16 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         if (matchFound) {
             shardId = matcher.group(1);
         } else {
-            wmsLogger.info("Query string did not match required format, "
-                    + "throwing exception");
+            getLogger().info("Query string did not match required format, "
+                             + "throwing exception");
             throw new InvalidURIException("Query string is not of the expected"
-                    + " format.");
+                                          + " format.");
         }
 
-        if (filetype.equals("mp4")) {
-            filenameExtension = "mp4";
-        } else if (filetype.equals("flv")) {
+        if (filetype.isEmpty()){
             filenameExtension = "flv";
-        } else {
-            // Default to mp4
-            filenameExtension = "mp4";
+        } else{
+            filenameExtension = filetype;
         }
 
         return shardId + "." + filenameExtension;
@@ -232,7 +234,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      */
     private void checkAuthorization(IMediaStream stream)
             throws InvalidURIException, UnsupportedEncodingException {
-        wmsLogger.info("***Entered checkAuthorization(stream)");
+        getLogger().info("***Entered checkAuthorization(stream)");
         String queryString = URLDecoder.decode(
                 stream.getClient().getQueryStr(), "UTF-8");
         String ipOfClientPlayer = stream.getClient().getIp();
@@ -240,7 +242,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         String shardUrl;
         boolean ticketIsValid;
 
-        wmsLogger.info("queryString: " + queryString);
+        getLogger().info("queryString: " + queryString);
 
         ticket = getTicketFromQueryString(queryString);
         shardUrl = getShardUrlFromQueryString(queryString);
@@ -248,12 +250,12 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         // Call ticket issuer via REST client with ipOfClientPlayer, ticket,
         // shardUrl
         ticketIsValid = ticketChecker.isTicketValid(ticket, shardUrl,
-                ipOfClientPlayer);
+                                                    ipOfClientPlayer);
 
         if (!ticketIsValid) {
-            wmsLogger.info("Ticket is invalid. ipOfClientPlayer='"
-                    + ipOfClientPlayer + "', ticket='" + ticket
-                    + "', shardUrl='" + shardUrl + "'");
+            getLogger().info("Ticket is invalid. ipOfClientPlayer='"
+                             + ipOfClientPlayer + "', ticket='" + ticket
+                             + "', shardUrl='" + shardUrl + "'");
             throw new InvalidURIException("Ticket is not valid");
         }
     }
@@ -267,14 +269,14 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      */
     public String getTicketFromQueryString(String queryString)
             throws InvalidURIException {
-        wmsLogger.info("***Entered getTicketFromQueryString('"
-                + queryString + "')");
+        getLogger().info("***Entered getTicketFromQueryString('"
+                         + queryString + "')");
         String ticketId;
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
                 "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:[^&]*)"
-                        + "&ticket=([^&]*)");
+                + "&ticket=([^&]*)");
 
         // Match
         Matcher matcher = queryPattern.matcher(queryString);
@@ -284,10 +286,10 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         if (matchFound) {
             ticketId = matcher.group(2);
         } else {
-            wmsLogger.info("Query string did not match required format, "
-                    + "throwing exception");
+            getLogger().info("Query string did not match required format, "
+                             + "throwing exception");
             throw new InvalidURIException("Query string is not of the expected"
-                    + " format.");
+                                          + " format.");
         }
 
         return ticketId;
@@ -302,14 +304,14 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
      */
     public String getShardUrlFromQueryString(String queryString)
             throws InvalidURIException {
-        wmsLogger.info("***Entered getShardUrlFromQueryString('"
-                + queryString + "')");
+        getLogger().info("***Entered getShardUrlFromQueryString('"
+                         + queryString + "')");
         String shardPid;
 
         // Create a pattern to match a correct query string
         Pattern queryPattern = Pattern.compile(
                 "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:[^&]*)"
-                        + "&ticket=([^&]*)");
+                + "&ticket=([^&]*)");
 
         // Match
         Matcher matcher = queryPattern.matcher(queryString);
@@ -319,10 +321,10 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         if (matchFound) {
             shardPid = matcher.group(1);
         } else {
-            wmsLogger.info("Query string did not match required format, "
-                    + "throwing exception");
+            getLogger().info("Query string did not match required format, "
+                             + "throwing exception");
             throw new InvalidURIException("Query string is not of the expected"
-                    + " format.");
+                                          + " format.");
         }
 
         return shardPid;
@@ -340,7 +342,13 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         String dateReturnString = sdf.format(date);
         if (!dateString.equals(dateReturnString)) {
             throw new ParseException("Date is not valid. Read: " + dateString
-                    + ". " + "Interpreted: " + dateReturnString, 0);
+                                     + ". " + "Interpreted: " + dateReturnString, 0);
         }
     }
+
+    protected static WMSLogger getLogger()
+    {
+        return WMSLoggerFactory.getLogger(DomsUriToFileMapper.class);
+    }
+
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="DOMS-Authorization-Wowza-plugin" default="jar" basedir=".">
-	
+
+    <property file="${user.name}.build.properties"/>
+    <property file="build.properties"/>
 	<property name="wowza.lib.dir" value="/usr/local/WowzaMediaServer/lib"/>
 	<property name="jar.filename" value="doms-wowza-plugin.jar"/>
 	<property name="test.jar.filename" value="doms-wowza-plugin-test.jar"/>
@@ -24,6 +26,7 @@
     <path id="classpath">
         <fileset dir="${wowza.lib.dir}" includes="**/*.jar"/>
         <fileset dir="${core.lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
     </path>
 
     <path id="test.classpath">
@@ -98,11 +101,12 @@
 		<jar jarfile="${lib.package.build.dir}/${jar.filename}">
 			<fileset dir="${classes.build.dir}"/>
 		</jar>
-        <copy file="${core.lib.dir}/junit-4.8.1.jar" todir="${lib.package.build.dir}"/>
+        <copy file="build-libs/junit-4.8.1.jar" todir="${lib.package.build.dir}"/>
         <copy  todir="${lib.package.build.dir}">
-            <fileset dir="${core.lib.dir}/jersey-1.3/jars">
-                <include name="*.jar"/>
+            <fileset dir="${core.lib.dir}">
+                <include name="**/*.jar"/>
             </fileset>
+            <flattenmapper/>
         </copy>
 
 		<!-- Package script files -->
