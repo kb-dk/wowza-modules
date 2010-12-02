@@ -15,13 +15,19 @@ import com.wowza.wms.client.IClient;
  * To change this template use File | Settings | File Templates.
  */
 class StreamListener implements IMediaStreamActionNotify2 {
+
+
     public void onPlay(IMediaStream stream, String streamName,
                        double playStart, double playLen, int playReset) {
         DomsStreamingEventHandler.getLogger().info("onPlay");
         IClient client = stream.getClient();
         if (client != null){
 
-            logClient("onStreamPlay ",client);
+            String querystring = stream.getClient().getQueryStr();
+            String port = Utils.extractPortID(querystring);
+            if (!(port+".stream").equals(streamName)){//
+                stream.shutdown();
+            }
 
         }
 

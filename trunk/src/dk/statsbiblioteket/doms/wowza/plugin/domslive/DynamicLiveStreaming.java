@@ -70,6 +70,7 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
 
             //Add the stream listener, that will plug the next security hole
             iMediaStream.addClientListener(new StreamListener());
+            
 
             getLogger().info("iMediaStream datafile:"+datafile.getAbsolutePath());
 
@@ -97,7 +98,14 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
                         streamfile.getName(),
                         iMediaStream.getExt(),
                         "rtp");
-                iMediaStream.setName(streamfile.getName());
+
+                try {
+                    Thread.sleep(Integer.parseInt(configReader.get("SleepyTime","3000")));
+                } catch (InterruptedException e) {
+
+                }
+                
+                //iMediaStream.setName(streamfile.getName());
                 if (success){
                     runningstuff.put(streamfile.getName(),new Liver(process,streamfile));
                 } else {
