@@ -7,7 +7,6 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
-import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.domslive.model.DomsUriToFileMapper;
 
 /* Other Events that can be included:
@@ -95,7 +94,6 @@ import dk.statsbiblioteket.doms.wowza.plugin.domslive.model.DomsUriToFileMapper;
  * @author heb + jrg
  */
 public class DomsStreamingEventHandler extends ModuleBase {
-    private IMediaStreamFileMapper defaultFileMapper;
 
 
     public DomsStreamingEventHandler() {
@@ -116,11 +114,24 @@ public class DomsStreamingEventHandler extends ModuleBase {
                           + appInstance.getName();
         getLogger().info("***Entered onAppStart: " + fullname);
 
+
+
         String vhostDir = appInstance.getVHost().getHomePath();
         final String storageDir = appInstance.getStreamStorageDir()+"/files";
 
+        String propertyFileLocation = vhostDir
+                                      + "/conf/domslive/doms-wowza-plugin.properties";
+
+        // Current working directory is /
+        getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
+        ConfigReader cr = new ConfigReader(propertyFileLocation);
+
         appInstance.addMediaStreamListener(new DynamicLiveStreaming(appInstance, new DomsUriToFileMapper(
-                storageDir, vhostDir)));
+                storageDir,
+                cr.get("sdf","yyyy-MM-dd-HH-mm-ss"),
+                cr.get("ticketInvalidFile","rck.flv"),
+                cr.get("ticketCheckerLocation","http://alhena:7980/authchecker")),
+                                                                    cr));
 
 
         getLogger().info("onAppStart: StreamFileMapper: \""
@@ -131,7 +142,6 @@ public class DomsStreamingEventHandler extends ModuleBase {
         String fullname = appInstance.getApplication().getName() + "/"
                           + appInstance.getName();
         getLogger().info("onAppStop: " + fullname);
-        defaultFileMapper = null;
     }
 
 
@@ -144,6 +154,7 @@ public class DomsStreamingEventHandler extends ModuleBase {
      */
     public void onConnect(IClient client, RequestFunction function,
                           AMFDataList params) {
+/*
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
         getLogger().info("onConnect (properties)    : "
@@ -154,7 +165,8 @@ public class DomsStreamingEventHandler extends ModuleBase {
         getLogger().info("onConnect (page URI)      : " + client.getUri());
         getLogger().info("onConnect (Message)       : "
                          + function.getMessage().toString());
-
+        //client.rejectConnection("My Error 1", "My Error 3");
+*/
     }
 
     protected static WMSLogger getLogger()

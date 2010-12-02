@@ -3,10 +3,6 @@ package dk.statsbiblioteket.doms.wowza.plugin.domslive;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
-
-import java.lang.String;
-
-import dk.statsbiblioteket.doms.wowza.plugin.*;
 import dk.statsbiblioteket.doms.wowza.plugin.Ticket;
 
 /* $Id$
@@ -66,6 +62,8 @@ public class TicketChecker {
             String shardUrlFromTicket = ticketXml.getUrl();
             String ipOfPlayerFromTicket = ticketXml.getUsername();
 
+            
+
             if (shardUrl.equals(shardUrlFromTicket)
                     && ipOfPlayer.equals(ipOfPlayerFromTicket)) {
                 return true;
@@ -76,5 +74,9 @@ public class TicketChecker {
             return false;
         }
     }
+
+
+    
+
 
 }

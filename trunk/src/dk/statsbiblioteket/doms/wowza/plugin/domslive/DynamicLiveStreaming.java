@@ -26,9 +26,9 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
 
     Random random = new Random();
     Map<String, Liver> runningstuff = new HashMap<String, Liver>();
-    private IApplicationInstance appInstance
-            ;
+    private IApplicationInstance appInstance;
     private IMediaStreamFileMapper domsUriToFileMapper;
+    private ConfigReader configReader;
 
     public DynamicLiveStreaming(IApplicationInstance appInstance) {
         this.appInstance = appInstance;
@@ -36,35 +36,48 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
     }
 
     public DynamicLiveStreaming(IApplicationInstance appInstance,
-                                IMediaStreamFileMapper domsUriToFileMapper) {
+                                IMediaStreamFileMapper domsUriToFileMapper,
+                                ConfigReader configReader) {
 
         this.appInstance = appInstance;
         this.domsUriToFileMapper = domsUriToFileMapper;
+        this.configReader = configReader;
     }
 
     @Override
     public void onMediaStreamCreate(IMediaStream iMediaStream) {
         getLogger().info("***Entered onMediaStreamCreate()");
 
-        getLogger().info("onStreamCreate (name)     : " + iMediaStream.getName());
-        getLogger().info("onStreamCreate (ext)  : " + iMediaStream.getExt());
-        getLogger().info("onStreamCreate (cachename)     : " + iMediaStream.getCacheName());
-        getLogger().info("onStreamCreate (contextstr)     : " + iMediaStream.getContextStr());
-        getLogger().info("onStreamCreate (querystr)     : " + iMediaStream.getQueryStr());
-        getLogger().info("onStreamCreate (streamtype)     : " + iMediaStream.getStreamType());
-
-        iMediaStream.addClientListener(new StreamListener());
 
         try {
+            //Check the ticket and decode the file
             File datafile = domsUriToFileMapper.streamToFileForRead(iMediaStream);
             if (datafile == null){//not one of ours
+                getLogger().info("This mediaStream is not one of ours, returning",iMediaStream);
                 return;
             }
+
+            //The Datafile is now the correct file or the error file. Otherwise an exception would have been thrown
+
+/*
+            getLogger().info("onStreamCreate (name)     : " + iMediaStream.getName());
+            getLogger().info("onStreamCreate (ext)  : " + iMediaStream.getExt());
+            getLogger().info("onStreamCreate (cachename)     : " + iMediaStream.getCacheName());
+            getLogger().info("onStreamCreate (contextstr)     : " + iMediaStream.getContextStr());
+            getLogger().info("onStreamCreate (querystr)     : " + iMediaStream.getQueryStr());
+            getLogger().info("onStreamCreate (streamtype)     : " + iMediaStream.getStreamType());
+*/
+
+            //Add the stream listener, that will plug the next security hole
+            iMediaStream.addClientListener(new StreamListener());
+
             getLogger().info("iMediaStream datafile:"+datafile.getAbsolutePath());
 
-            //first, we could decide on a random port for this this.
+
+            //first, we find a port to use for this streaming
             int port = getRandomPort(iMediaStream);
 
+            //Make the new file so that wowza can receive the streaming
             File streamfile
                     = new File(appInstance.getStreamStorageDir(),
                                port + ".stream");
@@ -124,6 +137,7 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
 
             //3. remove file
             liver.getStreamfile().delete();
+            runningstuff.remove(streamName);
         }
 
 
@@ -133,30 +147,31 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
     private ProcessRunner startStreamingApp(File datafile, int port)
             throws IOException {
 
+        getLogger().info("Entered startStreamingApp");
         List<String> commandList = new ArrayList<String>();
-        commandList.add("cvlc");
-        commandList.add("$DATAFILE");
-        commandList.add("--sout");
-        commandList.add("#transcode{venc=x264{keyint=60,profile=baseline,level=3.0,nocabac},vcodec=x264,vb=150,scale=0.5,acodec=mp4a,ab=96,channels=2,samplerate=48000}:rtp{dst=127.0.0.1,port=$PORT,mux=ts}");
-        for (int i = 0; i < commandList.size(); i++) {
-            String s;
-            s =commandList.get(i);
-            s = s.replace("$DATAFILE",datafile.getAbsolutePath());
-            s = s.replace("$PORT",port+"");
-            commandList.remove(i);
-            commandList.add(i,s);
-            getLogger().info("command element: "+s);
+        int commandNumber=0;
+        while (true){
+            String command = configReader.get("process" + commandNumber++);
+            if (command == null){
+                break;
+            } else {
+                command = command.replace("$DATAFILE",datafile.getAbsolutePath());
+                command = command.replace("$PORT",port+"");
+                commandList.add(command);
+                getLogger().info("process: '"+command+"'");
+            }
         }
+
         ProcessRunner runner = new ProcessRunner(commandList);
         Thread thread = new Thread(runner);
         thread.start();
+        getLogger().info("Streaming process started");
         return runner;
     }
 
     private int getRandomPort(IMediaStream iMediaStream) {
         String queryString = iMediaStream.getClient().getQueryStr();
-        int index = queryString.indexOf("port=");
-        String port = queryString.substring(index+"port=".length());
+        String port = Utils.extractPortID(queryString);
         return Integer.parseInt(port);
 /*
         int tryport;
@@ -195,5 +210,6 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
     {
         return WMSLoggerFactory.getLogger(DynamicLiveStreaming.class);
     }
+
 
 }
