@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.domslive;
+package dk.statsbiblioteket.doms.wowza.plugin.live;
 
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
@@ -7,7 +7,9 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
-import dk.statsbiblioteket.doms.wowza.plugin.domslive.model.DomsUriToFileMapper;
+import com.wowza.wms.stream.IMediaStreamFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
 /* Other Events that can be included:
 
@@ -93,10 +95,10 @@ import dk.statsbiblioteket.doms.wowza.plugin.domslive.model.DomsUriToFileMapper;
  *
  * @author heb + jrg
  */
-public class DomsStreamingEventHandler extends ModuleBase {
+public class DomsLiveStreaming extends ModuleBase {
 
 
-    public DomsStreamingEventHandler() {
+    public DomsLiveStreaming() {
         super();
     }
 
@@ -121,17 +123,27 @@ public class DomsStreamingEventHandler extends ModuleBase {
 
         String propertyFileLocation = vhostDir
                                       + "/conf/domslive/doms-wowza-plugin.properties";
+        IMediaStreamFileMapper defaultFileMapper
+                = appInstance.getStreamFileMapper();
+
 
         // Current working directory is /
         getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
         ConfigReader cr = new ConfigReader(propertyFileLocation);
 
-        appInstance.addMediaStreamListener(new DynamicLiveStreaming(appInstance, new DomsUriToFileMapper(
-                storageDir,
-                cr.get("sdf","yyyy-MM-dd-HH-mm-ss"),
-                cr.get("ticketInvalidFile","rck.flv"),
-                cr.get("ticketCheckerLocation","http://alhena:7980/authchecker")),
-                                                                    cr));
+        appInstance.addMediaStreamListener(
+                new DomsMediaStreamListener(
+                        appInstance,
+                        new DomsUriToFileMapper(
+                                storageDir,
+                                cr.get("sdf",
+                                       "yyyy-MM-dd-HH-mm-ss"),
+                                cr.get("ticketInvalidFile",
+                                       "rck.flv"),
+                                cr.get("ticketCheckerLocation",
+                                       "http://alhena:7980/authchecker"),
+                                defaultFileMapper),
+                        cr));
 
 
         getLogger().info("onAppStart: StreamFileMapper: \""
@@ -171,7 +183,7 @@ public class DomsStreamingEventHandler extends ModuleBase {
 
     protected static WMSLogger getLogger()
     {
-        return WMSLoggerFactory.getLogger(DomsStreamingEventHandler.class);
+        return WMSLoggerFactory.getLogger(DomsLiveStreaming.class);
     }
 
 }

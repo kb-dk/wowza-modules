@@ -4,7 +4,7 @@
  * Added to the SBUtils Project by the State and University Library
  * Author Asger Blekinge-Rasmussen
  */
-package dk.statsbiblioteket.doms.wowza.plugin.domslive;
+package dk.statsbiblioteket.doms.wowza.plugin.utilities;
 
 
 import java.io.BufferedInputStream;
