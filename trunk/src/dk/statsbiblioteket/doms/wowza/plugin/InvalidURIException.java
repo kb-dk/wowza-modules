@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.domslive.model;
+package dk.statsbiblioteket.doms.wowza.plugin;
 
 public class InvalidURIException extends Exception {
 
