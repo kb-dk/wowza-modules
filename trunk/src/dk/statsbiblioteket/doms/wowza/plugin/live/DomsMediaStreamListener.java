@@ -6,6 +6,7 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
+import com.wowza.wms.mediacaster.MediaCasterStreamItem;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
@@ -84,6 +85,13 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
             File streamfile
                     = new File(appInstance.getStreamStorageDir(),
                                port + ".stream");
+            MediaCasterStreamItem streamItem
+                    = appInstance.getMediaCasterStreams().getMediaCaster(
+                    streamfile.getName());
+            if (streamItem != null){//someone else is already viewing on this ID
+                iMediaStream.shutdown();//Kill the signal
+                return;
+            }
             //create wowza streaming file
             if (streamfile.createNewFile()){
                 //1. create stream file
@@ -100,6 +108,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
                         streamfile.getName(),
                         iMediaStream.getExt(),
                         "rtp");
+
 
                 try {
                     Thread.sleep(Integer.parseInt(configReader.get("SleepyTime","3000")));
