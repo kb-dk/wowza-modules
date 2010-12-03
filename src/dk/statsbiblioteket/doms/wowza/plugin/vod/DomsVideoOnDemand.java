@@ -1,14 +1,16 @@
-package dk.statsbiblioteket.doms.wowza.plugin;
+package dk.statsbiblioteket.doms.wowza.plugin.vod;
 
-import com.wowza.wms.application.*;
-import com.wowza.wms.module.*;
-import com.wowza.wms.stream.*;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.amf.AMFPacket;
-import com.wowza.wms.request.RequestFunction;
+import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
-
-import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
+import com.wowza.wms.module.ModuleBase;
+import com.wowza.wms.request.RequestFunction;
+import com.wowza.wms.stream.IMediaStream;
+import com.wowza.wms.stream.IMediaStreamActionNotify2;
+import com.wowza.wms.stream.IMediaStreamFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
 /**
  * This class handles events that happen during streaming. Also sets up the file
@@ -16,9 +18,9 @@ import dk.statsbiblioteket.doms.wowza.plugin.model.DomsUriToFileMapper;
  *
  * @author heb + jrg
  */
-public class DomsStreamingEventHandler extends ModuleBase {
+public class DomsVideoOnDemand extends ModuleBase {
 
-	public DomsStreamingEventHandler() {
+	public DomsVideoOnDemand() {
 		super();
 	}
 
@@ -41,7 +43,7 @@ public class DomsStreamingEventHandler extends ModuleBase {
 //
 //            @Override
 //            public void onMediaStreamCreate(IMediaStream iMediaStream) {
-//                iMediaStream.addClientListener(new StreamListener());
+//                iMediaStream.addClientListener(new DomsMediaStreamActionListener());
 //            }
 //
 //            @Override
@@ -54,8 +56,21 @@ public class DomsStreamingEventHandler extends ModuleBase {
 		IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
 
-		DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-                storageDir, getLogger(), defaultFileMapper, vhostDir);
+        String propertyFileLocation = vhostDir
+                                      + "/conf/domslive/doms-wowza-plugin.properties";
+
+        // Current working directory is /
+        getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
+        ConfigReader cr = new ConfigReader(propertyFileLocation);
+
+        DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
+                storageDir,
+                cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
+                cr.get("ticketInvalidFile", "rck.flv"),
+                cr.get("ticketCheckerLocation",
+                       "http://alhena:7980/authchecker"),
+                defaultFileMapper);
+
 
 		// Set File mapper, which will be used to get name of the stream file
         // from the query string.

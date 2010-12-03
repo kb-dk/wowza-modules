@@ -1,11 +1,12 @@
-package dk.statsbiblioteket.doms.wowza.plugin.domslive;
+package dk.statsbiblioteket.doms.wowza.plugin.live;
 
-import com.wowza.wms.stream.IMediaStreamActionNotify2;
-import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.amf.AMFPacket;
+import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import com.wowza.wms.client.IClient;
+import com.wowza.wms.stream.IMediaStream;
+import com.wowza.wms.stream.IMediaStreamActionNotify2;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,12 +15,12 @@ import com.wowza.wms.client.IClient;
  * Time: 3:07:58 PM
  * To change this template use File | Settings | File Templates.
  */
-class StreamListener implements IMediaStreamActionNotify2 {
+class DomsMediaStreamActionListener implements IMediaStreamActionNotify2 {
 
 
     public void onPlay(IMediaStream stream, String streamName,
                        double playStart, double playLen, int playReset) {
-        DomsStreamingEventHandler.getLogger().info("onPlay");
+        DomsLiveStreaming.getLogger().info("onPlay");
         IClient client = stream.getClient();
         if (client != null){
 
@@ -49,31 +50,31 @@ class StreamListener implements IMediaStreamActionNotify2 {
     }
 
     public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
-        DomsStreamingEventHandler.getLogger().info("onMetaData By: " + stream.getClientId());
+        DomsLiveStreaming.getLogger().info("onMetaData By: " + stream.getClientId());
     }
 
     public void onPauseRaw(IMediaStream stream, boolean isPause,
                            double location) {
-        DomsStreamingEventHandler.getLogger().info("onPauseRaw By: " + stream.getClientId());
+        DomsLiveStreaming.getLogger().info("onPauseRaw By: " + stream.getClientId());
     }
 
     public void onSeek(IMediaStream stream, double location) {
-        DomsStreamingEventHandler.getLogger().info("onSeek");
+        DomsLiveStreaming.getLogger().info("onSeek");
     }
 
     public void onStop(IMediaStream stream) {
-        DomsStreamingEventHandler.getLogger().info("onStop By: " + stream.getClientId());
+        DomsLiveStreaming.getLogger().info("onStop By: " + stream.getClientId());
         stream.shutdown();
     }
 
     public void onUnPublish(IMediaStream stream, String streamName,
                             boolean isRecord, boolean isAppend) {
-        DomsStreamingEventHandler.getLogger().info("onUnPublish");
+        DomsLiveStreaming.getLogger().info("onUnPublish");
     }
 
     public  void onPublish(IMediaStream stream, String streamName,
                            boolean isRecord, boolean isAppend) {
-        DomsStreamingEventHandler.getLogger().info("onPublish");
+        DomsLiveStreaming.getLogger().info("onPublish");
         if (stream.getClient() != null){
             logClient("onStreamPublish ",stream.getClient());
         }
@@ -90,11 +91,11 @@ class StreamListener implements IMediaStreamActionNotify2 {
 
     public void onPause(IMediaStream stream, boolean isPause,
                         double location) {
-        DomsStreamingEventHandler.getLogger().info("onPause");
+        DomsLiveStreaming.getLogger().info("onPause");
     }
     protected static WMSLogger getLogger()
     {
-        return WMSLoggerFactory.getLogger(DynamicLiveStreaming.class);
+        return WMSLoggerFactory.getLogger(DomsMediaStreamListener.class);
     }
 
 }

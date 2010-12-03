@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.domslive;
+package dk.statsbiblioteket.doms.wowza.plugin.utilities;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +15,7 @@ public class Utils {
     // Create a pattern to match a correct query string
     private static Pattern queryPattern = Pattern.compile(
             "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*))"
-            + "&ticket=([^&]*)&port=([^&]*)");
+            + "&ticket=([^&]*)(?:&port=([^&]*))?");
 
     public static String extractTicket(String queryString){
         return extract(queryString,3);

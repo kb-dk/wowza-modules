@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.domslive;
+package dk.statsbiblioteket.doms.wowza.plugin.live;
 
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.logging.WMSLogger;
@@ -6,7 +6,9 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
-
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +23,7 @@ import java.util.*;
  * Time: 12:00:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DynamicLiveStreaming implements IMediaStreamNotify{
+public class DomsMediaStreamListener implements IMediaStreamNotify{
 
 
     Random random = new Random();
@@ -30,12 +32,12 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
     private IMediaStreamFileMapper domsUriToFileMapper;
     private ConfigReader configReader;
 
-    public DynamicLiveStreaming(IApplicationInstance appInstance) {
+    public DomsMediaStreamListener(IApplicationInstance appInstance) {
         this.appInstance = appInstance;
 
     }
 
-    public DynamicLiveStreaming(IApplicationInstance appInstance,
+    public DomsMediaStreamListener(IApplicationInstance appInstance,
                                 IMediaStreamFileMapper domsUriToFileMapper,
                                 ConfigReader configReader) {
 
@@ -69,7 +71,7 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
 */
 
             //Add the stream listener, that will plug the next security hole
-            iMediaStream.addClientListener(new StreamListener());
+            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
             
 
             getLogger().info("iMediaStream datafile:"+datafile.getAbsolutePath());
@@ -216,7 +218,7 @@ public class DynamicLiveStreaming implements IMediaStreamNotify{
 
     protected static WMSLogger getLogger()
     {
-        return WMSLoggerFactory.getLogger(DynamicLiveStreaming.class);
+        return WMSLoggerFactory.getLogger(DomsMediaStreamListener.class);
     }
 
 

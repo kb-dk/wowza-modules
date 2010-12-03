@@ -123,7 +123,7 @@
             <Module>
                 <Name>doms-wowza-plugin-live</Name>
                 <Description>Statsbiblioteket DOMS-plugin</Description>
-                <Class>dk.statsbiblioteket.doms.wowza.plugin.domslive.DomsStreamingEventHandler</Class>
+                <Class>dk.statsbiblioteket.doms.wowza.plugin.live.DomsLiveStreaming</Class>
             </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
