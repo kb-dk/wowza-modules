@@ -1,20 +1,21 @@
 package dk.statsbiblioteket.doms.wowza.plugin.live;
 
 import com.wowza.wms.application.IApplicationInstance;
+import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.mediacaster.MediaCasterStreamItem;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
-import com.wowza.wms.mediacaster.MediaCasterStreamItem;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.util.Bytes;
+import dk.statsbiblioteket.util.Checksums;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -39,8 +40,8 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
     }
 
     public DomsMediaStreamListener(IApplicationInstance appInstance,
-                                IMediaStreamFileMapper domsUriToFileMapper,
-                                ConfigReader configReader) {
+                                   IMediaStreamFileMapper domsUriToFileMapper,
+                                   ConfigReader configReader) {
 
         this.appInstance = appInstance;
         this.domsUriToFileMapper = domsUriToFileMapper;
@@ -55,6 +56,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
         try {
             //Check the ticket and decode the file
             File datafile = domsUriToFileMapper.streamToFileForRead(iMediaStream);
+            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
             if (datafile == null){//not one of ours
                 getLogger().info("This mediaStream is not one of ours, returning",iMediaStream);
                 return;
@@ -72,19 +74,16 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
 */
 
             //Add the stream listener, that will plug the next security hole
-            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
-            
-
-            getLogger().info("iMediaStream datafile:"+datafile.getAbsolutePath());
 
 
-            //first, we find a port to use for this streaming
-            int port = getRandomPort(iMediaStream);
+
+            getLogger().info("iMediaStream datafile: "+datafile.getAbsolutePath());
+
+            File streamfile = getFileName(iMediaStream);
+
+
 
             //Make the new file so that wowza can receive the streaming
-            File streamfile
-                    = new File(appInstance.getStreamStorageDir(),
-                               port + ".stream");
             MediaCasterStreamItem streamItem
                     = appInstance.getMediaCasterStreams().getMediaCaster(
                     streamfile.getName());
@@ -92,8 +91,13 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
                 iMediaStream.shutdown();//Kill the signal
                 return;
             }
+
+            getLogger().info("iMediaStream stream: "+streamfile.getAbsolutePath());
             //create wowza streaming file
             if (streamfile.createNewFile()){
+                //first, we find a port to use for this streaming
+                int port = getRandomPort(iMediaStream);
+
                 //1. create stream file
                 getLogger().info("created new File: "+streamfile.getAbsolutePath());
                 Writer writer = new FileWriter(streamfile);
@@ -103,23 +107,25 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
                 //2. start streaming app
                 ProcessRunner process = startStreamingApp(datafile,port);
 
+
                 //3. start wowza collection on that stream
                 boolean success = appInstance.startMediaCasterStream(
                         streamfile.getName(),
-                        iMediaStream.getExt(),
+                        "",
                         "rtp");
 
-
+                getLogger().info("MediaCaster started with return value "+success);
                 try {
                     Thread.sleep(Integer.parseInt(configReader.get("SleepyTime","3000")));
                 } catch (InterruptedException e) {
 
                 }
-                
+
                 //iMediaStream.setName(streamfile.getName());
                 if (success){
                     runningstuff.put(streamfile.getName(),new Liver(process,streamfile));
                 } else {
+                    getLogger().debug("Did not successfully start Mediacaster, shutting stuff down");
                     process.stop();
                     getLogger().warn("vlc std error output: " +process.getProcessErrorAsString());
                     getLogger().warn("vlc std out output: " +process.getProcessOutputAsString());
@@ -128,6 +134,22 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
             }
         } catch (IOException e) {
             getLogger().error("Caught exception e"+e.getMessage(),iMediaStream);
+        }
+    }
+
+    private File getFileName(IMediaStream iMediaStream) {
+        IClient client = iMediaStream.getClient();
+        String queryString;
+        try {
+            queryString = URLDecoder.decode(
+                    client.getQueryStr(), "UTF-8");
+            getLogger().info("queryString: '" + queryString + "'");
+//            String ticketString = URLEncoder.encode(Utils.extractTicket(queryString),"UTF-8");
+            String ticketString = Bytes.toHex(Checksums.md5(Utils.extractTicket(queryString)));
+            return new File(appInstance.getStreamStorageDir(),ticketString);
+
+        } catch (UnsupportedEncodingException e) {
+            throw new Error("Wowza does not knwo UTF-8",e);
         }
     }
 
@@ -189,10 +211,6 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
     }
 
     private int getRandomPort(IMediaStream iMediaStream) {
-        String queryString = iMediaStream.getClient().getQueryStr();
-        String port = Utils.extractPortID(queryString);
-        return Integer.parseInt(port);
-/*
         int tryport;
         while (true){
             tryport = (random.nextInt() % 10000) + 34000;
@@ -201,7 +219,6 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
             }
         }
         return tryport;
-*/
     }
 
 
