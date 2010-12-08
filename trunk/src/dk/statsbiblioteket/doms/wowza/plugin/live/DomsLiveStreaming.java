@@ -146,6 +146,7 @@ public class DomsLiveStreaming extends ModuleBase {
                         cr));
 
 
+
         getLogger().info("onAppStart: StreamFileMapper: \""
                          + DomsUriToFileMapper.class.getName() + "\".");
     }
@@ -166,7 +167,7 @@ public class DomsLiveStreaming extends ModuleBase {
      */
     public void onConnect(IClient client, RequestFunction function,
                           AMFDataList params) {
-/*
+
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
         getLogger().info("onConnect (properties)    : "
@@ -178,7 +179,8 @@ public class DomsLiveStreaming extends ModuleBase {
         getLogger().info("onConnect (Message)       : "
                          + function.getMessage().toString());
         //client.rejectConnection("My Error 1", "My Error 3");
-*/
+        getLogger().debug("Connect params "+params.toString());
+
     }
 
     protected static WMSLogger getLogger()
