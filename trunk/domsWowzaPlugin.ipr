@@ -405,13 +405,13 @@
     </library>
     <library name="sbutil">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/sbutil-0.5.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/jars/sbutil-0.5.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="file://$PROJECT_DIR$/lib/sbutil-0.5.2/doc" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/apidocs/sbutil-0.5.2-apidocs.zip!/sbutil-0.5.2/doc" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/sbutil-0.5.2-src.zip!/sbutil-0.5.2/src" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/src/sbutil-0.5.2-src.zip!/sbutil-0.5.2/src" />
       </SOURCES>
     </library>
   </component>
