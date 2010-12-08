@@ -7,6 +7,8 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.util.Bytes;
+import dk.statsbiblioteket.util.Checksums;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,15 +24,19 @@ class DomsMediaStreamActionListener implements IMediaStreamActionNotify2 {
                        double playStart, double playLen, int playReset) {
         DomsLiveStreaming.getLogger().info("onPlay");
         IClient client = stream.getClient();
+
         if (client != null){
 
             String querystring = stream.getClient().getQueryStr();
-            String port = Utils.extractPortID(querystring);
-            if (!(port+".stream").equals(streamName)){//
+            String expectedStreamName
+                    = Bytes.toHex(Checksums.md5(Utils.extractTicket(querystring)))+".stream";
+            if (!(expectedStreamName).equals(streamName)){//
+                getLogger().warn("Shutting down stream "+streamName+", because it does not have the expected name "+expectedStreamName+".");
                 stream.shutdown();
             }
 
         }
+
 
         getLogger().info("onStreamPlay (name)     : " + stream.getName());
         getLogger().info("onStreamPlay (name)     : " + streamName);
