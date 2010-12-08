@@ -29,7 +29,7 @@ class DomsMediaStreamActionListener implements IMediaStreamActionNotify2 {
 
             String querystring = stream.getClient().getQueryStr();
             String expectedStreamName
-                    = Bytes.toHex(Checksums.md5(Utils.extractTicket(querystring)));
+                    = Bytes.toHex(Checksums.md5(Utils.extractTicket(querystring)))+".stream";
             if (!(expectedStreamName).equals(streamName)){//
                 getLogger().warn("Shutting down stream "+streamName+", because it does not have the expected name "+expectedStreamName+".");
                 stream.shutdown();
