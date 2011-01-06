@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<project name="DOMS-Authorization-Wowza-plugin" default="jar" basedir=".">
+
+    <property file="${user.name}.build.properties"/>
+    <property file="build.properties"/>
+	<property name="wowza.lib.dir" value="/usr/local/WowzaMediaServer/lib"/>
+	<property name="jar.filename" value="doms-wowza-plugin.jar"/>
+	<property name="test.jar.filename" value="doms-wowza-plugin-test.jar"/>
+	<property name="package.filename" value="doms-wowza-install-package.zip"/>
+	<property name="java.src.dir" value="src"/>
+	<property name="test.src.dir" value="test"/>
+	<property name="conf.src.dir" value="conf"/>
+	<property name="core.lib.dir" value="lib"/>
+	<property name="core.scripts.dir" value="scripts"/>
+	<!-- Build related folders -->
+	<property name="core.build.dir" value="target"/>
+	<property name="classes.build.dir" value="${core.build.dir}/classes"/>
+	<property name="lib.build.dir" value="${core.build.dir}/lib"/>
+	<property name="package.build.dir" value="${core.build.dir}/package"/>
+	<!-- Wowza file structure to enable deploy by copying -->
+	<property name="applications.package.build.dir" value="${package.build.dir}/applications"/>
+	<property name="lib.package.build.dir" value="${package.build.dir}/lib"/>
+	<property name="conf.package.build.dir" value="${package.build.dir}/conf"/>
+	<property name="scripts.package.build.dir" value="${package.build.dir}/bin"/>
+
+    <path id="classpath">
+        <fileset dir="${wowza.lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${core.lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <path id="test.classpath">
+        <fileset dir="${wowza.lib.dir}" includes="**/*.jar">
+        	<exclude name="${jar.filename}"/>
+        	<exclude name="${test.jar.filename}"/>
+        </fileset>
+        <fileset dir="${core.lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${lib.build.dir}" includes="**/*.jar"/>
+    </path>
+
+	<target name="clean">
+		<delete dir="${core.build.dir}"/>
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="${core.build.dir}"/>
+		<mkdir dir="${classes.build.dir}"/>
+		<javac srcdir="${java.src.dir}" destdir="${classes.build.dir}" classpathref="classpath"/>
+	</target>
+	
+	<target name="compile.test" depends="compile">
+		<javac srcdir="${test.src.dir}" destdir="${classes.build.dir}" classpathref="classpath"/>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${core.build.dir}"/>
+		<mkdir dir="${classes.build.dir}"/>
+		<mkdir dir="${lib.build.dir}"/>
+		<jar jarfile="${lib.build.dir}/${jar.filename}">
+			<fileset dir="${classes.build.dir}"/>
+		</jar>
+	</target>
+	
+	<target name="jar.test" depends="compile.test">
+		<mkdir dir="${core.build.dir}"/>
+		<mkdir dir="${classes.build.dir}"/>
+		<mkdir dir="${lib.build.dir}"/>
+		<jar jarfile="${lib.build.dir}/${test.jar.filename}">
+			<fileset dir="${classes.build.dir}"/>
+		</jar>
+	</target>
+	
+	<target name="test" depends="jar.test">
+		<delete dir="${core.build.dir}/reports"/>
+		<mkdir dir="${core.build.dir}/reports"/>
+		<junit haltonfailure="false" printsummary="true">
+			<classpath refid="test.classpath"/>
+			<!--sysproperty key="dk.statsbiblioteket.digitaltv.confdir" value="${conf.env}"/-->
+			<formatter type="brief" usefile="false"/>
+			<formatter type="xml"/>
+			<!-- Example of running a single test case:
+			 <test todir="${builddir}/reports" name="dk.statsbiblioteket.digitaltv.ritzau.exporter.RitzauProgramXMLExporterXMLTransformTester"/>
+			-->
+			<batchtest todir="${core.build.dir}/reports">
+				<fileset dir="${classes.build.dir}" includes="**/*Test.class"/>
+			</batchtest>
+		</junit>
+		<junitreport todir="${core.build.dir}/reports">
+			<fileset dir="${core.build.dir}/reports">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="${core.build.dir}/reports"/>
+		</junitreport>
+	</target>
+	
+	<target name="package" depends="compile, compile.test, jar">
+		<mkdir dir="${core.build.dir}"/>
+		<!-- Package jar file -->
+		<mkdir dir="${package.build.dir}"/>
+		<mkdir dir="${lib.package.build.dir}"/>
+		<jar jarfile="${lib.package.build.dir}/${jar.filename}">
+			<fileset dir="${classes.build.dir}"/>
+		</jar>
+        <copy file="build-libs/junit-4.8.1.jar" todir="${lib.package.build.dir}"/>
+        <copy  todir="${lib.package.build.dir}">
+            <fileset dir="${core.lib.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+            <flattenmapper/>
+        </copy>
+
+		<!-- Package script files -->
+		<mkdir dir="${scripts.package.build.dir}"/>
+		<copy todir="${scripts.package.build.dir}" >  
+			<fileset dir="${core.scripts.dir}" includes="**"/>  
+		</copy>
+		<!-- Package configuration files -->
+		<mkdir dir="${conf.package.build.dir}"/>
+		<copy todir="${conf.package.build.dir}">
+            <fileset dir="${conf.src.dir}"/>
+        </copy>
+		<!-- Create applications folder -->
+		<mkdir dir="${applications.package.build.dir}/doms"/>
+        <mkdir dir="${applications.package.build.dir}/domslive"/>
+		<!-- Zip content -->
+		<zip destfile="${core.build.dir}/${package.filename}" basedir="${package.build.dir}"/>
+		<!-- Copy deploy script next to zip-pakckage -->
+		<copy file="${scripts.package.build.dir}/deploy-on-iapetus-from-local-machine.sh" todir="${core.build.dir}"/>
+	</target>
+</project>
