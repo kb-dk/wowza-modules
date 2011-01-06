@@ -121,7 +121,7 @@
         </copy>
 		<!-- Create applications folder -->
 		<mkdir dir="${applications.package.build.dir}/doms"/>
-        		<mkdir dir="${applications.package.build.dir}/domslive"/>
+        <mkdir dir="${applications.package.build.dir}/domslive"/>
 		<!-- Zip content -->
 		<zip destfile="${core.build.dir}/${package.filename}" basedir="${package.build.dir}"/>
 		<!-- Copy deploy script next to zip-pakckage -->
