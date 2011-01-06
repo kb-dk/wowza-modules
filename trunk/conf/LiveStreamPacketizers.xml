@@ -1,0 +1,44 @@
+<Root>
+	<LiveStreamPacketizers>
+		<LiveStreamPacketizer>
+			<Name>smoothstreamingpacketizer</Name>
+			<Description>Smooth Streaming Packetizer</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.smoothstreaming.livestreampacketizer.LiveStreamPacketizerSmoothStreaming</BaseClass>
+			<IsRepeater>false</IsRepeater>
+			<LiveRepeaterPlayerClass></LiveRepeaterPlayerClass>
+			<LiveRepeaterReceiverClass></LiveRepeaterReceiverClass>
+			<Properties>
+			</Properties>
+		</LiveStreamPacketizer>
+		<LiveStreamPacketizer>
+			<Name>smoothstreamingrepeater</Name>
+			<Description>Smooth Streaming Repeater</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.smoothstreaming.livestreampacketizer.LiveStreamPacketizerSmoothStreaming</BaseClass>
+			<IsRepeater>true</IsRepeater>
+			<LiveRepeaterPlayerClass>com.wowza.wms.httpstreamer.smoothstreaming.liverepeater.SmoothStreamerLiveRepeaterPlayer</LiveRepeaterPlayerClass>
+			<LiveRepeaterReceiverClass>com.wowza.wms.httpstreamer.smoothstreaming.liverepeater.SmoothStreamerLiveRepeaterReceiver</LiveRepeaterReceiverClass>
+			<Properties>
+			</Properties>
+		</LiveStreamPacketizer>
+		<LiveStreamPacketizer>
+			<Name>cupertinostreamingpacketizer</Name>
+			<Description>Cupertino Streaming Packetizer</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.cupertinostreaming.livestreampacketizer.LiveStreamPacketizerCupertino</BaseClass>
+			<IsRepeater>false</IsRepeater>
+			<LiveRepeaterPlayerClass></LiveRepeaterPlayerClass>
+			<LiveRepeaterReceiverClass></LiveRepeaterReceiverClass>
+			<Properties>
+			</Properties>
+		</LiveStreamPacketizer>
+		<LiveStreamPacketizer>
+			<Name>cupertinostreamingrepeater</Name>
+			<Description>Cupertino Streaming Repeater</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.cupertinostreaming.livestreampacketizer.LiveStreamPacketizerCupertino</BaseClass>
+			<IsRepeater>true</IsRepeater>
+			<LiveRepeaterPlayerClass>com.wowza.wms.httpstreamer.cupertinostreaming.liverepeater.CupertinoStreamerLiveRepeaterPlayer</LiveRepeaterPlayerClass>
+			<LiveRepeaterReceiverClass>com.wowza.wms.httpstreamer.cupertinostreaming.liverepeater.CupertinoStreamerLiveRepeaterReceiver</LiveRepeaterReceiverClass>
+			<Properties>
+			</Properties>
+		</LiveStreamPacketizer>
+	</LiveStreamPacketizers>
+</Root>
