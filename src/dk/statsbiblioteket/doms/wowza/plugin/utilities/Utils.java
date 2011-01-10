@@ -15,7 +15,7 @@ public class Utils {
     // Create a pattern to match a correct query string
     private static Pattern queryPattern = Pattern.compile(
             "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*))"
-            + "&ticket=([^&]*)(?:&port=([^&]*))?");
+            + "&ticket=([^&]*)");
 
     public static String extractTicket(String queryString){
         return extract(queryString,3);
@@ -27,11 +27,6 @@ public class Utils {
 
     public static String extractShardURL(String queryString){
         return extract(queryString,1);
-    }
-
-
-    public static String extractPortID(String queryString){
-        return extract(queryString,4);
     }
 
     private static String extract(String queryString, int group){
