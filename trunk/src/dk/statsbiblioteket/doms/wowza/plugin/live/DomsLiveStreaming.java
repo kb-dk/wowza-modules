@@ -11,6 +11,8 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
+import java.io.IOException;
+
 /* Other Events that can be included:
 
 	public void onAppStart(IApplicationInstance appInstance) {
@@ -111,7 +113,8 @@ public class DomsLiveStreaming extends ModuleBase {
      *
      * @param appInstance The application running.
      */
-    public void onAppStart(final IApplicationInstance appInstance) {
+    public void onAppStart(final IApplicationInstance appInstance)
+            throws IOException {
         String fullname = appInstance.getApplication().getName() + "/"
                           + appInstance.getName();
         getLogger().info("***Entered onAppStart: " + fullname);
@@ -119,23 +122,19 @@ public class DomsLiveStreaming extends ModuleBase {
 
 
         String vhostDir = appInstance.getVHost().getHomePath();
-        final String storageDir = appInstance.getStreamStorageDir()+"/files";
 
-        String propertyFileLocation = vhostDir
-                                      + "/conf/domslive/doms-wowza-plugin.properties";
         IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
 
 
         // Current working directory is /
-        getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
-        ConfigReader cr = new ConfigReader(propertyFileLocation);
+        ConfigReader cr = new ConfigReader("domslive-wowza-plugin.properties");
 
         appInstance.addMediaStreamListener(
                 new DomsMediaStreamListener(
                         appInstance,
                         new DomsUriToFileMapper(
-                                storageDir,
+                                cr.get("storageDir",appInstance.getStreamStorageDir()),
                                 cr.get("sdf",
                                        "yyyy-MM-dd-HH-mm-ss"),
                                 cr.get("ticketInvalidFile",

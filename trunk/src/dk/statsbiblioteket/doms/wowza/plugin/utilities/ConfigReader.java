@@ -18,13 +18,17 @@ public class ConfigReader {
      * TODO javadoc
      * @param path
      */
-    public ConfigReader(String path) {
+    public ConfigReader(String path) throws IOException {
 
         properties = new Properties();
-        try {
-            properties.load(new FileInputStream(path));
-        } catch (IOException e) { System.err.println(e); }
 
+        InputStream props
+                = this.getClass().getClassLoader().getResourceAsStream(path);
+        if (props == null){
+            throw new FileNotFoundException("property file '" + path
+                                            + "' not found in the classpath");
+        }
+        properties.load(props);
     }
 
     /**

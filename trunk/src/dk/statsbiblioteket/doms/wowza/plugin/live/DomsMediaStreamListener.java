@@ -33,6 +33,8 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
     private IApplicationInstance appInstance;
     private IMediaStreamFileMapper domsUriToFileMapper;
     private ConfigReader configReader;
+    private String streamDir;
+
 
     public DomsMediaStreamListener(IApplicationInstance appInstance) {
         this.appInstance = appInstance;
@@ -46,6 +48,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
         this.appInstance = appInstance;
         this.domsUriToFileMapper = domsUriToFileMapper;
         this.configReader = configReader;
+        streamDir = configReader.get("streamDir",appInstance.getStreamStorageDir());
     }
 
     @Override
@@ -146,7 +149,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
             getLogger().info("queryString: '" + queryString + "'");
 //            String ticketString = URLEncoder.encode(Utils.extractTicket(queryString),"UTF-8");
             String ticketString = Bytes.toHex(Checksums.md5(Utils.extractTicket(queryString)))+".stream";
-            return new File(appInstance.getStreamStorageDir(),ticketString);
+            return new File(streamDir,ticketString);
 
         } catch (UnsupportedEncodingException e) {
             throw new Error("Wowza does not knwo UTF-8",e);
