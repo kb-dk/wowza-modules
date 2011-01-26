@@ -12,6 +12,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
 import java.io.IOException;
+import java.io.File;
 
 /* Other Events that can be included:
 
@@ -120,21 +121,24 @@ public class DomsLiveStreaming extends ModuleBase {
         getLogger().info("***Entered onAppStart: " + fullname);
 
 
-
-        String vhostDir = appInstance.getVHost().getHomePath();
-
         IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
 
 
-        // Current working directory is /
-        ConfigReader cr = new ConfigReader("domslive-wowza-plugin.properties");
+        ConfigReader cr = new ConfigReader(
+                new File(appInstance.getVHost().getHomePath()
+                         +"/conf/"
+                         +appInstance.getName()
+                         +"/domslive-wowza-plugin.properties"));
+
 
         appInstance.addMediaStreamListener(
                 new DomsMediaStreamListener(
                         appInstance,
                         new DomsUriToFileMapper(
-                                cr.get("storageDir",appInstance.getStreamStorageDir()),
+                                appInstance.decodeStorageDir(
+                                        cr.get("storageDir",
+                                               appInstance.getStreamStorageDir())),
                                 cr.get("sdf",
                                        "yyyy-MM-dd-HH-mm-ss"),
                                 cr.get("ticketInvalidFile",
