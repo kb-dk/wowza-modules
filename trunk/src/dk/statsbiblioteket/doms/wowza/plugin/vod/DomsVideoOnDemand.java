@@ -61,9 +61,8 @@ public class DomsVideoOnDemand extends ModuleBase {
 
         ConfigReader cr = new ConfigReader(
                 new File(appInstance.getVHost().getHomePath()
-                         +"/conf/"
-                         +appInstance.getName()
-                         +"/doms-wowza-plugin.properties"));
+                         +"/conf/doms/"
+                         +"doms-wowza-plugin.properties"));
 
         DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
                 appInstance.decodeStorageDir(

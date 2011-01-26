@@ -26,7 +26,7 @@
 		<Streams>
 			<StreamType>default</StreamType>
             <!--<StorageDir>${com.wowza.wms.context.VHostConfigHome}/content</StorageDir>-->
-            <StorageDir>/home/larm/streamingContent</StorageDir>
+            <StorageDir></StorageDir>
 			<KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
 			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater -->
 			<LiveStreamPacketizers></LiveStreamPacketizers>			
