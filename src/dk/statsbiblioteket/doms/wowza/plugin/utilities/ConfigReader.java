@@ -31,6 +31,11 @@ public class ConfigReader {
         properties.load(props);
     }
 
+    public ConfigReader(File file) throws IOException {
+        properties = new Properties();
+        properties.load(new FileInputStream(file));
+    }
+
     /**
      * TODO javadoc
      * @param key

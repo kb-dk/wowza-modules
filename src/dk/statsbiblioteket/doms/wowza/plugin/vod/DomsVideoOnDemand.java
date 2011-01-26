@@ -12,6 +12,7 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -22,9 +23,9 @@ import java.io.IOException;
  */
 public class DomsVideoOnDemand extends ModuleBase {
 
-	public DomsVideoOnDemand() {
-		super();
-	}
+    public DomsVideoOnDemand() {
+        super();
+    }
 
     /**
      * Called when Wowza is started.
@@ -35,10 +36,10 @@ public class DomsVideoOnDemand extends ModuleBase {
      *
      * @param appInstance The application running.
      */
-	public void onAppStart(IApplicationInstance appInstance) throws IOException {
-		String fullname = appInstance.getApplication().getName() + "/"
-				+ appInstance.getName();
-		getLogger().info("***Entered onAppStart: " + fullname);
+    public void onAppStart(IApplicationInstance appInstance) throws IOException {
+        String fullname = appInstance.getApplication().getName() + "/"
+                          + appInstance.getName();
+        getLogger().info("***Entered onAppStart: " + fullname);
 
         String vhostDir = appInstance.getVHost().getHomePath();
 //        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
@@ -53,15 +54,21 @@ public class DomsVideoOnDemand extends ModuleBase {
 //            }
 //        });
 
-		// Create File mapper
+        // Create File mapper
 
-		IMediaStreamFileMapper defaultFileMapper
+        IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
 
-        ConfigReader cr = new ConfigReader("doms-wowza-plugin.properties");
+        ConfigReader cr = new ConfigReader(
+                new File(appInstance.getVHost().getHomePath()
+                         +"/conf/"
+                         +appInstance.getName()
+                         +"/doms-wowza-plugin.properties"));
 
         DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-                cr.get("storageDir",appInstance.getStreamStorageDir()),
+                appInstance.decodeStorageDir(
+                        cr.get("storageDir",
+                               appInstance.getStreamStorageDir())),
                 cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
                 cr.get("ticketInvalidFile", "rck.flv"),
                 cr.get("ticketCheckerLocation",
@@ -69,12 +76,12 @@ public class DomsVideoOnDemand extends ModuleBase {
                 defaultFileMapper);
 
 
-		// Set File mapper, which will be used to get name of the stream file
+        // Set File mapper, which will be used to get name of the stream file
         // from the query string.
-		appInstance.setStreamFileMapper(domsUriToFileMapper);
-		getLogger().info("onAppStart: StreamFileMapper: \""
-                + DomsUriToFileMapper.class.getName() + "\".");
-	}
+        appInstance.setStreamFileMapper(domsUriToFileMapper);
+        getLogger().info("onAppStart: StreamFileMapper: \""
+                         + DomsUriToFileMapper.class.getName() + "\".");
+    }
 
     /**
      * Called when a new video stream connection is started.
@@ -84,17 +91,17 @@ public class DomsVideoOnDemand extends ModuleBase {
      * @param params
      */
     public void onConnect(IClient client, RequestFunction function,
-            AMFDataList params) {
+                          AMFDataList params) {
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
         getLogger().info("onConnect (properties)    : "
-                + client.getProperties());
+                         + client.getProperties());
         getLogger().info("onConnect (page URL)      : " + client.getPageUrl());
         getLogger().info("onConnect (protocol)      : " + client.getProtocol());
         getLogger().info("onConnect (referer)       : " + client.getReferrer());
         getLogger().info("onConnect (page URI)      : " + client.getUri());
         getLogger().info("onConnect (Message)       : "
-                + function.getMessage().toString());
+                         + function.getMessage().toString());
 
     }
 
@@ -102,7 +109,7 @@ public class DomsVideoOnDemand extends ModuleBase {
         public void onPlay(IMediaStream stream, String streamName,
                            double playStart, double playLen, int playReset) {
             getLogger().info("***Entered onPlay(..., " + streamName
-                    + "..., ..., ...)");
+                             + "..., ..., ...)");
             getLogger().info("Stream Name: " + stream.getName());
         }
 
