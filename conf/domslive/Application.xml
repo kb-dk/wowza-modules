@@ -35,7 +35,7 @@
             </Properties>
         </Streams>
         <!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming -->
-        <HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming</HTTPStreamers>
+        <HTTPStreamers>cupertinostreaming,smoothstreaming</HTTPStreamers>
         <SharedObjects>
             <StorageDir></StorageDir>
         </SharedObjects>

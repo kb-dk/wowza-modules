@@ -12,6 +12,8 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 
+import java.io.IOException;
+
 /**
  * This class handles events that happen during streaming. Also sets up the file
  * mapper that is needed for identifying the file to be played.
@@ -33,7 +35,7 @@ public class DomsVideoOnDemand extends ModuleBase {
      *
      * @param appInstance The application running.
      */
-	public void onAppStart(IApplicationInstance appInstance) {
+	public void onAppStart(IApplicationInstance appInstance) throws IOException {
 		String fullname = appInstance.getApplication().getName() + "/"
 				+ appInstance.getName();
 		getLogger().info("***Entered onAppStart: " + fullname);
@@ -52,19 +54,14 @@ public class DomsVideoOnDemand extends ModuleBase {
 //        });
 
 		// Create File mapper
-		String storageDir = appInstance.getStreamStorageDir();
+
 		IMediaStreamFileMapper defaultFileMapper
                 = appInstance.getStreamFileMapper();
 
-        String propertyFileLocation = vhostDir
-                                      + "/conf/domslive/doms-wowza-plugin.properties";
-
-        // Current working directory is /
-        getLogger().info("propertyFileLocation: '" + propertyFileLocation + "'");
-        ConfigReader cr = new ConfigReader(propertyFileLocation);
+        ConfigReader cr = new ConfigReader("doms-wowza-plugin.properties");
 
         DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-                storageDir,
+                cr.get("storageDir",appInstance.getStreamStorageDir()),
                 cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
                 cr.get("ticketInvalidFile", "rck.flv"),
                 cr.get("ticketCheckerLocation",
