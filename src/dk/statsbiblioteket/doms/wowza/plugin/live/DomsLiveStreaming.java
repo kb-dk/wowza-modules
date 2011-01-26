@@ -127,9 +127,8 @@ public class DomsLiveStreaming extends ModuleBase {
 
         ConfigReader cr = new ConfigReader(
                 new File(appInstance.getVHost().getHomePath()
-                         +"/conf/"
-                         +appInstance.getName()
-                         +"/domslive-wowza-plugin.properties"));
+                         +"/conf/domslive/"
+                         +"domslive-wowza-plugin.properties"));
 
 
         appInstance.addMediaStreamListener(
