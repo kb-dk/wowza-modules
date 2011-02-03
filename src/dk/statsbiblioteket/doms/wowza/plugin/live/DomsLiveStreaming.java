@@ -140,8 +140,10 @@ public class DomsLiveStreaming extends ModuleBase {
                                                appInstance.getStreamStorageDir())),
                                 cr.get("sdf",
                                        "yyyy-MM-dd-HH-mm-ss"),
-                                cr.get("ticketInvalidFile",
-                                       "rck.flv"),
+                                appInstance.decodeStorageDir(
+                                        cr.get("ticketInvalidFile",
+                                               "rck.flv")
+                                ),
                                 cr.get("ticketCheckerLocation",
                                        "http://alhena:7980/authchecker"),
                                 defaultFileMapper),
