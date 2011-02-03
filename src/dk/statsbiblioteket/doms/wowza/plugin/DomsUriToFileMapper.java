@@ -111,7 +111,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             String ticket = Utils.extractTicket(queryString);
             getLogger().info("Ticket is "+ticket);
             if (!ticketChecker.isTicketValid(ticket,shardurl,client.getIp())){
-                return new File(storageDir + "/" + rickrollFilename);
+                return new File(rickrollFilename);
             }
 
 
@@ -130,7 +130,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         } catch (Exception e) {
             // TODO better log level
             getLogger().error("Unexpected error "+e.toString()+" occurred '"+e.getMessage()+"'");
-            fileToStream = new File(storageDir + "/" + rickrollFilename);
+            fileToStream = new File(rickrollFilename);
         }
 
         return fileToStream;
