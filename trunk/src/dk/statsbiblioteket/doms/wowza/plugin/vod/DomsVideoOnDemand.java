@@ -19,7 +19,7 @@ import java.io.IOException;
  * This class handles events that happen during streaming. Also sets up the file
  * mapper that is needed for identifying the file to be played.
  *
- * @author heb + jrg
+ * @author heb + jrg + abr
  */
 public class DomsVideoOnDemand extends ModuleBase {
 
@@ -69,7 +69,9 @@ public class DomsVideoOnDemand extends ModuleBase {
                         cr.get("storageDir",
                                appInstance.getStreamStorageDir())),
                 cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
-                cr.get("ticketInvalidFile", "rck.flv"),
+                appInstance.decodeStorageDir(
+                        cr.get("ticketInvalidFile", "rck.flv")
+                ),
                 cr.get("ticketCheckerLocation",
                        "http://alhena:7980/authchecker"),
                 defaultFileMapper);
