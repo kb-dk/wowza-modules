@@ -101,7 +101,7 @@ class DomsMediaStreamActionListener implements IMediaStreamActionNotify2 {
     }
     protected static WMSLogger getLogger()
     {
-        return WMSLoggerFactory.getLogger(DomsMediaStreamListener.class);
+        return WMSLoggerFactory.getLogger(DomsMediaStreamActionListener.class);
     }
 
 }

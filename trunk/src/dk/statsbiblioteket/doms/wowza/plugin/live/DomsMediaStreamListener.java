@@ -58,13 +58,13 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
         try {
             //Check the ticket and decode the file
             File datafile = domsUriToFileMapper.streamToFileForRead(iMediaStream);
-            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
             if (datafile == null){//not one of ours
                 getLogger().info("This mediaStream is not one of ours, returning",iMediaStream);
                 return;
             }
 
             //The Datafile is now the correct file or the error file. Otherwise an exception would have been thrown
+
 
 /*
             getLogger().info("onStreamCreate (name)     : " + iMediaStream.getName());
@@ -76,6 +76,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
 */
 
             //Add the stream listener, that will plug the next security hole
+            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
 
 
 
