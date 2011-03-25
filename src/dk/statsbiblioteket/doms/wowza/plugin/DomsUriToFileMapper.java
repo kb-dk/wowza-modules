@@ -3,6 +3,7 @@
  */
 package dk.statsbiblioteket.doms.wowza.plugin;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
@@ -29,7 +30,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
 
     private String rickrollFilename;
 
-    private TicketChecker ticketChecker;
+    private TicketCheckerInterface ticketChecker;
 
     private String storageDir;
     private IMediaStreamFileMapper backupMapper;
@@ -63,7 +64,26 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         getLogger().info("Creating mapper: StorageDir=" + storageDir);
     }
 
-    /**
+    public DomsUriToFileMapper(String storageDir, String format,
+			String ticketInvalidErrorFile, TicketCheckerInterface ticketChecker,
+			IMediaStreamFileMapper backupMapper) {
+        this.backupMapper = backupMapper;
+        getLogger().info("Entered DomsUriToFileMapper(...)");
+        this.sdf = new SimpleDateFormat(format);
+        this.rickrollFilename = ticketInvalidErrorFile;
+        getLogger().info("Config value sdf: '" + sdf.toString() + "'");
+        getLogger().info("Config value rickrollFilename: '" + rickrollFilename
+                         + "'");
+
+        this.storageDir = storageDir;
+
+        this.ticketChecker = ticketChecker;
+
+        getLogger().info("Creating mapper...");
+        getLogger().info("Creating mapper: StorageDir=" + storageDir);
+	}
+
+	/**
      * Get the file that should be streamed. Extract its filename from query
      * string, and check whether player is authorized to play it.
      *
@@ -89,50 +109,39 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             if (client == null) {
                 getLogger().info("No client, returning ", stream);
                 return null;
-                //return backupMapper.streamToFileForRead(stream);
-            }/*
-            getLogger().info(
-                    "onResolveFile (pageurl)     : " + client.getPageUrl());
-            getLogger().info(
-                    "onResolveFile (querystring)  : " + client.getQueryStr());
-            getLogger().info("onResolveFile (uri)     : " + client.getUri());
-            getLogger().info(
-                    "onResolveFile (referrer)     : " + client.getReferrer());
-*/
+            }
             String queryString;
-            queryString = URLDecoder.decode(
-                    client.getQueryStr(), "UTF-8");
-            getLogger().info("queryString: '" + queryString + "'");
-
+            queryString = URLDecoder.decode(client.getQueryStr(), "UTF-8");
             String shardpid = Utils.extractShardID(queryString);
-            getLogger().info("Shardpid is "+shardpid);
             String shardurl = Utils.extractShardURL(queryString);
-            getLogger().info("Shardurl is "+shardurl);
             String ticket = Utils.extractTicket(queryString);
+            getLogger().info("queryString: '" + queryString + "'");
+            getLogger().info("Shardpid is "+shardpid);
+            getLogger().info("Shardurl is "+shardurl);
             getLogger().info("Ticket is "+ticket);
-            if (!ticketChecker.isTicketValid(ticket,shardurl,client.getIp())){
-                return new File(rickrollFilename);
+            if (ticketChecker.isTicketValid(ticket,shardurl,client.getIp())) {
+            	// Test purpose start
+            	getLogger().info("StorageDir: " + stream.getClient().getAppInstance().getStreamStorageDir());
+            	getLogger().info("Stream name: " + stream.getName());
+            	// Test purpose start
+                String filetype = stream.getExt();
+                if (filetype.isEmpty()){
+                    filetype = "flv";
+                }
+                String filename = Utils.extractShardID(queryString) + "." + filetype;
+                fileToStream = new File(storageDir + "/" + filename);
+                getLogger().info("filetype: '" + filetype + "'");
+                getLogger().info("filename: '" + filename + "'");
+                getLogger().info("file to stream: '" + fileToStream.getAbsolutePath() + "'");
+                getLogger().info("Got fileToStream");
+            } else {
+            	fileToStream = new File(rickrollFilename);
             }
-
-
-            String filetype = stream.getExt();
-            if (filetype.isEmpty()){
-                filetype = "flv";
-            }
-            getLogger().info("filetype: '" + filetype + "'");
-
-            String filename = shardpid + "." + filetype;
-            getLogger().info("filename: '" + filename + "'");
-
-            fileToStream = new File(storageDir + "/" + filename);
-            getLogger().info("Got fileToStream");
-
         } catch (Exception e) {
             // TODO better log level
             getLogger().error("Unexpected error "+e.toString()+" occurred '"+e.getMessage()+"'");
             fileToStream = new File(rickrollFilename);
         }
-
         return fileToStream;
     }
 

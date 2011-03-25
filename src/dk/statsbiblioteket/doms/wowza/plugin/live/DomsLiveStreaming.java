@@ -100,6 +100,8 @@ import java.io.File;
  */
 public class DomsLiveStreaming extends ModuleBase {
 
+	private static String pluginName = "DOMS Live Wowza plugin";
+	private static String pluginVersion = "1.0.1 - Logging version number"; 
 
     public DomsLiveStreaming() {
         super();
@@ -119,6 +121,8 @@ public class DomsLiveStreaming extends ModuleBase {
         String fullname = appInstance.getApplication().getName() + "/"
                           + appInstance.getName();
         getLogger().info("***Entered onAppStart: " + fullname);
+		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
+		getLogger().info("onAppStart: VHost home path: " + appInstance.getVHost().getHomePath());
 
 
         IMediaStreamFileMapper defaultFileMapper

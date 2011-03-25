@@ -32,7 +32,7 @@ import java.lang.String;
  * under the License.
  */
 
-public class TicketChecker {
+public class TicketChecker implements TicketCheckerInterface {
     private WebResource restApi;
     protected java.lang.String location;
 
@@ -45,22 +45,18 @@ public class TicketChecker {
         restApi = client.resource(ticketCheckerLocation);
     }
 
-    /**
-     * TODO javadoc
-     *
-     * @param ticket
-     * @param shardUrl
-     * @param ipOfPlayer
-     * @return
-     */
-    public boolean isTicketValid(String ticket, String shardUrl,
+    /* (non-Javadoc)
+	 * @see dk.statsbiblioteket.doms.wowza.plugin.TicketCheckerInterface#isTicketValid(java.lang.String, java.lang.String, java.lang.String)
+	 */
+    @Override
+	public boolean isTicketValid(String ticket, String shardUrl,
                                  String ipOfPlayer) {
         try {                
             Ticket ticketXml = restApi
                     .path("/resolveTicket")
                     .queryParam("ID", ticket)
                     .get(Ticket.class);
-            String shardUrlFromTicket = ticketXml.getUrl();
+            String shardUrlFromTicket = ticketXml.getResource();
             String ipOfPlayerFromTicket = ticketXml.getUsername();
 
             if (shardUrl.equals(shardUrlFromTicket)

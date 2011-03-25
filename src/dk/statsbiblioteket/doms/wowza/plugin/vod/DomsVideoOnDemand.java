@@ -23,6 +23,9 @@ import java.io.IOException;
  */
 public class DomsVideoOnDemand extends ModuleBase {
 
+	private static String pluginName = "DOMS Wowza plugin";
+	private static String pluginVersion = "1.0.1 - Adding version information on startup."; 
+
     public DomsVideoOnDemand() {
         super();
     }
@@ -40,6 +43,8 @@ public class DomsVideoOnDemand extends ModuleBase {
         String fullname = appInstance.getApplication().getName() + "/"
                           + appInstance.getName();
         getLogger().info("***Entered onAppStart: " + fullname);
+		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
+		getLogger().info("onAppStart: VHost home path: " + appInstance.getVHost().getHomePath());
 
         String vhostDir = appInstance.getVHost().getHomePath();
 //        appInstance.addMediaStreamListener(new IMediaStreamNotify(){
