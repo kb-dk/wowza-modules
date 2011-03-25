@@ -124,7 +124,7 @@
         <!-- Package configuration files -->
         <mkdir dir="${conf.package.build.dir}"/>
         <copy todir="${conf.package.build.dir}">
-            <fileset dir="${conf.src.dir}"/>
+            <fileset dir="${conf.src.dir}/wowza_vhost_kultur/conf"/>
         </copy>
         <!-- Create applications folder -->
         <mkdir dir="${applications.package.build.dir}/kultur"/>

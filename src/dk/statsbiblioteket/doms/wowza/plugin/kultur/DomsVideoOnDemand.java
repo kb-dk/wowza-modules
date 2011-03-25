@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.vod;
+package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.amf.AMFPacket;
