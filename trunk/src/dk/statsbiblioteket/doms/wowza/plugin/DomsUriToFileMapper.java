@@ -3,7 +3,6 @@
  */
 package dk.statsbiblioteket.doms.wowza.plugin;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
