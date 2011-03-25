@@ -2,6 +2,7 @@ package dk.statsbiblioteket.doms.wowza.plugin;
 
 import javax.xml.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
 
 /* $Id$
  * $Revision$
@@ -32,42 +33,85 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ticket", propOrder = {
         "ID",
-        "url",
-        "username"
+        "resource",
+        "username",
+        "property"
 })
 @XmlRootElement
 public class Ticket {
     private String ID;
 
-    private String url;
+    private String resource;
 
     private String username;
-
-    @XmlTransient
-    private long creationTime = new Date().getTime();
+    
+    private List<TicketProperty> property;
 
     public Ticket() {
     }
 
-    public Ticket(String ID, String url, String username) {
+    public Ticket(String ID, String resource, String username) {
         this.ID = ID;
-        this.url = url;
+        this.resource = resource;
         this.username = username;
     }
 
-    public String getUrl() {
-        return url;
+    public List<TicketProperty> getProperty() {
+		return property;
+	}
+
+	public String getResource() {
+        return resource;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public long getCreationTime() {
-        return creationTime;
-    }
-
     public String getID() {
         return ID;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ID == null) ? 0 : ID.hashCode());
+		result = prime * result + ((resource == null) ? 0 : resource.hashCode());
+		result = prime * result
+				+ ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ticket other = (Ticket) obj;
+		if (ID == null) {
+			if (other.ID != null)
+				return false;
+		} else if (!ID.equals(other.ID))
+			return false;
+		if (resource == null) {
+			if (other.resource != null)
+				return false;
+		} else if (!resource.equals(other.resource))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Ticket [ID=" + ID + ", resource=" + resource + ", username=" + username + "]";
+	}
 }

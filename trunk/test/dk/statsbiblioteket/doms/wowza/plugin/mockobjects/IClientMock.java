@@ -26,14 +26,16 @@ import com.wowza.wms.vhost.IVHost;
 
 public class IClientMock implements IClient {
 
+	private IApplicationInstance iAppInstance;
 	private Logger logger;
 	private String queryString;
 	private boolean shutdownClient;
 	private boolean hasSetShutdownClientBeenCalled;
 
 	
-	public IClientMock(Logger logger, String queryString) {
+	public IClientMock(IApplicationInstance iAppInstance, Logger logger, String queryString) {
 		super();
+		this.iAppInstance = iAppInstance;
 		this.logger = logger;
 		this.queryString = queryString;
 		this.shutdownClient = false;
@@ -116,8 +118,7 @@ public class IClientMock implements IClient {
 
 	@Override
 	public IApplicationInstance getAppInstance() {
-		// TODO Auto-generated method stub
-		return null;
+		return iAppInstance;
 	}
 
 	@Override
@@ -717,6 +718,18 @@ public class IClientMock implements IClient {
 	public void touch() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean isValidateFMLEConnections() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setValidateFMLEConnections(boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -127,8 +127,9 @@
             <fileset dir="${conf.src.dir}"/>
         </copy>
         <!-- Create applications folder -->
-        <mkdir dir="${applications.package.build.dir}/doms"/>
-        <mkdir dir="${applications.package.build.dir}/domslive"/>
+        <mkdir dir="${applications.package.build.dir}/kultur"/>
+        <mkdir dir="${applications.package.build.dir}/kultur_live"/>
+        <mkdir dir="${applications.package.build.dir}/kultur_preview"/>
 
         <!--Package data-->
         <mkdir  dir="${data.package.build.dir}"/>
@@ -140,7 +141,9 @@
         <zip destfile="${core.build.dir}/${package.filename}"
              basedir="${package.build.dir}"/>
         <!-- Copy deploy script next to zip-pakckage -->
-        <copy file="${scripts.package.build.dir}/deploy-on-iapetus-from-local-machine.sh"
+        <copy file="${scripts.package.build.dir}/deploy-on-developer-machine.sh"
               todir="${core.build.dir}"/>
+    	<chmod dir="${core.build.dir}" perm="ugo+rx" 
+    	       includes="deploy-on-*.sh"/>
     </target>
 </project>

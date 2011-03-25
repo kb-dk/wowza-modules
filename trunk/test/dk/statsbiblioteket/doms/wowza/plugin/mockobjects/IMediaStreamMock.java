@@ -32,6 +32,8 @@ public class IMediaStreamMock implements IMediaStream {
 	private String name;
 	private IClient iClient;
 	
+	private String ext = "flv";
+	
 	public IMediaStreamMock(Logger logger, String name, IClient iClient) {
 		super();
 		this.logger = logger;
@@ -209,8 +211,7 @@ public class IMediaStreamMock implements IMediaStream {
 
 	@Override
 	public String getExt() {
-		// TODO Auto-generated method stub
-		return null;
+		return ext;
 	}
 
 	@Override
@@ -1199,6 +1200,30 @@ public class IMediaStreamMock implements IMediaStream {
 	public void updateLoggingValues() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean isMediaCasterPlay() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isMergeOnMetadata() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setMediaCasterPlay(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMergeOnMetadata(boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

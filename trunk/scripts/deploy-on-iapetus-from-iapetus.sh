@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Expect the deploy package to be in the ~/temp/wowza-plugin folder of the unpacked digitv-package.
-# The script is supposed to run on the server where Wowza resides as the larm-user.
+# Expect the deploy package to be in the ~/temp/wowza-plugin folder.
+# The script is supposed to run on the server where Wowza resides as the wowza-user.
 
 PACKAGE_NAME=doms-wowza-install-package.zip
 
