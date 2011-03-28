@@ -23,7 +23,8 @@ echo - Copy deploy-setup virtual host location
 cp -r ~/tmp/wowza-plugin_deploy-setup ~/services/wowza_vhost_kultur
 
 echo - Create content folder with content file
-ln -s ~/services/wowza_vhost_kultur/data ~/services/wowza_vhost_kultur/streamingContent 
+ln -s ~/Downloads ~/services/wowza_vhost_kultur/streamingContent
+#ln -s ~/services/wowza_vhost_kultur/data ~/services/wowza_vhost_kultur/streamingContent 
 
 echo Finished deploying Wowza plugin on server
 echo

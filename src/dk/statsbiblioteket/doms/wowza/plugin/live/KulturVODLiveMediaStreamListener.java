@@ -32,22 +32,15 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
     Random random = new Random();
     Map<String, Liver> runningstuff = new HashMap<String, Liver>();
     private IApplicationInstance appInstance;
-    private IMediaStreamFileMapper domsUriToFileMapper;
+    private IMediaStreamFileMapper streamFileMapper;
     private ConfigReader configReader;
 
-
-
-    public KulturVODLiveMediaStreamListener(IApplicationInstance appInstance) {
-        this.appInstance = appInstance;
-
-    }
-
     public KulturVODLiveMediaStreamListener(IApplicationInstance appInstance,
-                                   IMediaStreamFileMapper domsUriToFileMapper,
+                                   IMediaStreamFileMapper streamFileMapper,
                                    ConfigReader configReader) {
 
         this.appInstance = appInstance;
-        this.domsUriToFileMapper = domsUriToFileMapper;
+        this.streamFileMapper = streamFileMapper;
         this.configReader = configReader;
     }
 
@@ -58,7 +51,7 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
 
         try {
             //Check the ticket and decode the file
-            File datafile = domsUriToFileMapper.streamToFileForRead(iMediaStream);
+            File datafile = streamFileMapper.streamToFileForRead(iMediaStream);
             if (datafile == null){//not one of ours
                 getLogger().info("This mediaStream is not one of ours, returning",iMediaStream);
                 return;

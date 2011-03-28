@@ -103,10 +103,11 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
     @Override
     public File streamToFileForRead(IMediaStream stream) {
         getLogger().info("***Entered streamToFileForRead(IMediaStream stream)");
-        File fileToStream;
+        File fileToStream = null;
 
         try {
-            IClient client = stream.getClient();
+        	/*
+        	IClient client = stream.getClient();
             if (client == null) {
                 getLogger().info("No client, returning ", stream);
                 return null;
@@ -142,6 +143,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             getLogger().error("Query string has unexptected format. Parsing stopped with message: "+e.toString());
             e.printStackTrace();
             fileToStream = new File(rickrollFilename);
+            */
         } catch (Exception e) {
             // TODO better log level
             getLogger().error("Unexpected error "+e.toString()+" occurred.");

@@ -14,18 +14,9 @@ public class Utils {
 
     // Create a pattern to match a correct query string
     private static Pattern queryPattern = Pattern.compile(
-            "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*))"
-            + "&ticket=([^&]*)");
+            "ticket=([^&]*)");
 
     public static String extractTicket(String queryString) throws IllegallyFormattedQueryStringException {
-        return extract(queryString,3);
-    }
-
-    public static String extractShardID(String queryString) throws IllegallyFormattedQueryStringException {
-        return extract(queryString,2);
-    }
-
-    public static String extractShardURL(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString,1);
     }
 
