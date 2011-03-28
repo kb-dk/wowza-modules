@@ -5,20 +5,26 @@ import java.io.File;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 
+import dk.statsbiblioteket.doms.wowza.plugin.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.TicketCheckerInterface;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface;
 
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
-	private TicketCheckerInterface ticketChecker;  
+	private TicketCheckerInterface ticketChecker;
+	private TicketToolInterface ticketTool;
 	
-	public TicketToFileMapper(TicketCheckerInterface ticketChecker) {
+	public TicketToFileMapper(TicketCheckerInterface ticketChecker, TicketToolInterface ticketTool) {
 		super();
 		this.ticketChecker = ticketChecker;
+		this.ticketTool = ticketTool;
 	}
 
 	@Override
 	public File streamToFileForRead(IMediaStream stream) {
-		
+		String queryString = stream.getQueryStr();
+		String ticketID = null;
+		Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
 		return null;
 	}
 

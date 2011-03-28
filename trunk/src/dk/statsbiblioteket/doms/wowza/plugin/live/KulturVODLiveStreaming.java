@@ -98,12 +98,12 @@ import java.io.File;
  *
  * @author heb + jrg
  */
-public class DomsLiveStreaming extends ModuleBase {
+public class KulturVODLiveStreaming extends ModuleBase {
 
 	private static String pluginName = "DOMS Live Wowza plugin";
 	private static String pluginVersion = "1.0.1 - Logging version number"; 
 
-    public DomsLiveStreaming() {
+    public KulturVODLiveStreaming() {
         super();
     }
 
@@ -136,7 +136,7 @@ public class DomsLiveStreaming extends ModuleBase {
 
 
         appInstance.addMediaStreamListener(
-                new DomsMediaStreamListener(
+                new KulturVODLiveMediaStreamListener(
                         appInstance,
                         new DomsUriToFileMapper(
                                 appInstance.decodeStorageDir(
@@ -168,6 +168,7 @@ public class DomsLiveStreaming extends ModuleBase {
 
     /**
      * Called when a new video stream connection is started.
+     * The method accepts a connection.
      *
      * @param client
      * @param function
@@ -188,12 +189,8 @@ public class DomsLiveStreaming extends ModuleBase {
                          + function.getMessage().toString());
         //client.rejectConnection("My Error 1", "My Error 3");
         getLogger().debug("Connect params "+params.toString());
-
+        // Auto-accept is false in Application.xml. Therefore it is 
+        // necessary to accept the connection explicitly here.
+        client.acceptConnection();
     }
-
-    protected static WMSLogger getLogger()
-    {
-        return WMSLoggerFactory.getLogger(DomsLiveStreaming.class);
-    }
-
 }

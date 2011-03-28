@@ -9,6 +9,7 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
 import dk.statsbiblioteket.util.Bytes;
@@ -25,7 +26,7 @@ import java.util.*;
  * Time: 12:00:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DomsMediaStreamListener implements IMediaStreamNotify{
+public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
 
 
     Random random = new Random();
@@ -36,12 +37,12 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
 
 
 
-    public DomsMediaStreamListener(IApplicationInstance appInstance) {
+    public KulturVODLiveMediaStreamListener(IApplicationInstance appInstance) {
         this.appInstance = appInstance;
 
     }
 
-    public DomsMediaStreamListener(IApplicationInstance appInstance,
+    public KulturVODLiveMediaStreamListener(IApplicationInstance appInstance,
                                    IMediaStreamFileMapper domsUriToFileMapper,
                                    ConfigReader configReader) {
 
@@ -76,7 +77,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
 */
 
             //Add the stream listener, that will plug the next security hole
-            iMediaStream.addClientListener(new DomsMediaStreamActionListener());
+            iMediaStream.addClientListener(new KulturVODLiveMediaStreamActionListener());
 
 
 
@@ -152,8 +153,11 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
             return new File(appInstance.getStreamStorageDir(),ticketString);
 
         } catch (UnsupportedEncodingException e) {
-            throw new Error("Wowza does not knwo UTF-8",e);
-        }
+            throw new RuntimeException("Wowza does not know UTF-8",e);
+        } catch (IllegallyFormattedQueryStringException e) {
+            throw new RuntimeException("Unexpected query string. " +
+            		"Parsing stopped with exception: " + e.getMessage(), e);
+		}
     }
 
     @Override
@@ -247,7 +251,7 @@ public class DomsMediaStreamListener implements IMediaStreamNotify{
 
     protected static WMSLogger getLogger()
     {
-        return WMSLoggerFactory.getLogger(DomsMediaStreamListener.class);
+        return WMSLoggerFactory.getLogger(KulturVODLiveMediaStreamListener.class);
     }
 
 

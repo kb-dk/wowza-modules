@@ -6,7 +6,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import dk.statsbiblioteket.doms.wowza.plugin.Ticket;
 
-public class TicketTool {
+public class TicketTool implements TicketToolInterface {
 
     private WebResource restApi;
 
@@ -16,6 +16,10 @@ public class TicketTool {
         restApi = client.resource(serviceURL);
 	}
 
+	/* (non-Javadoc)
+	 * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#issueTicket(java.lang.String, java.lang.String)
+	 */
+	@Override
 	public Ticket issueTicket(String username, String resource) {
         try {                
             Ticket ticketXml = restApi
@@ -29,11 +33,15 @@ public class TicketTool {
         }
 	}
 	
-	public Ticket resolveTicket(String ticket) {
+	/* (non-Javadoc)
+	 * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#resolveTicket(java.lang.String)
+	 */
+	@Override
+	public Ticket resolveTicket(String ticketID) {
 		try {                
 			Ticket ticketXml = restApi
 			.path("/resolveTicket")
-			.queryParam("ID", ticket)
+			.queryParam("ID", ticketID)
 			.get(Ticket.class);
 			return ticketXml;
 
@@ -48,22 +56,34 @@ public class TicketTool {
 		String resource = args[2];
 		String streamingURL = args[3];
 		String filename = args[4];
+		String fileExtension = filename.substring(filename.length()-3);
+		String filenameWithoutExtension = filename.substring(0, filename.length()-4);
 		System.out.println("---===<<< Input parameters: >>>===---");
 		System.out.println("Ticket server    : " + serviceURL);
 		System.out.println("Username         : " + username);
 		System.out.println("URL              : " + resource);
 		System.out.println("Streaming server : " + streamingURL);
 		System.out.println("Filename         : " + filename);
+		System.out.println("Filename (no ext): " + filenameWithoutExtension);
+		System.out.println("File extension   : " + fileExtension);
 		System.out.println("");
 		System.out.print("Retrieving ticket...");
-		TicketTool ticketTool = new TicketTool(serviceURL);
+		TicketToolInterface ticketTool = new TicketTool(serviceURL);
 		Ticket ticket = ticketTool.issueTicket(username, resource);
-		String fileExtension = filename.substring(filename.length()-3);
 		System.out.println("[Success]");
+		System.out.println(ticket.toString());
+		System.out.println("");
+		System.out.println("");
 		System.out.println("Input parameters for Wowza's test client <Wowza-install-dir>/examples/SimpleVideoStreaming/client/simplevideostreaming.html");
-		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("Server : " + streamingURL + "/?shard=" + ticket.getResource() + "&ticket=" + ticket.getID());
+		System.out.println("");
+		System.out.println("-[kultur]------------------------------------------------------------------------------------------------------------------");
+		System.out.println("Server : " + streamingURL + "/kultur?shard=" + ticket.getResource() + "&ticket=" + ticket.getID());
 		System.out.println("Stream : " + fileExtension + ":" + filename);
+		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("");
+		System.out.println("-[kultur_live]-------------------------------------------------------------------------------------------------------------");
+		System.out.println("Server : " + streamingURL + "/kultur_live?shard=" + ticket.getResource() + "&ticket=" + ticket.getID());
+		System.out.println("Stream : " + "stream" + ":" + filenameWithoutExtension + ".stream");
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		
 	}

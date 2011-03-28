@@ -8,6 +8,8 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
+
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
 
 import java.io.File;
@@ -136,11 +138,17 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
             } else {
             	fileToStream = new File(rickrollFilename);
             }
+        } catch (IllegallyFormattedQueryStringException e) {
+            getLogger().error("Query string has unexptected format. Parsing stopped with message: "+e.toString());
+            e.printStackTrace();
+            fileToStream = new File(rickrollFilename);
         } catch (Exception e) {
             // TODO better log level
-            getLogger().error("Unexpected error "+e.toString()+" occurred '"+e.getMessage()+"'");
+            getLogger().error("Unexpected error "+e.toString()+" occurred.");
+            e.printStackTrace();
             fileToStream = new File(rickrollFilename);
-        }
+		}
+        getLogger().info("Playing file: " + fileToStream.getAbsolutePath());
         return fileToStream;
     }
 
