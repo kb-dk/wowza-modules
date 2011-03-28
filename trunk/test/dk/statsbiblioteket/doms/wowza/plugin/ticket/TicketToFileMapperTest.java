@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.kultur;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 import java.io.File;
 
@@ -14,12 +14,13 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 
+import dk.statsbiblioteket.doms.wowza.plugin.kultur.TicketToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 
 public class TicketToFileMapperTest extends TestCase {
 

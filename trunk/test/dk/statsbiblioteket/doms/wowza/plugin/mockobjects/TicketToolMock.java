@@ -3,7 +3,7 @@ package dk.statsbiblioteket.doms.wowza.plugin.mockobjects;
 import java.util.HashMap;
 
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 
 public class TicketToolMock implements TicketToolInterface {
 

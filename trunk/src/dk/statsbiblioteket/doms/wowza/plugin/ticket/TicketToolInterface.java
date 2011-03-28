@@ -1,6 +1,5 @@
-package dk.statsbiblioteket.doms.wowza.plugin.utilities;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 
 public interface TicketToolInterface {
 

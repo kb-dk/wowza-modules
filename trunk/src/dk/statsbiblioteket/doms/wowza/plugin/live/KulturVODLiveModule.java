@@ -10,8 +10,8 @@ import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.DomsUriToFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.kultur.TicketToFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketTool;
 
 import java.io.IOException;
 import java.io.File;
