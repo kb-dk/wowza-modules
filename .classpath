@@ -6,8 +6,6 @@
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/bcprov-ext-jdk15-145.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/jid3lib-0.5.4.jar"/>
-	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/LARM-CHAOS-Wowza-plugin.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-ant.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-bootstrap.jar"/>
@@ -22,9 +20,6 @@
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-mediareader-mp3.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-mediawriter-flv.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-mediawriter-h264.jar"/>
-	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-performance.jar"/>
-	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-plugin-bwcheck.jar"/>
-	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-plugin-textchat.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-server.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-stream-file.jar"/>
 	<classpathentry kind="lib" path="/Library/WowzaMediaServer-2.2.3/lib/wms-stream-live.jar"/>
@@ -38,5 +33,6 @@
 	<classpathentry kind="lib" path="/Users/henningbottger/projects/doms/dev/doms-wowza-plugin/lib/jersey-1.3/jars/jersey-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/Users/henningbottger/projects/doms/dev/doms-wowza-plugin/lib/jersey-1.3/jars/jersey-server-1.3.jar"/>
 	<classpathentry kind="lib" path="/Users/henningbottger/projects/doms/dev/doms-wowza-plugin/lib/jersey-1.3/jars/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="build-libs/junit-4.8.1.jar"/>
 	<classpathentry kind="output" path="target-eclipse"/>
 </classpath>

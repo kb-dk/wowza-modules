@@ -17,19 +17,19 @@ public class Utils {
             "shard=(http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*))"
             + "&ticket=([^&]*)");
 
-    public static String extractTicket(String queryString){
+    public static String extractTicket(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString,3);
     }
 
-    public static String extractShardID(String queryString){
+    public static String extractShardID(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString,2);
     }
 
-    public static String extractShardURL(String queryString){
+    public static String extractShardURL(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString,1);
     }
 
-    private static String extract(String queryString, int group){
+    private static String extract(String queryString, int group) throws IllegallyFormattedQueryStringException {
         // Match
         Matcher matcher = queryPattern.matcher(queryString);
         boolean matchFound = matcher.find();
@@ -37,8 +37,8 @@ public class Utils {
         if (matchFound) {
             return matcher.group(group);
         } else {
-            throw new IllegalArgumentException("Query string '"+queryString+"'is not of the expected"
-                                               + " format.");
+            throw new IllegallyFormattedQueryStringException(
+            		"Query string '"+queryString+"' is not of the expected" + " format.");
         }
 
     }

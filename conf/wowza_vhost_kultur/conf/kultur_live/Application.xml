@@ -9,7 +9,7 @@
           <MaximumStorageDirDepth>25</MaximumStorageDirDepth>
           -->
         <Connections>
-            <AutoAccept>true</AutoAccept>
+            <AutoAccept>false</AutoAccept>
             <AllowDomains></AllowDomains>
         </Connections>
         <!--

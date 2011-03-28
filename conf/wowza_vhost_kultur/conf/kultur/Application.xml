@@ -9,7 +9,7 @@
 		<MaximumStorageDirDepth>25</MaximumStorageDirDepth>
 		-->
 		<Connections>
-			<AutoAccept>true</AutoAccept>
+			<AutoAccept>false</AutoAccept>
 			<AllowDomains></AllowDomains>
 		</Connections>
 		<!--
@@ -121,8 +121,8 @@
 			</Module> 
 			<Module>
 				<Name>doms-wowza-plugin</Name>
-				<Description>Statsbiblioteket DOMS-plugin</Description>
-				<Class>dk.statsbiblioteket.doms.wowza.plugin.kultur.DomsVideoOnDemand</Class>
+				<Description>Statsbiblioteket Kultur-plugin</Description>
+				<Class>dk.statsbiblioteket.doms.wowza.plugin.kultur.KulturVODModule</Class>
 			</Module>
 		</Modules>
 		<!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->

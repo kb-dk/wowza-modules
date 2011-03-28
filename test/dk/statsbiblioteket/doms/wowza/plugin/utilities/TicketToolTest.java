@@ -35,7 +35,7 @@ public class TicketToolTest  extends TestCase {
 	@Test
 	public void testGenerateTicket() {
 		// Setup environment
-		TicketTool ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
+		TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
 		String username = "aUsername";
 		String resource = "anURL";
 		Ticket ticket = ticketTool.issueTicket(username, resource);
@@ -50,7 +50,7 @@ public class TicketToolTest  extends TestCase {
 	@Test
 	public void testValidateTicket() {
 		// Setup environment
-		TicketTool ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
+		TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
 		String username = "aUsername";
 		String url = "anURL";
 		Ticket issuedTicket = ticketTool.issueTicket(username, url);
