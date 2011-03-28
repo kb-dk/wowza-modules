@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.doms.wowza.plugin.mockobjects;
 
-import dk.statsbiblioteket.doms.wowza.plugin.TicketCheckerInterface;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketCheckerInterface;
 
 public class TicketCheckerMock implements TicketCheckerInterface {
 

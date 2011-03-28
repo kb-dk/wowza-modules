@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 public interface TicketCheckerInterface {
 

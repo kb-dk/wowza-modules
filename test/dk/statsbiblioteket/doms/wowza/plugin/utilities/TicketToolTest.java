@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.wowza.wms.logging.WMSLoggerFactory;
 
-import dk.statsbiblioteket.doms.wowza.plugin.Ticket;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 
 public class TicketToolTest  extends TestCase {
 
