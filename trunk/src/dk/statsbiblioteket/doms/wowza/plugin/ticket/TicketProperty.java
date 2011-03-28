@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
