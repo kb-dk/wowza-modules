@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.ticket;
+package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
 import java.io.File;
 

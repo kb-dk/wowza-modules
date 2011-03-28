@@ -10,7 +10,7 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
@@ -56,7 +56,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	}
 
 	private Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
-		String ticketID = Utils.extractTicket(queryString);
+		String ticketID = QueryUtil.extractTicket(queryString);
 		Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
 		logger.info("queryString     : " + queryString);
 		logger.info("ticketID        : " + ticketID);

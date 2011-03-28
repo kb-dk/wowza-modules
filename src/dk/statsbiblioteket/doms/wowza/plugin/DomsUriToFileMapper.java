@@ -12,7 +12,7 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketChecker;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketCheckerInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 
 import java.io.File;
 import java.net.URLDecoder;

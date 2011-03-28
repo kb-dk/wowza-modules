@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.wowza.plugin.utilities;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 import java.io.File;
 
