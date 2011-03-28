@@ -1,10 +1,9 @@
-package dk.statsbiblioteket.doms.wowza.plugin.utilities;
+package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 
 public class TicketTool implements TicketToolInterface {
 
