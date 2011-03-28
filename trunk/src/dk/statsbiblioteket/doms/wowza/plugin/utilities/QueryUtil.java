@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * Time: 1:50:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Utils {
+public class QueryUtil {
 
     // Create a pattern to match a correct query string
     private static Pattern queryPattern = Pattern.compile(

@@ -9,7 +9,7 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 import dk.statsbiblioteket.util.Bytes;
 import dk.statsbiblioteket.util.Checksums;
 
@@ -52,7 +52,7 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
             String querystring = stream.getClient().getQueryStr();
             String expectedStreamName;
 			try {
-				expectedStreamName = Bytes.toHex(Checksums.md5(Utils.extractTicket(querystring)))+".stream";
+				expectedStreamName = Bytes.toHex(Checksums.md5(QueryUtil.extractTicket(querystring)))+".stream";
 			} catch (IllegallyFormattedQueryStringException e) {
 				logger.warn("Unable to parse query string. Stopped with message: " + e.getMessage());
 				expectedStreamName = null;

@@ -11,7 +11,7 @@ import com.wowza.wms.stream.IMediaStreamNotify;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.Utils;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 import dk.statsbiblioteket.util.Bytes;
 import dk.statsbiblioteket.util.Checksums;
 
@@ -142,7 +142,7 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
                     client.getQueryStr(), "UTF-8");
             getLogger().info("queryString: '" + queryString + "'");
 //            String ticketString = URLEncoder.encode(Utils.extractTicket(queryString),"UTF-8");
-            String ticketString = Bytes.toHex(Checksums.md5(Utils.extractTicket(queryString)))+".stream";
+            String ticketString = Bytes.toHex(Checksums.md5(QueryUtil.extractTicket(queryString)))+".stream";
             return new File(appInstance.getStreamStorageDir(),ticketString);
 
         } catch (UnsupportedEncodingException e) {
