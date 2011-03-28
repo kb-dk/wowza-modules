@@ -177,8 +177,7 @@ public class IClientMock implements IClient {
 
 	@Override
 	public String getIp() {
-		// TODO Auto-generated method stub
-		return null;
+		return "127.0.0.1";
 	}
 
 	@Override

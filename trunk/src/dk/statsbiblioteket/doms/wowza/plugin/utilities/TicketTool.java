@@ -77,12 +77,12 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("Input parameters for Wowza's test client <Wowza-install-dir>/examples/SimpleVideoStreaming/client/simplevideostreaming.html");
 		System.out.println("");
 		System.out.println("-[kultur]------------------------------------------------------------------------------------------------------------------");
-		System.out.println("Server : " + streamingURL + "/kultur?shard=" + ticket.getResource() + "&ticket=" + ticket.getID());
+		System.out.println("Server : " + streamingURL + "/kultur?ticket=" + ticket.getID());
 		System.out.println("Stream : " + fileExtension + ":" + filename);
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		System.out.println("");
 		System.out.println("-[kultur_live]-------------------------------------------------------------------------------------------------------------");
-		System.out.println("Server : " + streamingURL + "/kultur_live?shard=" + ticket.getResource() + "&ticket=" + ticket.getID());
+		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + ticket.getID());
 		System.out.println("Stream : " + "stream" + ":" + filenameWithoutExtension + ".stream");
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		
