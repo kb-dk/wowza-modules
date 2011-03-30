@@ -3,8 +3,8 @@
 WOWZA_LIB=../build-libs/wowza/jars/*
 
 #TICKET_SERVER=http://abr-laptop.sb:7880/authchecker-service/tickets
-TICKET_SERVER=http://alhena:7980/authchecker-service/tickets
-#TICKET_SERVER=http://alhena:7880/authchecker-service/tickets
+#TICKET_SERVER=http://alhena:7980/authchecker-service/tickets
+TICKET_SERVER=http://alhena:7880/authchecker-service/tickets
 
 #USERNAME=127.0.0.1
 #USERNAME=0:0:0:0:0:0:0:1%0

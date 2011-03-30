@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
@@ -26,7 +28,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 public class TicketToFileMapperTest extends TestCase {
 
 	private Logger logger;
-
+	private String broadcastExtractionServiceURL = "http://iapetus:9311/bes_DEVEL/rest/bes/"; // <---- See property files for recent server
 	
 	public TicketToFileMapperTest() {
 		super();
@@ -59,7 +61,8 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir);
+        WebResource besRestApi = Client.create().resource(broadcastExtractionServiceURL); // <---- See property files for recent server
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir, besRestApi);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
@@ -82,7 +85,8 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir);
+        WebResource besRestApi = Client.create().resource(broadcastExtractionServiceURL); // <---- See property files for recent server
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir, besRestApi);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
@@ -104,7 +108,8 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir);
+        WebResource besRestApi = Client.create().resource(broadcastExtractionServiceURL); // <---- See property files for recent server
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir, besRestApi);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
@@ -127,7 +132,8 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir);
+        WebResource besRestApi = Client.create().resource(broadcastExtractionServiceURL); // <---- See property files for recent server
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir, besRestApi);
 		// Test
 		File result = ticketToFileMapper.getFileToStream(stream, ticket);
 		// Validate
@@ -150,7 +156,8 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir);
+        WebResource besRestApi = Client.create().resource(broadcastExtractionServiceURL); // <---- See property files for recent server
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock, ticketInvalidErrorFile, storageDir, besRestApi);
 		// Test
 		String result = ticketToFileMapper.retrieveMediaFileRelativePath(stream, shardID);
 		// Validate

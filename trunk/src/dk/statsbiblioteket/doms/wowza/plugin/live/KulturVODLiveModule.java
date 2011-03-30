@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.doms.wowza.plugin.live;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
@@ -26,7 +28,7 @@ import java.io.File;
 public class KulturVODLiveModule extends ModuleBase {
 
 	private static String pluginName = "Kultur Live Wowza plugin";
-	private static String pluginVersion = "1.0.2 - Streaming file from ticket"; 
+	private static String pluginVersion = "1.0.4"; 
 
     public KulturVODLiveModule() {
         super();
@@ -57,7 +59,8 @@ public class KulturVODLiveModule extends ModuleBase {
         String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
         TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
         String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
-        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, mediaContentRootFolder); 
+        WebResource besRestApi = Client.create().resource(cr.get("broadcastExtractionServiceRestApi", "missing-bes-service-location-in-property-file"));
+        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, mediaContentRootFolder, besRestApi); 
         	
         appInstance.addMediaStreamListener(
                 new KulturVODLiveMediaStreamListener(

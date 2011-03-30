@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
@@ -27,8 +29,8 @@ import java.io.IOException;
  */
 public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-	private static String pluginName = "DOMS Wowza plugin";
-	private static String pluginVersion = "1.0.2 - Streaming file from ticket"; 
+	private static String pluginName = "Kultur Wowza plugin";
+	private static String pluginVersion = "1.0.4"; 
 
     public KulturVODModule() {
         super();
@@ -56,7 +58,8 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
         String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
         TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
         String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir());
+        WebResource besRestApi = Client.create().resource(cr.get("broadcastExtractionServiceRestApi", "missing-bes-service-location-in-property-file"));
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir(), besRestApi);
         // Set File mapper
         appInstance.setStreamFileMapper(ticketToFileMapper);
         getLogger().info("onAppStart: StreamFileMapper: \""
