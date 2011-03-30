@@ -18,12 +18,14 @@ import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
 	private WMSLogger logger;
+	private IMediaStreamFileMapper defaultMapper;
 	private TicketToolInterface ticketTool;
 	private String invalidTicketVideo;
 	private Object mediaContentRootFolder;
 	
-	public TicketToFileMapper(TicketToolInterface ticketTool, String invalidTicketVideo, String mediaContentRootFolder) {
+	public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool, String invalidTicketVideo, String mediaContentRootFolder) {
 		super();
+		this.defaultMapper = defaultMapper;
 		this.logger = WMSLoggerFactory.getLogger(this.getClass());
 		this.ticketTool = ticketTool;
 		this.invalidTicketVideo = invalidTicketVideo;
@@ -63,16 +65,16 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 			} else {
 				logger.info("Client not allowed to get content streamed");
 				streamingFile = getErrorMediaFile();
-				stream.setName(streamingFile.getName());
 			}
 		} catch (IllegallyFormattedQueryStringException e) {
-			logger.info("Exception received.");
+			logger.error("Exception received.");
 			streamingFile = getErrorMediaFile();
 			stream.setName(streamingFile.getName());
 			logger.warn("Illegally formatted query string [" + clientQuery + "]." +
 					" Playing file: " + streamingFile.getAbsolutePath());
 		}
 		logger.info("Resulting streaming file: " + streamingFile.getAbsolutePath());
+		logger.info("Resulting streaming file exist: " + streamingFile.exists());
 		return streamingFile;
 	}
 
@@ -81,21 +83,21 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	}
 
 
-	private boolean isClientAllowedStreamingContent(IMediaStream stream, Ticket streamingTicket) {
-		String ipOfClient = stream.getClient().getIp();
-		boolean isAllowed = (ipOfClient!=null) && (ipOfClient.equals(streamingTicket.getUsername()));
-		logger.debug("isClientAllowedStreamingContent - ipOfClient: " + ipOfClient);
-		logger.debug("isClientAllowedStreamingContent - streamingTicket.getUsername(): " + streamingTicket.getUsername());
-		logger.debug("isClientAllowedStreamingContent - isAllowed: " + isAllowed);
-		return isAllowed;
-	}
-
 	private Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
-		String ticketID = QueryUtil.extractTicket(queryString);
+		String ticketID = QueryUtil.extractTicketID(queryString);
 		Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
 		logger.info("queryString     : " + queryString);
 		logger.info("ticketID        : " + ticketID);
 		return streamingTicket;
+	}
+
+	private boolean isClientAllowedStreamingContent(IMediaStream stream, Ticket streamingTicket) {
+		String ipOfClient = stream.getClient().getIp();
+		boolean isAllowed = (ipOfClient!=null) && (ipOfClient.equals(streamingTicket.getUsername()));
+		logger.info("isClientAllowedStreamingContent - ipOfClient: " + ipOfClient);
+		logger.info("isClientAllowedStreamingContent - streamingTicket.getUsername(): " + streamingTicket.getUsername());
+		logger.info("isClientAllowedStreamingContent - isAllowed: " + isAllowed);
+		return isAllowed;
 	}
 
 	protected File getFileToStream(IMediaStream stream, Ticket streamingTicket) {
@@ -109,7 +111,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         }
         // Extract
         String shardID = matcher.group(1);
-        String filenameAndPath = retrieveMediaFileRelativePath(stream, shardID); 
+        String filenameAndPath = retrieveMediaFileRelativePath(stream, shardID);
 		File streamingFile = new File(mediaContentRootFolder + "/" + filenameAndPath);
 		logger.info("filenameAndPath : " + filenameAndPath);
 		logger.info("mediaContentRoot: " + mediaContentRootFolder);
@@ -132,13 +134,13 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	@Override
 	public File streamToFileForWrite(IMediaStream stream) {
 		logger.info("streamToFileForWrite(IMediaStream stream):" + stream);
-		return null;
+		return defaultMapper.streamToFileForRead(stream);
 	}
 
 	@Override
-	public File streamToFileForWrite(IMediaStream stream, String arg1, String arg2, String arg3) {
-		logger.info("streamToFileForWrite(IMediaStream stream, String arg1, String arg2, String arg3)" + stream);
-		return null;
+	public File streamToFileForWrite(IMediaStream stream, String name, String ext, String query) {
+		logger.info("streamToFileForWrite(IMediaStream stream, String name, String ext, String query)" + stream);
+		return defaultMapper.streamToFileForRead(stream, name, ext, query);
 	}
 
 }

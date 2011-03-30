@@ -123,7 +123,7 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify {
                     client.getQueryStr(), "UTF-8");
             getLogger().info("queryString: '" + queryString + "'");
 //            String ticketString = URLEncoder.encode(Utils.extractTicket(queryString),"UTF-8");
-            String ticketString = Bytes.toHex(Checksums.md5(QueryUtil.extractTicket(queryString)))+".stream";
+            String ticketString = Bytes.toHex(Checksums.md5(QueryUtil.extractTicketID(queryString)))+".stream";
             return new File(appInstance.getStreamStorageDir(),ticketString);
 
         } catch (UnsupportedEncodingException e) {

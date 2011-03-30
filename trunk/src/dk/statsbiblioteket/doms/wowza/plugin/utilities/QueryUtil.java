@@ -16,7 +16,7 @@ public class QueryUtil {
     private static Pattern queryPattern = Pattern.compile(
             "ticket=([^&]*)");
 
-    public static String extractTicket(String queryString) throws IllegallyFormattedQueryStringException {
+    public static String extractTicketID(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString,1);
     }
 
@@ -29,7 +29,7 @@ public class QueryUtil {
             return matcher.group(group);
         } else {
             throw new IllegallyFormattedQueryStringException(
-            		"Query string '"+queryString+"' is not of the expected" + " format.");
+            		"Query string '"+queryString+"' is not of the expected format.");
         }
 
     }

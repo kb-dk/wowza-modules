@@ -6,7 +6,7 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
-public class KulturVODStreamListener implements IMediaStreamActionNotify2 {
+public class KulturVODIMediaStreamActionNotify2 implements IMediaStreamActionNotify2 {
 
 	public void onPlay(IMediaStream stream, String streamName,
 			double playStart, double playLen, int playReset) {

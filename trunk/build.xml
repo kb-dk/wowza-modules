@@ -145,6 +145,8 @@
         <!-- Copy deploy script next to zip-pakckage -->
         <copy file="${scripts.package.build.dir}/deploy-on-developer-machine.sh"
               todir="${core.build.dir}"/>
+        <copy file="${scripts.package.build.dir}/deploy-on-VHost.sh"
+              todir="${core.build.dir}"/>
     	<chmod dir="${core.build.dir}" perm="ugo+rx" 
     	       includes="deploy-on-*.sh"/>
     </target>
