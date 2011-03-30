@@ -47,6 +47,7 @@ public class KulturVODLiveModule extends ModuleBase {
 		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
 		getLogger().info("onAppStart: VHost home path: " + vhostDir);
 		getLogger().info("onAppStart: VHost storaga dir: " + storageDir);
+		IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
         ConfigReader cr = new ConfigReader(
                 new File(appInstance.getVHost().getHomePath()
                          +"/conf/kultur_live/"
@@ -56,7 +57,7 @@ public class KulturVODLiveModule extends ModuleBase {
         String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
         TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
         String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
-        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(ticketTool, invalidTicketVideo, mediaContentRootFolder); 
+        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, mediaContentRootFolder); 
         	
         appInstance.addMediaStreamListener(
                 new KulturVODLiveMediaStreamListener(

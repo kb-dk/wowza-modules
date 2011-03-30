@@ -38,7 +38,7 @@ public class QueryUtilTest  extends TestCase {
 		String ticketIDOrig = "123456abcd";
 		String ticketParam = "ticket=" + ticketIDOrig;
 		String queryString =  ticketParam + "&" + param1 + "&" + param2 + "&" + param3;
-		String ticketIDExtract = QueryUtil.extractTicket(queryString); 
+		String ticketIDExtract = QueryUtil.extractTicketID(queryString); 
 		assertEquals(ticketIDOrig, ticketIDExtract);
 	}
 
@@ -48,7 +48,7 @@ public class QueryUtilTest  extends TestCase {
 		String ticketIDOrig = "123456abcd";
 		String ticketParam = "ticket=" + ticketIDOrig;
 		String queryString =  param1 + "&" + ticketParam + "&" + param2 + "&" + param3;
-		String ticketIDExtract = QueryUtil.extractTicket(queryString); 
+		String ticketIDExtract = QueryUtil.extractTicketID(queryString); 
 		assertEquals(ticketIDOrig, ticketIDExtract);
 	}
 
@@ -58,7 +58,7 @@ public class QueryUtilTest  extends TestCase {
 		String ticketIDOrig = "123456abcd";
 		String ticketParam = "ticket=" + ticketIDOrig;
 		String queryString =  param1 + "&" + param2 + "&" + param3 + "&" + ticketParam;
-		String ticketIDExtract = QueryUtil.extractTicket(queryString); 
+		String ticketIDExtract = QueryUtil.extractTicketID(queryString); 
 		assertEquals(ticketIDOrig, ticketIDExtract);
 	}
 
@@ -68,7 +68,7 @@ public class QueryUtilTest  extends TestCase {
 		String ticketIDOrig = "123456abcd";
 		String ticketParam = "ticket=" + ticketIDOrig;
 		String queryString =  ticketParam;
-		String ticketIDExtract = QueryUtil.extractTicket(queryString); 
+		String ticketIDExtract = QueryUtil.extractTicketID(queryString); 
 		assertEquals(ticketIDOrig, ticketIDExtract);
 	}
 
@@ -77,7 +77,7 @@ public class QueryUtilTest  extends TestCase {
 		// Setup environment
 		String queryString =  param1 + "&" + param2 + "&" + param3;
 		try {
-			QueryUtil.extractTicket(queryString);
+			QueryUtil.extractTicketID(queryString);
 			fail("This statement should not be reached!");
 		} catch (IllegallyFormattedQueryStringException e) {
 			// Expected behavior

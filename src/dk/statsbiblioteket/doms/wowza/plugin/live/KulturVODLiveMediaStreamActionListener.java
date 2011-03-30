@@ -52,7 +52,7 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
             String querystring = stream.getClient().getQueryStr();
             String expectedStreamName;
 			try {
-				expectedStreamName = Bytes.toHex(Checksums.md5(QueryUtil.extractTicket(querystring)))+".stream";
+				expectedStreamName = Bytes.toHex(Checksums.md5(QueryUtil.extractTicketID(querystring)))+".stream";
 			} catch (IllegallyFormattedQueryStringException e) {
 				logger.warn("Unable to parse query string. Stopped with message: " + e.getMessage());
 				expectedStreamName = null;
