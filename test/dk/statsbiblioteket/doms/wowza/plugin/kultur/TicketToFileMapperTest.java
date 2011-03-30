@@ -45,10 +45,11 @@ public class TicketToFileMapperTest extends TestCase {
 	@Test
 	public void testStdCase() {
 		// Setup environment
-		String mediaFile = "a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv";
+		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
-		Ticket ticket = ticketToolMock.issueTicket(username, mediaFile);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";
@@ -56,20 +57,21 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile);
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile, storageDir);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
-		assertEquals("Expected equal result", storageDir + "/" + mediaFile, 
+		assertEquals("Expected equal result", storageDir + "/a/0/6/3/" + shardID + ".flv", 
 				result.getAbsolutePath());
 	}
 	
 	public void testUserNotAllowedToPlayFile() {
 		// Setup environment
-		String mediaFile = "a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv";
+		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.2-Invalid-ip";
-		Ticket ticket = ticketToolMock.issueTicket(username, mediaFile);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";
@@ -77,7 +79,7 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile);
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile, storageDir);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
@@ -87,7 +89,8 @@ public class TicketToFileMapperTest extends TestCase {
 
 	public void testNonExistingTicket() {
 		// Setup environment
-		String mediaFile = "a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv";
+		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
 		String name = "name_of_stream";
@@ -97,11 +100,55 @@ public class TicketToFileMapperTest extends TestCase {
 		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
 		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
 		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
-		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile);
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile, storageDir);
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
 		assertEquals("Expected equal result", ticketInvalidErrorFile, 
 				result.getAbsolutePath());
+	}
+	
+	public void testGetFileToStreamSucces() {
+		// Setup
+		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
+		TicketToolInterface ticketToolMock = new TicketToolMock();
+		String username = "127.0.0.1";
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		String name = "name_of_stream";
+		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
+		String storageDir = "/VHost/storageDir";
+		IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
+		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile, storageDir);
+		// Test
+		File result = ticketToFileMapper.getFileToStream(stream, ticket);
+		// Validate
+		assertEquals("Expected equal result", storageDir + "/a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv", 
+				result.getAbsolutePath());
+	}
+	
+	public void testRetrieveMediaFileRelativePath() {
+		// Setup
+		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
+		TicketToolInterface ticketToolMock = new TicketToolMock();
+		String username = "127.0.0.1";
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		String name = "name_of_stream";
+		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
+		String storageDir = "/VHost/storageDir";
+		IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+		IClient iClient = new IClientMock(iAppInstance, logger, queryString);
+		IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+		String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
+		TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketToolMock, ticketInvalidErrorFile, storageDir);
+		// Test
+		String result = ticketToFileMapper.retrieveMediaFileRelativePath(stream, shardID);
+		// Validate
+		assertEquals("Expected equal result", "a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv", 
+				result);
 	}
 }

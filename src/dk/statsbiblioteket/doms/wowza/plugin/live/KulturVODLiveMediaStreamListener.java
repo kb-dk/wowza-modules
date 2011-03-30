@@ -26,7 +26,7 @@ import java.util.*;
  * Time: 12:00:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
+public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify {
 
 
     Random random = new Random();
@@ -47,39 +47,20 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify{
     @Override
     public void onMediaStreamCreate(IMediaStream iMediaStream) {
         getLogger().info("***Entered onMediaStreamCreate()");
-
-
         try {
             //Check the ticket and decode the file
             File datafile = streamFileMapper.streamToFileForRead(iMediaStream);
-            if (datafile == null){//not one of ours
-                getLogger().info("This mediaStream is not one of ours, returning",iMediaStream);
+            if (iMediaStream.getClient() == null){//not one of ours
+                getLogger().info("This mediaStream is not one of ours, returning", iMediaStream);
                 return;
             }
-
+            getLogger().debug("Attempting to live stream: " + datafile.getAbsolutePath());
             //The Datafile is now the correct file or the error file. Otherwise an exception would have been thrown
-
-
-/*
-            getLogger().info("onStreamCreate (name)     : " + iMediaStream.getName());
-            getLogger().info("onStreamCreate (ext)  : " + iMediaStream.getExt());
-            getLogger().info("onStreamCreate (cachename)     : " + iMediaStream.getCacheName());
-            getLogger().info("onStreamCreate (contextstr)     : " + iMediaStream.getContextStr());
-            getLogger().info("onStreamCreate (querystr)     : " + iMediaStream.getQueryStr());
-            getLogger().info("onStreamCreate (streamtype)     : " + iMediaStream.getStreamType());
-*/
-
             //Add the stream listener, that will plug the next security hole
             iMediaStream.addClientListener(new KulturVODLiveMediaStreamActionListener());
-
-
-
             getLogger().info("iMediaStream datafile: "+datafile.getAbsolutePath());
-
             File streamfile = getFileName(iMediaStream);
-
-
-
+            getLogger().info("iMediaStream live stream file: "+streamfile.getAbsolutePath());
             //Make the new file so that wowza can receive the streaming
             MediaCasterStreamItem streamItem
                     = appInstance.getMediaCasterStreams().getMediaCaster(

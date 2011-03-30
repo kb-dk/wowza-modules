@@ -144,8 +144,7 @@ public class DomsUriToFileMapper implements IMediaStreamFileMapper {
         } catch (IllegallyFormattedQueryStringException e) {
             getLogger().error("Query string has unexptected format. Parsing stopped with message: "+e.toString());
             e.printStackTrace();
-            fileToStream = new File(rickrollFilename);
-            */
+            fileToStream = new File(rickrollFilename);*/
         } catch (Exception e) {
             // TODO better log level
             getLogger().error("Unexpected error "+e.toString()+" occurred.");

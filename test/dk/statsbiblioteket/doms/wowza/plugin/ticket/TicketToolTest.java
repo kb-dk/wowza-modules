@@ -1,14 +1,14 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
-import java.io.File;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
@@ -17,7 +17,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 
 public class TicketToolTest  extends TestCase {
 
-	private Logger logger;
+	private WMSLogger logger;
 	
 	public TicketToolTest() {
 		super();
@@ -37,7 +37,7 @@ public class TicketToolTest  extends TestCase {
 	@Test
 	public void testGenerateTicket() {
 		// Setup environment
-		TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
+		TicketToolInterface ticketTool = new TicketTool("http://alhena:7980/authchecker-service/tickets", logger);
 		String username = "aUsername";
 		String resource = "anURL";
 		Ticket ticket = ticketTool.issueTicket(username, resource);
@@ -52,7 +52,7 @@ public class TicketToolTest  extends TestCase {
 	@Test
 	public void testValidateTicket() {
 		// Setup environment
-		TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/");
+		TicketToolInterface ticketTool = new TicketTool("http://alhena:7980/authchecker-service/tickets", logger);
 		String username = "aUsername";
 		String url = "anURL";
 		Ticket issuedTicket = ticketTool.issueTicket(username, url);

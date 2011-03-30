@@ -34,10 +34,6 @@ public class KulturVODLiveModule extends ModuleBase {
 
     /**
      * Called when Wowza is started.
-     * We use this to set up the DomsUriToFileMapper which will decode the
-     * query string of the URL by which we were called, and on the basis of
-     * this query string identify the video to be played, and authorize the
-     * player against the ticket checker.
      *
      * @param appInstance The application running.
      */
@@ -51,23 +47,17 @@ public class KulturVODLiveModule extends ModuleBase {
 		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
 		getLogger().info("onAppStart: VHost home path: " + vhostDir);
 		getLogger().info("onAppStart: VHost storaga dir: " + storageDir);
-        /*IMediaStreamFileMapper defaultFileMapper
-                = appInstance.getStreamFileMapper();*/
         ConfigReader cr = new ConfigReader(
                 new File(appInstance.getVHost().getHomePath()
-                         +"/conf/domslive/"
+                         +"/conf/kultur_live/"
                          +"domslive-wowza-plugin.properties"));
-        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "http://alhena:7980/authchecker");
-        TicketTool ticketTool = new TicketTool(ticketCheckerLocation);
-        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "rck.flv"));
-        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(ticketTool, invalidTicketVideo); 
+        // Note: Media content root folder is different from vhost storage dir from Application.xml
+        String mediaContentRootFolder = vhostDir + "/" + cr.get("mediaContentRootFolder", "null");
+        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
+        TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
+        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
+        IMediaStreamFileMapper streamFileMapper = new TicketToFileMapper(ticketTool, invalidTicketVideo, mediaContentRootFolder); 
         	
-        	/*new DomsUriToFileMapper(
-        		storageDir,
-                cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
-                vhostDir + "/" + cr.get("ticketInvalidFile", "rck.flv"),
-                cr.get("ticketCheckerLocation", "http://alhena:7980/authchecker"),
-                defaultFileMapper);*/
         appInstance.addMediaStreamListener(
                 new KulturVODLiveMediaStreamListener(
                         appInstance,
@@ -94,19 +84,8 @@ public class KulturVODLiveModule extends ModuleBase {
      */
     public void onConnect(IClient client, RequestFunction function,
                           AMFDataList params) {
-
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
-        getLogger().info("onConnect (properties)    : "
-                         + client.getProperties());
-        getLogger().info("onConnect (page URL)      : " + client.getPageUrl());
-        getLogger().info("onConnect (protocol)      : " + client.getProtocol());
-        getLogger().info("onConnect (referer)       : " + client.getReferrer());
-        getLogger().info("onConnect (page URI)      : " + client.getUri());
-        getLogger().info("onConnect (Message)       : "
-                         + function.getMessage().toString());
-        //client.rejectConnection("My Error 1", "My Error 3");
-        getLogger().debug("Connect params "+params.toString());
         // Auto-accept is false in Application.xml. Therefore it is 
         // necessary to accept the connection explicitly here.
         client.acceptConnection();
