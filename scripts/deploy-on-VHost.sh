@@ -6,7 +6,7 @@
 VHOST_LOCATION=~/services/wowza_vhost_kultur_test
 PACKAGE_NAME=doms-wowza-install-package.zip
 
-echo Deploying Wowza plugin on server
+echo Deploying Wowza plugin - VHost location: $VHOST_LOCATION
 
 echo - Removing previous deploy-setup folder...
 rm -r ~/tmp/wowza-plugin_deploy-setup

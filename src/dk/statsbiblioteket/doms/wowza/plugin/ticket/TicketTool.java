@@ -53,7 +53,7 @@ public class TicketTool implements TicketToolInterface {
 			return ticketXml;
 
 		}  catch (UniformInterfaceException e) {
-			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.");
+			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.", e);
 			return null;
 		}
 	}

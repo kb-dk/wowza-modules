@@ -4,12 +4,17 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 
+import dk.statsbiblioteket.doms.wowza.plugin.bes.ObjectStatus;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
@@ -22,14 +27,18 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	private TicketToolInterface ticketTool;
 	private String invalidTicketVideo;
 	private Object mediaContentRootFolder;
+	private WebResource besRestApi;
+
 	
-	public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool, String invalidTicketVideo, String mediaContentRootFolder) {
+	public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool, 
+			String invalidTicketVideo, String mediaContentRootFolder, WebResource restApi) {
 		super();
 		this.defaultMapper = defaultMapper;
 		this.logger = WMSLoggerFactory.getLogger(this.getClass());
 		this.ticketTool = ticketTool;
 		this.invalidTicketVideo = invalidTicketVideo;
 		this.mediaContentRootFolder = mediaContentRootFolder;
+		this.besRestApi = restApi;
 	}
 
 	@Override
@@ -44,12 +53,11 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	@Override
 	public File streamToFileForRead(IMediaStream stream, String name, String ext, String streamQuery) {
 		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query)");
-		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query) - stream :" + stream);
-		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query) - name   :" + name);
-		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query) - ext    :" + ext);
-		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query) - query  :" + streamQuery);
     	IClient client = stream.getClient();
         if (client == null) {
+        	// This is the case when a live stream is generated. 
+        	// Two streams are created, and one streams from VLC to Wowza and has no client.
+        	// If omitted, no live stream is played.
             logger.info("No client, returning ", stream);
             return null;
         }
@@ -65,6 +73,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 			} else {
 				logger.info("Client not allowed to get content streamed");
 				streamingFile = getErrorMediaFile();
+				stream.setName(streamingFile.getName());
 			}
 		} catch (IllegallyFormattedQueryStringException e) {
 			logger.error("Exception received.");
@@ -119,14 +128,21 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	}
 
 	protected String retrieveMediaFileRelativePath(IMediaStream stream, String shardID) {
-		// TODO Implement BES call to retrieve media file location
-		logger.info("Call BES instead of extracting information from id.");
-		String folder1 = shardID.substring(0, 1);
-        String folder2 = shardID.substring(1, 2);
-        String folder3 = shardID.substring(2, 3);
-        String folder4 = shardID.substring(3, 4);
-		String filenameAndPath = folder1 + "/" + folder2 + "/" + 
-								folder3 + "/" + folder4 + "/" + shardID + ".flv";
+		String filenameAndPath = null;
+		try {
+			logger.info("ObjectStatus: " + besRestApi
+					.path("/getobjectstatus")
+					.queryParam("programpid", "uuid:" + shardID).toString());
+			ObjectStatus objectStatusXml = besRestApi
+					.path("/getobjectstatus")
+					.queryParam("programpid", "uuid:" + shardID)
+					.get(ObjectStatus.class);
+			String streamID = objectStatusXml.getStreamId();
+			int indexOfColon = streamID.indexOf(":");
+			filenameAndPath = streamID.substring(indexOfColon+1, streamID.length());
+		}  catch (UniformInterfaceException e) {
+			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.", e);
+		}
 		logger.info("Resolved relative path: " + filenameAndPath);
 		return filenameAndPath;
 	}
