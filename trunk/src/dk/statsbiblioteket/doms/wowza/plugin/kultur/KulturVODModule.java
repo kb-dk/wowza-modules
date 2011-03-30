@@ -41,32 +41,21 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMe
      * @param appInstance The application running.
      */
     public void onAppStart(IApplicationInstance appInstance) throws IOException {
-        String fullname = appInstance.getApplication().getName() + "/"
-                          + appInstance.getName();
+        String fullname = appInstance.getApplication().getName()
+        					+ "/" + appInstance.getName();
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
         getLogger().info("***Entered onAppStart: " + fullname);
 		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
 		getLogger().info("onAppStart: VHost home path: " + vhostDir);
 		getLogger().info("onAppStart: VHost storaga dir: " + storageDir);
-
-		// Create File mapper
-        IMediaStreamFileMapper defaultFileMapper = appInstance.getStreamFileMapper();
+		// Setup file mapper
         ConfigReader cr = new ConfigReader(
                 new File(vhostDir + "/conf/kultur/" + "doms-wowza-plugin.properties"));
-        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "http://alhena:7980/authchecker");
-        TicketTool ticketTool = new TicketTool(ticketCheckerLocation);
-        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "rck.flv"));
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketTool, invalidTicketVideo);
-        /*DomsUriToFileMapper domsUriToFileMapper = new DomsUriToFileMapper(
-        		storageDir,
-                cr.get("sdf", "yyyy-MM-dd-HH-mm-ss"),
-                appInstance.decodeStorageDir(
-                        cr.get("ticketInvalidFile", "rck.flv")
-                ),
-                cr.get("ticketCheckerLocation",
-                       "http://alhena:7980/authchecker"),
-                defaultFileMapper);*/
+        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
+        TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
+        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir());
         // Set File mapper
         appInstance.setStreamFileMapper(ticketToFileMapper);
         getLogger().info("onAppStart: StreamFileMapper: \""
@@ -86,35 +75,24 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMe
                           AMFDataList params) {
         getLogger().info("onConnect (client ID)     : " + client.getClientId());
         getLogger().info("onConnect (query string)  : " + client.getQueryStr());
-        getLogger().info("onConnect (properties)    : "
-                         + client.getProperties());
-        getLogger().info("onConnect (page URL)      : " + client.getPageUrl());
-        getLogger().info("onConnect (protocol)      : " + client.getProtocol());
-        getLogger().info("onConnect (referer)       : " + client.getReferrer());
-        getLogger().info("onConnect (page URI)      : " + client.getUri());
-        getLogger().info("onConnect (Message)       : "
-                         + function.getMessage().toString());
         // Auto-accept is false in Application.xml. Therefore it is 
         // necessary to accept the connection explicitly here.
         client.acceptConnection();
     }
 
 	@Override
-	public void onConnectAccept(IClient arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onConnectAccept(IClient client) {
+        getLogger().info("onConnectAccept (client ID)     : " + client.getClientId());
 	}
 
 	@Override
-	public void onConnectReject(IClient arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onConnectReject(IClient client) {
+        getLogger().info("onConnectReject (client ID)     : " + client.getClientId());
 	}
 
 	@Override
-	public void onDisconnect(IClient arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onDisconnect(IClient client) {
+        getLogger().info("onDisconnect (client ID)     : " + client.getClientId());
 	}
 
 	@Override
@@ -125,6 +103,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMe
 
 	@Override
 	public void onMediaStreamDestroy(IMediaStream stream) {
+        getLogger().info("onMediaStreamDestroy (client ID)     : " + stream.getClient().getClientId());
         getLogger().info("onMediaStreamDestroy (stream name)   : " + stream.getName());
 	}
 }

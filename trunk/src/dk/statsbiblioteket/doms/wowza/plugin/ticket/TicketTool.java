@@ -1,18 +1,26 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+
+import dk.statsbiblioteket.util.Bytes;
+import dk.statsbiblioteket.util.Checksums;
 
 
 public class TicketTool implements TicketToolInterface {
 
+	private WMSLogger logger;
     private WebResource restApi;
 
-	public TicketTool(String serviceURL) {
+	public TicketTool(String serviceURL, WMSLogger logger) {
 		super();
         Client client = Client.create();
         restApi = client.resource(serviceURL);
+        this.logger = logger;
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +53,8 @@ public class TicketTool implements TicketToolInterface {
 			return ticketXml;
 
 		}  catch (UniformInterfaceException e) {
-        	throw new RuntimeException("Unexpected event", e);
+			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.");
+			return null;
 		}
 	}
 
@@ -57,17 +66,18 @@ public class TicketTool implements TicketToolInterface {
 		String filename = args[4];
 		String fileExtension = filename.substring(filename.length()-3);
 		String filenameWithoutExtension = filename.substring(0, filename.length()-4);
-		System.out.println("---===<<< Input parameters: >>>===---");
+		System.out.println("---===<<< Ticket input parameters: >>>===---");
 		System.out.println("Ticket server    : " + serviceURL);
 		System.out.println("Username         : " + username);
-		System.out.println("URL              : " + resource);
+		System.out.println("Resource         : " + resource);
+		System.out.println("---===<<< Client input parameters: >>>===---");
 		System.out.println("Streaming server : " + streamingURL);
 		System.out.println("Filename         : " + filename);
 		System.out.println("Filename (no ext): " + filenameWithoutExtension);
 		System.out.println("File extension   : " + fileExtension);
 		System.out.println("");
 		System.out.print("Retrieving ticket...");
-		TicketToolInterface ticketTool = new TicketTool(serviceURL);
+		TicketToolInterface ticketTool = new TicketTool(serviceURL, WMSLoggerFactory.getLogger(TicketTool.class));
 		Ticket ticket = ticketTool.issueTicket(username, resource);
 		System.out.println("[Success]");
 		System.out.println(ticket.toString());
@@ -82,7 +92,7 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("");
 		System.out.println("-[kultur_live]-------------------------------------------------------------------------------------------------------------");
 		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + ticket.getID());
-		System.out.println("Stream : " + "stream" + ":" + filenameWithoutExtension + ".stream");
+		System.out.println("Stream : " + "stream" + ":" + Bytes.toHex(Checksums.md5(ticket.getID())) + ".stream");
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		
 	}

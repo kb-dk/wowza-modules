@@ -72,4 +72,16 @@ public class QueryUtilTest  extends TestCase {
 		assertEquals(ticketIDOrig, ticketIDExtract);
 	}
 
+	@Test
+	public void testNoTicketInQuery() {
+		// Setup environment
+		String queryString =  param1 + "&" + param2 + "&" + param3;
+		try {
+			QueryUtil.extractTicket(queryString);
+			fail("This statement should not be reached!");
+		} catch (IllegallyFormattedQueryStringException e) {
+			// Expected behavior
+		} 
+	}
+
 }

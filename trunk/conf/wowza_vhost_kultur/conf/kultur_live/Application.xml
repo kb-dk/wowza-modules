@@ -26,7 +26,7 @@
         <Streams>
             <StreamType>live</StreamType>
             <!--<StorageDir>${com.wowza.wms.context.VHostConfigHome}/content</StorageDir>-->
-            <StorageDir>${user.home}/var</StorageDir>
+            <StorageDir>${com.wowza.wms.context.VHostConfigHome}/streamingContentLive</StorageDir>
             <KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
             <!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater -->
             <LiveStreamPacketizers>cupertinostreamingpacketizer, smoothstreamingpacketizer</LiveStreamPacketizers>
@@ -123,7 +123,7 @@
             <Module>
                 <Name>doms-wowza-plugin-live</Name>
                 <Description>Statsbiblioteket DOMS-plugin</Description>
-                <Class>dk.statsbiblioteket.doms.wowza.plugin.live.DomsLiveStreaming</Class>
+                <Class>dk.statsbiblioteket.doms.wowza.plugin.live.KulturVODLiveModule</Class>
             </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
