@@ -6,46 +6,45 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
+import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
+
 public class KulturVODIMediaStreamActionNotify2 implements IMediaStreamActionNotify2 {
 
 	public void onPlay(IMediaStream stream, String streamName,
 			double playStart, double playLen, int playReset) {
-		getLogger().info("***Entered onPlay(..., " + streamName
-				+ "..., ..., ...)");
-		getLogger().info("Stream Name: " + stream.getName());
+		StreamingEventLogger.getInstance().logUserEventPlay(stream);
 	}
 
 	public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
-		getLogger().info("onMetaData By: " + stream.getClientId());
+		// Do nothing
 	}
 
 	public void onPauseRaw(IMediaStream stream, boolean isPause,
 			double location) {
-		getLogger().info("onPauseRaw By: " + stream.getClientId());
+		StreamingEventLogger.getInstance().logUserEventPause(stream);
 	}
 
 	public void onSeek(IMediaStream stream, double location) {
-		getLogger().info("onSeek");
+		StreamingEventLogger.getInstance().logUserEventSeek(stream);
 	}
 
 	public void onStop(IMediaStream stream) {
-		getLogger().info("onStop By: " + stream.getClientId());
+		StreamingEventLogger.getInstance().logUserEventStop(stream);
 	}
 
 	public void onUnPublish(IMediaStream stream, String streamName,
 			boolean isRecord, boolean isAppend) {
-		getLogger().info("onUnPublish");
+		// Do nothing
 	}
 
 	public  void onPublish(IMediaStream stream, String streamName,
 			boolean isRecord, boolean isAppend) {
-		getLogger().info("onPublish");
+		// Do nothing
 	}
 
 	public void onPause(IMediaStream stream, boolean isPause,
 			double location) {
-		getLogger().info("onPause");
-
+		StreamingEventLogger.getInstance().logUserEventPause(stream);
 	}
 
     protected WMSLogger getLogger()

@@ -18,6 +18,12 @@ public class TicketProperty {
 		super();
 	}
 
+	public TicketProperty(String name, String value) {
+		super();
+		this.name = name;
+		this.value = value;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -33,6 +39,9 @@ public class TicketProperty {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "TicketProperty [name=" + name + ", value=" + value + "]";
+	}
 }

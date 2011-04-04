@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
@@ -40,10 +42,12 @@ public class TicketToolTest  extends TestCase {
 		TicketToolInterface ticketTool = new TicketTool("http://alhena:7980/authchecker-service/tickets", logger);
 		String username = "aUsername";
 		String resource = "anURL";
-		Ticket ticket = ticketTool.issueTicket(username, resource);
+		Ticket ticket = ticketTool.issueTicket(username, resource, new ArrayList<TicketProperty>());
 		logger.debug("Ticket: " + ticket);
 		assertEquals("Expected equal result", username, 
 				ticket.getUsername());
+		assertEquals("Expected equal result", resource, 
+				ticket.getResource());
 		assertEquals("Expected equal result", resource, 
 				ticket.getResource());
 		
@@ -55,7 +59,7 @@ public class TicketToolTest  extends TestCase {
 		TicketToolInterface ticketTool = new TicketTool("http://alhena:7980/authchecker-service/tickets", logger);
 		String username = "aUsername";
 		String url = "anURL";
-		Ticket issuedTicket = ticketTool.issueTicket(username, url);
+		Ticket issuedTicket = ticketTool.issueTicket(username, url, new ArrayList<TicketProperty>());
 		logger.debug("Issued ticket: " + issuedTicket);
 		String ticketID = issuedTicket.getID();
 		Ticket resolvedTicket = ticketTool.resolveTicket(ticketID);

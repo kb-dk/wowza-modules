@@ -1,6 +1,10 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -23,23 +27,24 @@ public class TicketTool implements TicketToolInterface {
         this.logger = logger;
 	}
 
-	/* (non-Javadoc)
-	 * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#issueTicket(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public Ticket issueTicket(String username, String resource) {
+	public Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
         try {                
-            Ticket ticketXml = restApi
-                    .path("/issueTicket")
-                    .queryParam("username", username)
-                    .queryParam("resource", resource)
-                    .post(Ticket.class);
+        	WebResource query = restApi
+            .path("/issueTicket")
+            .queryParam("username", username)
+            .queryParam("resource", resource);
+        	for (Iterator<TicketProperty> i = properties.iterator(); i.hasNext();) {
+        		TicketProperty prop = i.next();
+        		query.queryParam(prop.getName(), prop.getValue());
+        	}
+            Ticket ticketXml = query.post(Ticket.class);
             return ticketXml;
         }  catch (UniformInterfaceException e) {
         	throw new RuntimeException("Unexpected event", e);
         }
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#resolveTicket(java.lang.String)
 	 */
@@ -78,7 +83,7 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("");
 		System.out.print("Retrieving ticket...");
 		TicketToolInterface ticketTool = new TicketTool(serviceURL, WMSLoggerFactory.getLogger(TicketTool.class));
-		Ticket ticket = ticketTool.issueTicket(username, resource);
+		Ticket ticket = ticketTool.issueTicket(username, resource, new ArrayList<TicketProperty>());
 		System.out.println("[Success]");
 		System.out.println(ticket.toString());
 		System.out.println("");

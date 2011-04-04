@@ -8,6 +8,7 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
+import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 import dk.statsbiblioteket.util.Bytes;
@@ -43,12 +44,8 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
 
 	public void onPlay(IMediaStream stream, String streamName,
                        double playStart, double playLen, int playReset) {
-    	
-        logger.info("onPlay");
         IClient client = stream.getClient();
-
         if (client != null){
-
             String querystring = stream.getClient().getQueryStr();
             String expectedStreamName;
 			try {
@@ -61,7 +58,6 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
                 logger.warn("Shutting down stream "+streamName+", because it does not have the expected name "+expectedStreamName+".");
                 stream.shutdown();
             }
-
         }
         logger.info("onStreamPlay (name)       : " + stream.getName());
         logger.info("onStreamPlay (name)       : " + streamName);
@@ -70,6 +66,7 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
         logger.info("onStreamPlay (contextstr) : " + stream.getContextStr());
         logger.info("onStreamPlay (querystr)   : " + stream.getQueryStr());
         logger.info("onStreamPlay (streamtype) : " + stream.getStreamType());
+		StreamingEventLogger.getInstance().logUserEventPlay(stream);
     }
 
     private void logClient(String s, IClient client) {
