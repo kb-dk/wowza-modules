@@ -6,6 +6,7 @@ import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
@@ -15,11 +16,20 @@ import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
 
+import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class handles events that happen during streaming. Also sets up the file
@@ -27,7 +37,7 @@ import java.io.IOException;
  *
  * @author heb + jrg + abr
  */
-public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
+public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
 	private static String pluginName = "Kultur Wowza plugin";
 	private static String pluginVersion = "1.0.4"; 
@@ -42,7 +52,8 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
      *
      * @param appInstance The application running.
      */
-    public void onAppStart(IApplicationInstance appInstance) throws IOException {
+    @Override
+    public void onAppStart(IApplicationInstance appInstance) {
         String fullname = appInstance.getApplication().getName()
         					+ "/" + appInstance.getName();
         String vhostDir = appInstance.getVHost().getHomePath();
@@ -51,22 +62,36 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
 		getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
 		getLogger().info("onAppStart: VHost home path: " + vhostDir);
 		getLogger().info("onAppStart: VHost storaga dir: " + storageDir);
-		// Setup file mapper
-		IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
-        ConfigReader cr = new ConfigReader(
-                new File(vhostDir + "/conf/kultur/" + "doms-wowza-plugin.properties"));
-        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
-        TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
-        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
-        WebResource besRestApi = Client.create().resource(cr.get("broadcastExtractionServiceRestApi", "missing-bes-service-location-in-property-file"));
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir(), besRestApi);
-        // Set File mapper
-        appInstance.setStreamFileMapper(ticketToFileMapper);
-        getLogger().info("onAppStart: StreamFileMapper: \""
-                         + appInstance.getStreamFileMapper().getClass().getName() + "\".");
+		try {
+			// Setup file mapper
+			IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
+	        ConfigReader cr;
+				cr = new ConfigReader(
+				        new File(vhostDir + "/conf/kultur/" + "doms-wowza-plugin.properties"));
+	        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
+	        TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
+	        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
+	        WebResource besRestApi = Client.create().resource(cr.get("broadcastExtractionServiceRestApi", "missing-bes-service-location-in-property-file"));
+	        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir(), besRestApi);
+	        // Set File mapper
+	        appInstance.setStreamFileMapper(ticketToFileMapper);
+	        // Setup streaming statistics logger
+	        String statLogFileHomeDir = vhostDir + "/" + cr.get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur");
+	        StreamingEventLogger.createInstance(ticketTool, getLogger(), statLogFileHomeDir);
+	        getLogger().info("onAppStart: StreamFileMapper: \""
+	                         + appInstance.getStreamFileMapper().getClass().getName() + "\".");
+		} catch (IOException e) {
+			getLogger().error("An IO error occured.", e);
+			throw new RuntimeException("An IO error occured.", e);
+		}
+    }
+    
+    @Override
+	public void onAppStop(IApplicationInstance appInstance) {
+    	StreamingEventLogger.getInstance().close();
     }
 
-    /**
+	/**
      * Called when a new video stream connection is started.
      * 
      * The method accepts a connection.
@@ -110,6 +135,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
 			props.put("streamActionNotifier", streamActionNotify);
 		}
 		stream.addClientListener(streamActionNotify);
+		StreamingEventLogger.getInstance().logUserEventStreamingStarted(stream);
 	}
 
 	@Override
@@ -124,6 +150,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
 			stream.removeClientListener(actionNotify);
 			getLogger().info("removeClientListener: "+stream.getSrc());
 		}
+		StreamingEventLogger.getInstance().logUserEventStreamingEnded(stream);
 	}
 	
 	@Override
@@ -137,4 +164,5 @@ public class KulturVODModule extends ModuleBase implements IModuleOnConnect, IMo
         getLogger().info("onMediaStreamDestroy (client ID)     : " + stream.getClient().getClientId());
         getLogger().info("onMediaStreamDestroy (stream name)   : " + stream.getName());
 	}
+	
 }

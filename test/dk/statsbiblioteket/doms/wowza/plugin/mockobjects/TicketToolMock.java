@@ -1,8 +1,11 @@
 package dk.statsbiblioteket.doms.wowza.plugin.mockobjects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 
 public class TicketToolMock implements TicketToolInterface {
@@ -17,15 +20,15 @@ public class TicketToolMock implements TicketToolInterface {
 	}
 
 	@Override
-	public Ticket issueTicket(String username, String resource) {
+	public synchronized Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
 		String id = "ticket-id-" + counter++;
-		Ticket ticket = new Ticket(id, resource, username);
+		Ticket ticket = new Ticket(id, resource, username, properties);
 		ticketMap.put(id, ticket);
 		return ticket;
 	}
 
 	@Override
-	public Ticket resolveTicket(String ticketID) {
+	public synchronized Ticket resolveTicket(String ticketID) {
 		Ticket ticket = ticketMap.get(ticketID);
 		return ticket;
 	}

@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -23,6 +24,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 
 public class TicketToFileMapperTest extends TestCase {
@@ -52,7 +54,7 @@ public class TicketToFileMapperTest extends TestCase {
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
-		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";
@@ -76,7 +78,7 @@ public class TicketToFileMapperTest extends TestCase {
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.2-Invalid-ip";
-		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";
@@ -123,7 +125,7 @@ public class TicketToFileMapperTest extends TestCase {
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
-		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";
@@ -147,7 +149,7 @@ public class TicketToFileMapperTest extends TestCase {
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
-		Ticket ticket = ticketToolMock.issueTicket(username, shardURL);
+		Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
 		String name = "name_of_stream";
 		String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
 		String storageDir = "/VHost/storageDir";

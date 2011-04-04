@@ -31,6 +31,7 @@ public class IMediaStreamMock implements IMediaStream {
 	private Logger logger;
 	private String name;
 	private IClient iClient;
+	private String uniqueStreamIdStr;
 	
 	private String ext = "flv";
 	
@@ -39,7 +40,8 @@ public class IMediaStreamMock implements IMediaStream {
 		this.logger = logger;
 		this.name = name;
 		this.iClient = iClient;
-		logger.info("Created \"" + this.getClass() + "\" with name: " + this.name); 
+		this.uniqueStreamIdStr = "uniqueStreamIdStr";
+		logger.info("Created \"" + this.getClass() + "\" with name: " + this.name);
 	}
 
 	@Override
@@ -408,8 +410,7 @@ public class IMediaStreamMock implements IMediaStream {
 
 	@Override
 	public String getUniqueStreamIdStr() {
-		// TODO Auto-generated method stub
-		return null;
+		return uniqueStreamIdStr;
 	}
 
 	@Override

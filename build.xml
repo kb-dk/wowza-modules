@@ -27,7 +27,8 @@
     <property name="scripts.package.build.dir"
               value="${package.build.dir}/bin"/>
     <property name="data.package.build.dir" value="${package.build.dir}/data"/>
-
+	<property name="statlogs.package.build.dir" value="${package.build.dir}/logs/streamingStatistics"/>
+	
     <path id="classpath">
         <fileset dir="${wowza.lib.dir}" includes="**/*.jar"/>
         <fileset dir="${core.lib.dir}" includes="**/*.jar"/>
@@ -135,9 +136,10 @@
 
         <!--Package data-->
         <mkdir  dir="${data.package.build.dir}"/>
-        <copy todir="${data.package.build.dir}">
+        <mkdir  dir="${statlogs.package.build.dir}"/>
+        <!--copy todir="${data.package.build.dir}">
             <fileset dir="${core.data.dir}"/>
-        </copy>
+        </copy-->
         
         <!-- Zip content -->
         <zip destfile="${core.build.dir}/${package.filename}"

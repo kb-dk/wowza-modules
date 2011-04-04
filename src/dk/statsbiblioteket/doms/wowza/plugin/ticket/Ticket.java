@@ -50,10 +50,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(String ID, String resource, String username) {
+    public Ticket(String ID, String resource, String username, List<TicketProperty> property) {
         this.ID = ID;
         this.resource = resource;
         this.username = username;
+        this.property = property;
     }
 
     public List<TicketProperty> getProperty() {
