@@ -13,8 +13,8 @@ USERNAME=172.18.224.234
 #RESOURCE=a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv
 RESOURCE=http://www.statsbiblioteket.dk/doms/shard/uuid:a0639529-124a-453f-b4ea-59f833b47333
 
-ORGANIZATION_ID=au.dk
-USER_ID=1x1
+ORGANIZATION_ID=sb.dk
+USER_ID=test-user
 CHANNEL_ID=tv2news
 PROGRAM_TITLE=Nyheder
 PROGRAM_START=2007-03-04T00:00:00+0100
@@ -31,5 +31,6 @@ STREAMING_SERVER=rtmp://iapetus:1935
 #FILENAME=a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv
 FILENAME=tv-a.flv
 
+PREVIEW_FILENAME=0/d/0/c/0d0cb165-7469-4456-8f1e-06c79d026d40.preview.flv
 
-java -cp ../target/lib/*:${WOWZA_LIB}:../lib/jersey-1.3/jars/*:../lib/sbutil-0.5.2/jars/* dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool $TICKET_SERVER $USERNAME $RESOURCE $ORGANIZATION_ID $USER_ID $CHANNEL_ID $PROGRAM_TITLE $PROGRAM_START $STREAMING_SERVER $FILENAME
+java -cp ../target/lib/*:${WOWZA_LIB}:../lib/jersey-1.3/jars/*:../lib/sbutil-0.5.2/jars/* dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool $TICKET_SERVER $USERNAME $RESOURCE $ORGANIZATION_ID $USER_ID $CHANNEL_ID $PROGRAM_TITLE $PROGRAM_START $STREAMING_SERVER $FILENAME $PREVIEW_FILENAME

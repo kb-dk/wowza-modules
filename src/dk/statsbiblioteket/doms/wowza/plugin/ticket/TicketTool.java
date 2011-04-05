@@ -79,6 +79,11 @@ public class TicketTool implements TicketToolInterface {
 		String fileExtension = filename.substring(filename.length()-3);
 		String filenameWithoutExtension = filename.substring(0, filename.length()-4);
 
+		String previewFilename = args[10];
+		String previewFileExtension = filename.substring(filename.length()-3);
+		String previewFilenameWithoutExtension = filename.substring(0, filename.length()-4);
+
+		String invalidTicketID = "some-invalid-ticket-id";
 		
 		List<TicketProperty> ticketProperties = new ArrayList<TicketProperty>();
 		ticketProperties.add(new TicketProperty("schacHomeOrganization", organisationID));
@@ -95,10 +100,13 @@ public class TicketTool implements TicketToolInterface {
 			System.out.println("Property         : " + i.next().toString());
 		}
 		System.out.println("---===<<< Client input parameters: >>>===---");
-		System.out.println("Streaming server : " + streamingURL);
-		System.out.println("Filename         : " + filename);
-		System.out.println("Filename (no ext): " + filenameWithoutExtension);
-		System.out.println("File extension   : " + fileExtension);
+		System.out.println("Streaming server         : " + streamingURL);
+		System.out.println("Filename                 : " + filename);
+		System.out.println("Filename (no ext)        : " + filenameWithoutExtension);
+		System.out.println("File extension           : " + fileExtension);
+		System.out.println("Preview filename         : " + previewFilename);
+		System.out.println("Preview filename (no ext): " + previewFilenameWithoutExtension);
+		System.out.println("Preview file extension   : " + previewFileExtension);
 		System.out.println("");
 		System.out.print("Retrieving ticket...");
 		TicketToolInterface ticketTool = new TicketTool(serviceURL, WMSLoggerFactory.getLogger(TicketTool.class));
@@ -114,9 +122,19 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("Stream : " + fileExtension + ":" + filename);
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		System.out.println("");
-		System.out.println("-[kultur_live]-------------------------------------------------------------------------------------------------------------");
+		System.out.println("-[kultur_live]---[valid]---------------------------------------------------------------------------------------------------");
 		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + ticket.getID());
 		System.out.println("Stream : " + "stream" + ":" + Bytes.toHex(Checksums.md5(ticket.getID())) + ".stream");
+		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("");
+		System.out.println("-[kultur_live]---[invalid]-------------------------------------------------------------------------------------------------");
+		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + invalidTicketID);
+		System.out.println("Stream : " + "stream" + ":" + Bytes.toHex(Checksums.md5(invalidTicketID)) + ".stream");
+		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("");
+		System.out.println("-[kultur_preview]----------------------------------------------------------------------------------------------------------");
+		System.out.println("Server : " + streamingURL + "/kultur_preview");
+		System.out.println("Stream : " + previewFileExtension + ":" + previewFilename);
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		
 	}
