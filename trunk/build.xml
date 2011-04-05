@@ -137,9 +137,9 @@
         <!--Package data-->
         <mkdir  dir="${data.package.build.dir}"/>
         <mkdir  dir="${statlogs.package.build.dir}"/>
-        <!--copy todir="${data.package.build.dir}">
+        <copy todir="${data.package.build.dir}">
             <fileset dir="${core.data.dir}"/>
-        </copy-->
+        </copy>
         
         <!-- Zip content -->
         <zip destfile="${core.build.dir}/${package.filename}"

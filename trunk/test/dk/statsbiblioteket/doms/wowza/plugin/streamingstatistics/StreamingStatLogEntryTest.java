@@ -142,7 +142,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
 		properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
 		// Setup program info
-		properties.add(new TicketProperty("metaChannelName", "tv2news"));
+		properties.add(new TicketProperty("metaChannelName", null));
 		properties.add(new TicketProperty("metaTitle", "Nyheder;"));
 		properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
 		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
@@ -152,7 +152,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
 		logEntry.setTimestamp(sdf.parse(timestamp));
 		// Validate
-		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;tv2news;Nyheder[semicolon];2007-03-04T00:00:00+0100";
+		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;-;Nyheder[semicolon];2007-03-04T00:00:00+0100";
 		assertEquals("Log entry", expectedLogString, logEntry.getLogString());
 	}
 	

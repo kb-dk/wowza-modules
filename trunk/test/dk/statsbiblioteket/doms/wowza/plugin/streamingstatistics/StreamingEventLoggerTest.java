@@ -3,6 +3,7 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,13 +77,11 @@ public class StreamingEventLoggerTest extends TestCase {
 		for (int i=0; i<350;i++) {
 			eventLogger.writeEventLog("First eventlog number: " + i);
 		}
-		eventLogger.close();
 		// Simulate Wowza restart and start new event logger
 		eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
 		for (int i=0; i<350;i++) {
 			eventLogger.writeEventLog("Second eventlog number: " + i);
 		}
-		eventLogger.close();
 		// Check that the file has been created and contains log entries.
 	}
 
@@ -93,8 +92,8 @@ public class StreamingEventLoggerTest extends TestCase {
 		deleteDir(logFolder);
 		createDir(logFolder);
 		StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-		BufferedWriter beforeWriter = eventLogger.getStatLogWriter();
-		BufferedWriter afterWriter = eventLogger.getStatLogWriter();
+		Writer beforeWriter = eventLogger.getStatLogWriter();
+		Writer afterWriter = eventLogger.getStatLogWriter();
 		assertTrue("Same writer expected.", beforeWriter.equals(afterWriter));
 		eventLogger.setDateForNewLogFile(sdf.parse("2000-01-01"));
 		afterWriter = eventLogger.getStatLogWriter();

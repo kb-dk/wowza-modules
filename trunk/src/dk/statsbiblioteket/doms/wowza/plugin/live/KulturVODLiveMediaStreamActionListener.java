@@ -78,31 +78,28 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
     }
 
     public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
-        logger.info("onMetaData By: " + stream.getClientId());
     }
 
     public void onPauseRaw(IMediaStream stream, boolean isPause,
                            double location) {
-        logger.info("onPauseRaw By: " + stream.getClientId());
+		StreamingEventLogger.getInstance().logUserEventPause(stream);
     }
 
     public void onSeek(IMediaStream stream, double location) {
-        logger.info("onSeek");
+		StreamingEventLogger.getInstance().logUserEventSeek(stream);
     }
 
     public void onStop(IMediaStream stream) {
-        logger.info("onStop By: " + stream.getClientId());
+		StreamingEventLogger.getInstance().logUserEventStop(stream);
         stream.shutdown();
     }
 
     public void onUnPublish(IMediaStream stream, String streamName,
                             boolean isRecord, boolean isAppend) {
-        logger.info("onUnPublish");
     }
 
     public  void onPublish(IMediaStream stream, String streamName,
                            boolean isRecord, boolean isAppend) {
-        logger.info("onPublish");
         if (stream.getClient() != null){
             logClient("onStreamPublish ",stream.getClient());
         }
@@ -119,6 +116,6 @@ class KulturVODLiveMediaStreamActionListener implements IMediaStreamActionNotify
 
     public void onPause(IMediaStream stream, boolean isPause,
                         double location) {
-        logger.info("onPause");
+		StreamingEventLogger.getInstance().logUserEventPause(stream);
     }
  }

@@ -1,9 +1,9 @@
 package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,12 +22,12 @@ public class StreamingEventLogger {
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 	private String statLogFileHomeDir;
 	private File currentStatLogFile;
-	private static int bufferSize = 1024;
-	private BufferedWriter statLogWriter;
+	private FileWriter statLogWriter;
 	private Date dateForNewLogFile;
 	
 	private WMSLogger logger;
 	private TicketToolInterface ticketTool;
+	private String newlineString;
 
 	private static StreamingEventLogger instance = null;
 
@@ -39,6 +39,7 @@ public class StreamingEventLogger {
         this.statLogWriter = null;
         logger.info("Statistics logger " + this.getClass().getName() + " has been created.");
         this.dateForNewLogFile = new Date();
+        this.newlineString = System.getProperty( "line.separator" );
 	}
 
 	/**
@@ -68,35 +69,46 @@ public class StreamingEventLogger {
 		return instance;
 	}
 
+	public void logUserEventLiveStreamingStarted(IMediaStream stream) {
+		logUserEvent(stream, Event.LIVE_STREAMING_START);
+	}
+
 	public void logUserEventStreamingStarted(IMediaStream stream) {
 		logUserEvent(stream, Event.STREAMING_START);
 	}
 
 	public void logUserEventStreamingEnded(IMediaStream stream) {
-		logUserEvent(stream, Event.STREAMING_END);
+		// Interested in only certain events
+		//logUserEvent(stream, Event.STREAMING_END);
 	}
 
 	public void logUserEventPlay(IMediaStream stream) {
-		logUserEvent(stream, Event.PLAY);
+		// Interested in only certain events
+		//logUserEvent(stream, Event.PLAY);
 	}
 
 	public void logUserEventStop(IMediaStream stream) {
-		logUserEvent(stream, Event.STOP);
+		// Interested in only certain events
+		//logUserEvent(stream, Event.STOP);
 	}
 
 	public void logUserEventPause(IMediaStream stream) {
-		logUserEvent(stream, Event.PAUSE);
+		// Interested in only certain events
+		//logUserEvent(stream, Event.PAUSE);
 	}
 
 	public void logUserEventSeek(IMediaStream stream) {
-		logUserEvent(stream, Event.SEEK);
+		// Interested in only certain events
+		//logUserEvent(stream, Event.SEEK);
 	}
 
 	private void logUserEvent(IMediaStream stream, Event event) {
 		String clientQueryString = stream.getClient().getQueryStr();
 		try {
 			Ticket streamingTicket = getTicket(clientQueryString);
-			writeEventLog(new StreamingStatLogEntry(stream, event, streamingTicket).getLogString());
+			String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
+			logger.info("Streaming statistics logging line: " + logString);
+			writeEventLog(logString);
 		} catch (IllegallyFormattedQueryStringException e) {
 			logger.warn("No logging was performed. Query string of client dos not match expected format." +
 					" Was " + clientQueryString);
@@ -117,15 +129,16 @@ public class StreamingEventLogger {
 	
 	protected synchronized void writeEventLog(String logString) {
 		try {
-			BufferedWriter statLogWriter = getStatLogWriter();
+			Writer statLogWriter = getStatLogWriter();
 			statLogWriter.write(logString);
-			statLogWriter.newLine();
+			statLogWriter.write(this.newlineString);
+			this.statLogWriter.flush();
 		} catch (IOException e) {
 			logger.error("An IO-error occured when writing statistics log.", e);
 		}
 	}
 
-	protected BufferedWriter getStatLogWriter() throws IOException {
+	protected Writer getStatLogWriter() throws IOException {
 		Date now = new Date();
 		if ((statLogWriter==null) || (this.dateForNewLogFile.before(now))) {
 			if (statLogWriter!=null) {
@@ -135,7 +148,10 @@ public class StreamingEventLogger {
 			this.currentStatLogFile = new File(this.statLogFileHomeDir, filenameWithCorrectDate);
 			this.logger.info("Creating log file: " + currentStatLogFile.getAbsolutePath());
 			this.dateForNewLogFile = getFollowingMidnight(now);
-			this.statLogWriter = new BufferedWriter(new FileWriter(currentStatLogFile, true), bufferSize);
+			this.statLogWriter = new FileWriter(currentStatLogFile, true);
+			this.statLogWriter.write(StreamingStatLogEntry.getLogStringHeadline());
+			this.statLogWriter.write(this.newlineString);
+			this.statLogWriter.flush();
 		}
 		return statLogWriter;
 	}
@@ -149,16 +165,6 @@ public class StreamingEventLogger {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		return cal.getTime();
-	}
-
-	public void close() {
-		if (statLogWriter!=null) {
-			try {
-				statLogWriter.close();
-			} catch (IOException e) {
-				logger.error("An IO-error occured when closing statistics log: " + currentStatLogFile.getAbsolutePath(), e);
-			}
-		}
 	}
 
 	protected void setDateForNewLogFile(Date dateForNewLogFile) {

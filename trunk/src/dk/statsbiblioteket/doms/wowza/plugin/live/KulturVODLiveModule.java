@@ -30,7 +30,7 @@ import java.io.File;
 public class KulturVODLiveModule extends ModuleBase implements IModuleOnApp {
 
 	private static String pluginName = "Kultur Live Wowza plugin";
-	private static String pluginVersion = "1.0.4"; 
+	private static String pluginVersion = "1.0.6"; 
 
     public KulturVODLiveModule() {
         super();
