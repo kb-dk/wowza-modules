@@ -1,0 +1,9 @@
+<Root>
+	<VHosts>
+		<VHost>
+			<Name>_kulturVHost_</Name>
+			<ConfigDir>/Users/henningbottger/services/wowza_vhost_kultur</ConfigDir>
+			<ConnectionLimit>0</ConnectionLimit>
+		</VHost>
+	</VHosts>
+</Root>
