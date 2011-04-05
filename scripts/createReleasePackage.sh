@@ -28,7 +28,7 @@ if [ "$answer" != "y" ] && [ "$answer" != "Y" ]
 fi
 echo
 echo Tagging SVN-repository...
-#svn copy https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/DOMS-Wowza-plugin-${VERSION} -m "Release candidate ${VERSION}"
+svn copy https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/DOMS-Wowza-plugin-${VERSION} -m "Release candidate ${VERSION}"
 
 echo Exporting tag from SVN-repository...
 svn export https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/DOMS-Wowza-plugin-${VERSION} ~/tmp/wdp_${VERSION}
@@ -37,3 +37,19 @@ echo Build package from export...
 pushd ~/tmp/wdp_${VERSION}
 ant clean package
 
+echo Empty bin folder...
+rm ~/tmp/wdp_${VERSION}/target/package/bin/*
+
+echo Zip package...
+cd ~/tmp/wdp_${VERSION}/target/
+mv package DOMS-Wowza-plugin-${VERSION}_release-package
+zip -r ~/tmp/DOMS-Wowza-plugin-${VERSION}_release-package.zip DOMS-Wowza-plugin-${VERSION}_release-package
+
+echo Cleanup...
+rm -r ~/tmp/wdp_${VERSION}
+popd
+
+echo Done
+echo 
+echo Package can be found in: ~/tmp/DOMS-Wowza-plugin-${VERSION}_release-package.zip
+echo
