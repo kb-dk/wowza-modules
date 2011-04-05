@@ -3,7 +3,7 @@
 
     <property file="${user.name}.build.properties"/>
     <property file="build.properties"/>
-    <property name="wowza.lib.dir" value="/usr/local/WowzaMediaServer/lib"/>
+    <property name="wowza.lib.dir" value="build-libs/wowza/jars-wowza-version-2.2.3"/>
     <property name="jar.filename" value="doms-wowza-plugin.jar"/>
     <property name="test.jar.filename" value="doms-wowza-plugin-test.jar"/>
     <property name="package.filename" value="doms-wowza-install-package.zip"/>
