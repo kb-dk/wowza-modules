@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Expect the deploy package to be in the ~/temp/wowza-plugin folder.
+# Expect the deploy package to be in the ~/tmp/wowza-plugin folder.
 # The script is supposed to run on the server where Wowza resides as the wowza-user.
 
 VHOST_LOCATION=~/services/wowza_vhost_kultur_test

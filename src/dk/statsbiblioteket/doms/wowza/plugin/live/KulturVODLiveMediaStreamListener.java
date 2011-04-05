@@ -8,6 +8,8 @@ import com.wowza.wms.mediacaster.MediaCasterStreamItem;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
+
+import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ProcessRunner;
@@ -113,6 +115,7 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify {
         } catch (IOException e) {
             getLogger().error("Caught exception e"+e.getMessage(),iMediaStream);
         }
+		StreamingEventLogger.getInstance().logUserEventLiveStreamingStarted(iMediaStream);
     }
 
     private File getFileName(IMediaStream iMediaStream) {
@@ -161,8 +164,7 @@ public class KulturVODLiveMediaStreamListener implements IMediaStreamNotify {
             liver.getStreamfile().delete();
             runningstuff.remove(streamName);
         }
-
-
+		StreamingEventLogger.getInstance().logUserEventStreamingEnded(iMediaStream);
     }
 
 

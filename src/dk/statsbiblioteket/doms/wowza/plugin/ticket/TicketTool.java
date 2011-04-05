@@ -36,8 +36,9 @@ public class TicketTool implements TicketToolInterface {
             .queryParam("resource", resource);
         	for (Iterator<TicketProperty> i = properties.iterator(); i.hasNext();) {
         		TicketProperty prop = i.next();
-        		query.queryParam(prop.getName(), prop.getValue());
+        		query = query.queryParam(prop.getName(), prop.getValue());
         	}
+        	//System.out.println("Query parameters: " + query.toString());
             Ticket ticketXml = query.post(Ticket.class);
             return ticketXml;
         }  catch (UniformInterfaceException e) {
@@ -67,14 +68,32 @@ public class TicketTool implements TicketToolInterface {
 		String serviceURL = args[0];
 		String username = args[1];
 		String resource = args[2];
-		String streamingURL = args[3];
-		String filename = args[4];
+		String organisationID = args[3];
+		String userID = args[4];
+		String channelID = args[5];
+		String programTitle = args[6];
+		String programStart = args[7];
+		
+		String streamingURL = args[8];
+		String filename = args[9];
 		String fileExtension = filename.substring(filename.length()-3);
 		String filenameWithoutExtension = filename.substring(0, filename.length()-4);
+
+		
+		List<TicketProperty> ticketProperties = new ArrayList<TicketProperty>();
+		ticketProperties.add(new TicketProperty("schacHomeOrganization", organisationID));
+		ticketProperties.add(new TicketProperty("eduPersonTargetedID", userID));
+		ticketProperties.add(new TicketProperty("metaChannelName", channelID));
+		ticketProperties.add(new TicketProperty("metaTitle", programTitle));
+		ticketProperties.add(new TicketProperty("metaDateTimeStart", programStart));
+		
 		System.out.println("---===<<< Ticket input parameters: >>>===---");
 		System.out.println("Ticket server    : " + serviceURL);
 		System.out.println("Username         : " + username);
 		System.out.println("Resource         : " + resource);
+		for	(Iterator<TicketProperty> i=ticketProperties.iterator();i.hasNext();) {
+			System.out.println("Property         : " + i.next().toString());
+		}
 		System.out.println("---===<<< Client input parameters: >>>===---");
 		System.out.println("Streaming server : " + streamingURL);
 		System.out.println("Filename         : " + filename);
@@ -83,7 +102,7 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("");
 		System.out.print("Retrieving ticket...");
 		TicketToolInterface ticketTool = new TicketTool(serviceURL, WMSLoggerFactory.getLogger(TicketTool.class));
-		Ticket ticket = ticketTool.issueTicket(username, resource, new ArrayList<TicketProperty>());
+		Ticket ticket = ticketTool.issueTicket(username, resource, ticketProperties);
 		System.out.println("[Success]");
 		System.out.println(ticket.toString());
 		System.out.println("");

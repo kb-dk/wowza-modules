@@ -40,7 +40,7 @@ import java.util.Map;
 public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
 	private static String pluginName = "Kultur Wowza plugin";
-	private static String pluginVersion = "1.0.4"; 
+	private static String pluginVersion = "1.0.6"; 
 
     public KulturVODModule() {
         super();
@@ -88,7 +88,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
     
     @Override
 	public void onAppStop(IApplicationInstance appInstance) {
-    	StreamingEventLogger.getInstance().close();
+    	// Do nothing.
     }
 
 	/**
@@ -135,6 +135,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
 			props.put("streamActionNotifier", streamActionNotify);
 		}
 		stream.addClientListener(streamActionNotify);
+		getLogger().info("onStreamCreate: Ready to log Streaming event");
 		StreamingEventLogger.getInstance().logUserEventStreamingStarted(stream);
 	}
 

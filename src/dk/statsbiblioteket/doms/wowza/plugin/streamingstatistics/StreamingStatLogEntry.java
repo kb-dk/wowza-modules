@@ -17,7 +17,7 @@ public class StreamingStatLogEntry {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 
-    public enum Event{STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END};
+    public enum Event{LIVE_STREAMING_START, STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END};
 
 	// Log information
 	private Date timestamp;
@@ -72,7 +72,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getConnectionID() {
-		return connectionID;
+		return transformNullValue(connectionID);
 	}
 
 	public void setConnectionID(String connectionID) {
@@ -80,7 +80,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getOrganisationID() {
-		return organisationID;
+		return transformNullValue(organisationID);
 	}
 
 	public void setOrganisationID(String organisationID) {
@@ -88,7 +88,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getUserID() {
-		return userID;
+		return transformNullValue(userID);
 	}
 
 	public void setUserID(String userID) {
@@ -96,7 +96,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getChannelID() {
-		return channelID;
+		return transformNullValue(channelID);
 	}
 
 	public void setChannelID(String channelID) {
@@ -104,7 +104,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getProgramTitle() {
-		return programTitle;
+		return transformNullValue(programTitle);
 	}
 
 	public void setProgramTitle(String programTitle) {
@@ -112,7 +112,7 @@ public class StreamingStatLogEntry {
 	}
 
 	public String getProgramStart() {
-		return programStart;
+		return transformNullValue(programStart);
 	}
 
 	public void setProgramStart(String programStart) {
@@ -127,6 +127,16 @@ public class StreamingStatLogEntry {
 		this.event = event;
 	}
 
+	public String transformNullValue(String inputString) {
+		String returnString;
+		if (inputString == null) {
+			returnString = "-";
+		} else {
+			returnString = inputString;
+		}
+		return returnString;
+	}
+	
 	public String getLogString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(sdf.format(timestamp));
@@ -144,6 +154,26 @@ public class StreamingStatLogEntry {
 		sb.append(escapeLogString(getProgramTitle()));
 		sb.append(";");
 		sb.append(escapeLogString(getProgramStart()));
+		return sb.toString();
+	}
+	
+	public static String getLogStringHeadline() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Timestamp");
+		sb.append(";");
+		sb.append("Connection ID");
+		sb.append(";");
+		sb.append("Event");
+		sb.append(";");
+		sb.append("User ID");
+		sb.append(";");
+		sb.append("Organization ID");
+		sb.append(";");
+		sb.append("Channel ID");
+		sb.append(";");
+		sb.append("Program title");
+		sb.append(";");
+		sb.append("Program start");
 		return sb.toString();
 	}
 	
