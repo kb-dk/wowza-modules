@@ -1,0 +1,127 @@
+<Root>
+	<Application>
+		<!-- Uncomment to set application level timeout values
+		<ApplicationTimeout>60000</ApplicationTimeout>
+		<PingTimeout>12000</PingTimeout>
+		<ValidationFrequency>8000</ValidationFrequency>
+		<MaximumPendingWriteBytes>0</MaximumPendingWriteBytes>
+		<MaximumSetBufferTime>60000</MaximumSetBufferTime>
+		<MaximumStorageDirDepth>25</MaximumStorageDirDepth>
+		-->
+		<Connections>
+			<AutoAccept>true</AutoAccept>
+			<AllowDomains></AllowDomains>
+		</Connections>
+		<!--
+			StorageDir path variables
+			
+			${com.wowza.wms.AppHome} - Application home directory
+			${com.wowza.wms.ConfigHome} - Configuration home directory
+			${com.wowza.wms.context.VHost} - Virtual host name
+			${com.wowza.wms.context.VHostConfigHome} - Virtual host config directory
+			${com.wowza.wms.context.Application} - Application name
+			${com.wowza.wms.context.ApplicationInstance} - Application instance name
+			
+		-->
+		<Streams>
+			<StreamType>default</StreamType>
+            <StorageDir>${com.wowza.wms.context.VHostConfigHome}/streamingContentPreview</StorageDir>
+			<KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
+			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater -->
+			<LiveStreamPacketizers></LiveStreamPacketizers>			
+			<!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
+			<Properties>
+			</Properties>
+		</Streams>
+		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming -->
+		<HTTPStreamers>cupertinostreaming,smoothstreaming</HTTPStreamers>			
+		<SharedObjects>
+			<StorageDir></StorageDir>
+		</SharedObjects>
+		<Client>
+			<IdleFrequency>-1</IdleFrequency>
+			<Access>
+				<StreamReadAccess>*</StreamReadAccess>
+				<StreamWriteAccess>*</StreamWriteAccess>
+				<StreamAudioSampleAccess></StreamAudioSampleAccess>
+				<StreamVideoSampleAccess></StreamVideoSampleAccess>
+				<SharedObjectReadAccess>*</SharedObjectReadAccess>
+				<SharedObjectWriteAccess>*</SharedObjectWriteAccess>
+			</Access>
+		</Client>
+		<RTP>
+			<!-- RTP/Authentication/[type]Methods defined in Authentication.xml. Default setup includes; none, basic, digest -->
+			<Authentication>
+				<PublishMethod>digest</PublishMethod>
+				<PlayMethod>digest</PlayMethod>
+			</Authentication>
+			<!-- RTP/AVSyncMethod. Valid values are: senderreport, systemclock, rtptimecode -->
+			<AVSyncMethod>senderreport</AVSyncMethod>
+			<MaxRTCPWaitTime>12000</MaxRTCPWaitTime>
+			<IdleFrequency>75</IdleFrequency>
+			<RTSPSessionTimeout>90000</RTSPSessionTimeout>
+			<RTSPMaximumPendingWriteBytes>0</RTSPMaximumPendingWriteBytes>
+			<RTSPBindIpAddress></RTSPBindIpAddress>
+			<RTSPConnectionIpAddress>0.0.0.0</RTSPConnectionIpAddress>
+			<RTSPOriginIpAddress>127.0.0.1</RTSPOriginIpAddress>
+			<IncomingDatagramPortRanges>*</IncomingDatagramPortRanges>
+			<!-- Properties defined here will override any properties defined in conf/RTP.xml for any depacketizers loaded by this application -->
+			<Properties>
+			</Properties>
+		</RTP>
+		<MediaCaster>
+			<!-- Properties defined here will override any properties defined in conf/MediaCasters.xml for any MediaCasters loaded by this applications -->
+			<Properties>
+			</Properties>
+		</MediaCaster>
+		<MediaReader>
+			<!-- Properties defined here will override any properties defined in conf/MediaReaders.xml for any MediaReaders loaded by this applications -->
+			<Properties>
+			</Properties>
+		</MediaReader>
+		<MediaWriter>
+			<!-- Properties defined here will override any properties defined in conf/MediaWriter.xml for any MediaWriter loaded by this applications -->
+			<Properties>
+			</Properties>
+		</MediaWriter>
+		<LiveStreamPacketizer>
+			<!-- Properties defined here will override any properties defined in conf/LiveStreamPacketizers.xml for any LiveStreamPacketizers loaded by this applications -->
+			<Properties>
+			</Properties>
+		</LiveStreamPacketizer>
+		<HTTPStreamer>
+			<!-- Properties defined here will override any properties defined in conf/HTTPStreamers.xml for any HTTPStreamer loaded by this applications -->
+			<Properties>
+			</Properties>
+		</HTTPStreamer>
+		<Repeater>
+			<OriginURL></OriginURL>
+			<QueryString><![CDATA[]]></QueryString>
+		</Repeater> 
+		<Modules>
+			<Module>
+				<Name>base</Name>
+				<Description>Base</Description>
+				<Class>com.wowza.wms.module.ModuleCore</Class>
+			</Module>
+			<Module>
+				<Name>properties</Name>
+				<Description>Properties</Description>
+				<Class>com.wowza.wms.module.ModuleProperties</Class>
+			</Module>
+			<Module>
+				<Name>logging</Name>
+				<Description>Client Logging</Description>
+				<Class>com.wowza.wms.module.ModuleClientLogging</Class>
+			</Module>
+			<Module>
+				<Name>flvplayback</Name>
+				<Description>FLVPlayback</Description>
+				<Class>com.wowza.wms.module.ModuleFLVPlayback</Class>
+			</Module> 
+		</Modules>
+		<!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
+		<Properties>
+		</Properties>
+	</Application>
+</Root>
