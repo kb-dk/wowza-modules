@@ -5,18 +5,20 @@ then
     echo "Error in $0 - Invalid Argument Count"
     echo "Syntax: $0 version"
     echo "Example: $0 1.0.4RC2"
+    echo "Previous tags:"
+    svn list https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/ 
     echo 
     exit
 fi
 
 VERSION=$1
-
-SVN_PACKAGE_NAME=DOMS-Wowza-plugin-${VERSION}
-PACKAGE_NAME=doms-wowza-install-package-${VERSION}.zip
+SVN_TAG_NAME=Mediestream-Wowza-plugin-${VERSION}
+PACKAGE_NAME=mediestream-wowza-release-package-${VERSION}
+PACKAGE_WITH_DEPLOY_SCRIPT=${PACKAGE_NAME}_bundle
 
 echo Prepare to:
-echo " - Create tag in SVN : $SVN_PACKAGE_NAME"
-echo " - Create package    : $PACKAGE_NAME"
+echo " - Create tag in SVN : $SVN_TAG_NAME"
+echo " - Create package    : ${PACKAGE_WITH_DEPLOY_SCRIPT}.zip"
 echo 
 echo -n "Do you want to continue:  (y/N) > "
 read answer
@@ -28,28 +30,33 @@ if [ "$answer" != "y" ] && [ "$answer" != "Y" ]
 fi
 echo
 echo Tagging SVN-repository...
-svn copy https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/DOMS-Wowza-plugin-${VERSION} -m "Release candidate ${VERSION}"
+svn copy https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/$SVN_TAG_NAME -m "Release candidate $SVN_TAG_NAME"
 
 echo Exporting tag from SVN-repository...
-svn export https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/DOMS-Wowza-plugin-${VERSION} ~/tmp/wdp_${VERSION}
+svn export https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/$SVN_TAG_NAME ~/tmp/wdp_${VERSION}
 
 echo Build package from export...
 pushd ~/tmp/wdp_${VERSION}
 ant clean package
 
-echo Empty bin folder...
-rm ~/tmp/wdp_${VERSION}/target/package/bin/*
-
+echo Create deploy script for release package
+sed "s/VERSION=\[VERSION_NUMBER\]/VERSION=${VERSION}/g" ~/tmp/wdp_${VERSION}/scripts/deploy-release-package_template.sh | sed "s/PACKAGE_NAME=\[PACKAGE_NAME\]/PACKAGE_NAME=${PACKAGE_NAME}/g" > ~/tmp/${PACKAGE_NAME}_deploy.sh
+chmod +x ~/tmp/${PACKAGE_NAME}_deploy.sh
+ 
 echo Zip package...
 cd ~/tmp/wdp_${VERSION}/target/
-mv package DOMS-Wowza-plugin-${VERSION}_release-package
-zip -r ~/tmp/DOMS-Wowza-plugin-${VERSION}_release-package.zip DOMS-Wowza-plugin-${VERSION}_release-package
+mv package ${PACKAGE_NAME}
+zip -r ~/tmp/${PACKAGE_NAME}.zip ${PACKAGE_NAME}
+cd ~/tmp/
+zip -r ${PACKAGE_WITH_DEPLOY_SCRIPT}.zip ${PACKAGE_NAME}.zip ${PACKAGE_NAME}_deploy.sh
 
 echo Cleanup...
-rm -r ~/tmp/wdp_${VERSION}
+#rm ~/tmp/${PACKAGE_NAME}_deploy.sh
+#rm ~/tmp/${PACKAGE_NAME}.zip
+#rm -r ~/tmp/wdp_${VERSION}
 popd
 
 echo Done
 echo 
-echo Package can be found in: ~/tmp/DOMS-Wowza-plugin-${VERSION}_release-package.zip
+echo Package can be found in: ~/tmp/${PACKAGE_WITH_DEPLOY_SCRIPT}.zip
 echo

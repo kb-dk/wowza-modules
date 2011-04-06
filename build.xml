@@ -24,10 +24,7 @@
               value="${package.build.dir}/applications"/>
     <property name="lib.package.build.dir" value="${package.build.dir}/lib"/>
     <property name="conf.package.build.dir" value="${package.build.dir}/conf"/>
-    <property name="scripts.package.build.dir"
-              value="${package.build.dir}/bin"/>
-    <property name="data.package.build.dir" value="${package.build.dir}/data"/>
-	<property name="statlogs.package.build.dir" value="${package.build.dir}/logs/streamingStatistics"/>
+    <property name="scripts.package.build.dir" value="${package.build.dir}/bin"/>
 	
     <path id="classpath">
         <fileset dir="${wowza.lib.dir}" includes="**/*.jar"/>
@@ -135,12 +132,15 @@
         <mkdir dir="${applications.package.build.dir}/kultur_preview"/>
 
         <!--Package data-->
-        <mkdir  dir="${data.package.build.dir}"/>
-        <mkdir  dir="${statlogs.package.build.dir}"/>
-        <copy todir="${data.package.build.dir}">
+        <mkdir  dir="${package.build.dir}/data"/>
+        <mkdir  dir="${package.build.dir}/logs/streamingStatistics"/>
+        <mkdir  dir="${package.build.dir}/streamingContent"/>
+        <mkdir  dir="${package.build.dir}/streamingContentLive"/>
+        <mkdir  dir="${package.build.dir}/streamingContentPreview"/>
+        <copy todir="${package.build.dir}/data">
             <fileset dir="${core.data.dir}"/>
         </copy>
-        
+
         <!-- Zip content -->
         <zip destfile="${core.build.dir}/${package.filename}"
              basedir="${package.build.dir}"/>
@@ -150,6 +150,6 @@
         <copy file="${scripts.package.build.dir}/deploy-on-VHost.sh"
               todir="${core.build.dir}"/>
     	<chmod dir="${core.build.dir}" perm="ugo+rx" 
-    	       includes="deploy-on-*.sh"/>
+    	       includes="deploy-*.sh"/>
     </target>
 </project>
