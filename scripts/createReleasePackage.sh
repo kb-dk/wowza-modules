@@ -54,9 +54,13 @@ cd ~/tmp/
 zip -r ${PACKAGE_WITH_DEPLOY_SCRIPT}.zip ${PACKAGE_NAME}.zip ${PACKAGE_NAME}_deploy.sh
 
 echo Cleanup...
-#rm ~/tmp/${PACKAGE_NAME}_deploy.sh
-#rm ~/tmp/${PACKAGE_NAME}.zip
-#rm -r ~/tmp/wdp_${VERSION}
+rm ~/tmp/${PACKAGE_NAME}_deploy.sh
+rm ~/tmp/${PACKAGE_NAME}.zip
+rm -r ~/tmp/wdp_${VERSION}
+
+echo Move release package to wowza@iapetus:~/releases
+scp ~/tmp/${PACKAGE_WITH_DEPLOY_SCRIPT}.zip wowza@iapetus:~/releases
+
 popd
 
 echo Done

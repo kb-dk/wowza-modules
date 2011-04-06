@@ -1,7 +1,5 @@
 #!/bin/bash
 
-WOWZA_LIB=../build-libs/wowza/jars/*
-
 #TICKET_SERVER=http://abr-laptop.sb:7880/authchecker-service/tickets
 #TICKET_SERVER=http://alhena:7980/authchecker-service/tickets
 TICKET_SERVER=http://alhena:7880/authchecker-service/tickets
@@ -33,4 +31,4 @@ FILENAME=tv-a.flv
 
 PREVIEW_FILENAME=0/d/0/c/0d0cb165-7469-4456-8f1e-06c79d026d40.preview.flv
 
-java -cp ../target/lib/*:${WOWZA_LIB}:../lib/jersey-1.3/jars/*:../lib/sbutil-0.5.2/jars/* dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool $TICKET_SERVER $USERNAME $RESOURCE $ORGANIZATION_ID $USER_ID $CHANNEL_ID $PROGRAM_TITLE $PROGRAM_START $STREAMING_SERVER $FILENAME $PREVIEW_FILENAME
+java -cp ../target/lib/*:../build-libs/wowza/jars-wowza-version-2.2.3/*:../lib/jersey-1.3/jars/*:../lib/sbutil-0.5.2/jars/* dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool $TICKET_SERVER $USERNAME $RESOURCE $ORGANIZATION_ID $USER_ID $CHANNEL_ID $PROGRAM_TITLE $PROGRAM_START $STREAMING_SERVER $FILENAME $PREVIEW_FILENAME

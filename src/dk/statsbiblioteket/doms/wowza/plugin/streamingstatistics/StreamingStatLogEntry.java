@@ -1,12 +1,16 @@
 package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
 
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
@@ -14,9 +18,13 @@ import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 
 public class StreamingStatLogEntry {
 
-    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+	// Format of log line is "Timestamp;Connection ID;Event;User ID;Organization ID;Channel ID;Program title;Program start"
+    private static Pattern logLinePattern = Pattern.compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
 
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+    private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+	private WMSLogger logger;
+    
     public enum Event{LIVE_STREAMING_START, STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END};
 
 	// Log information
@@ -34,8 +42,14 @@ public class StreamingStatLogEntry {
 	private String channelID;
 	private String programTitle;
 	private String programStart;
-	
-	public StreamingStatLogEntry(IMediaStream stream, Event event, Ticket streamingTicket) {
+
+	public StreamingStatLogEntry(WMSLogger logger, String logLine) throws InvalidLogLineParseException, HeadlineEncounteredException {
+		this.logger = logger;
+        extractLogEntry(logLine);
+	}
+
+	public StreamingStatLogEntry(WMSLogger logger, IMediaStream stream, Event event, Ticket streamingTicket) {
+		this.logger = logger;
 		this.setTimestamp(new Date());
 		this.connectionID = stream.getUniqueStreamIdStr();
 		this.event = event;
@@ -179,6 +193,52 @@ public class StreamingStatLogEntry {
 	
 	protected String escapeLogString(String logLine) {
 		return logLine.replaceAll(";", "[semicolon]");
+	}
+
+	protected void extractLogEntry(String logLine) throws InvalidLogLineParseException, HeadlineEncounteredException {
+		Matcher matcher = logLinePattern.matcher(logLine);
+        if (!matcher.find()) {
+        	throw new InvalidLogLineParseException("Log line does not match the expected pattern. Was: " + logLine);
+        }
+		try {
+			
+			this.setTimestamp(sdf.parse(matcher.group(1)));
+			this.connectionID = matcher.group(2);
+			this.event = getEventFromString(matcher.group(3));
+			this.userID = matcher.group(4);
+			this.organisationID = matcher.group(5);
+			this.channelID = matcher.group(6);
+			this.programTitle = matcher.group(7);
+			this.programStart = matcher.group(8);
+		} catch (ParseException e) {
+			if (getLogStringHeadline().equals(logLine)) {
+				throw new HeadlineEncounteredException("Log line could not be parsed. Was headline: " + logLine);
+			}
+        	throw new InvalidLogLineParseException("Timestamp in log line does not match the expected pattern. Was: " + logLine);
+		}
+	}
+	
+	private Event getEventFromString(String eventString) {
+		Event result = null;
+		if (Event.LIVE_STREAMING_START.toString().equals(eventString)) {
+			result = Event.LIVE_STREAMING_START;
+		} else if (Event.STREAMING_START.toString().equals(eventString)) {
+			result = Event.STREAMING_START;
+		} else if (Event.PLAY.toString().equals(eventString)) {
+			result = Event.PLAY;
+		} else if (Event.PAUSE.toString().equals(eventString)) {
+			result = Event.PAUSE;
+		} else if (Event.STOP.toString().equals(eventString)) {
+			result = Event.STOP;
+		} else if (Event.SEEK.toString().equals(eventString)) {
+			result = Event.SEEK;
+		} else if (Event.STREAMING_END.toString().equals(eventString)) {
+			result = Event.STREAMING_END;
+		}
+		if (result == null) {
+        	throw new IllegalArgumentException("Event in log line does not match the expected pattern. Was: " + eventString);
+		}
+		return result;
 	}
 	
 }
