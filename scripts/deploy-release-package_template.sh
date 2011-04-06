@@ -10,8 +10,11 @@ PACKAGE_NAME=[PACKAGE_NAME]
 
 echo Deploying Wowza plugin - VHost location: $VHOST_LOCATION
 
-echo - Removing previous deploy-setup folder...
-rm -r ~/tmp/${PACKAGE_NAME}-deploy-folder
+if [ -f ~/tmp/${PACKAGE_NAME}-deploy-folder ]
+then
+  echo - Removing previous deploy-setup folder...
+  rm -r ~/tmp/${PACKAGE_NAME}-deploy-folder
+fi
 
 echo - Creating new deploy-setup folder...
 mkdir ~/tmp/${PACKAGE_NAME}-deploy-folder
