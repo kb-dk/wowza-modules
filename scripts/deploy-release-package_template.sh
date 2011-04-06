@@ -23,6 +23,6 @@ echo  - Backup old vhost to ~/tmp...
 mv ${VHOST_LOCATION} ~/tmp/wowza_vhost_kultur_before_${PACKAGE_NAME}
 
 echo - Copy deploy-setup virtual host location..
-cp -r ~/tmp/${PACKAGE_NAME}-deploy-folder $VHOST_LOCATION
+cp -r ~/tmp/${PACKAGE_NAME}-deploy-folder/${PACKAGE_NAME} $VHOST_LOCATION
 
 echo Done.
