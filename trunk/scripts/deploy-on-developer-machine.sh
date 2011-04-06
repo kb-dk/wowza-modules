@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Expect the deploy package to be in the ~/temp/wowza-plugin folder.
-# The script is supposed to run on the server where Wowza resides as the wowza-user.
+# This script installs developer specific configurations, that vary 
+# from the setup in production. See creation of symbolic links.
 
 PACKAGE_NAME=doms-wowza-install-package.zip
 
