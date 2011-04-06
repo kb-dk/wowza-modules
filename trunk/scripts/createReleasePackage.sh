@@ -42,6 +42,9 @@ ant clean package
 echo Create deploy script for release package
 sed "s/VERSION=\[VERSION_NUMBER\]/VERSION=${VERSION}/g" ~/tmp/wdp_${VERSION}/scripts/deploy-release-package_template.sh | sed "s/PACKAGE_NAME=\[PACKAGE_NAME\]/PACKAGE_NAME=${PACKAGE_NAME}/g" > ~/tmp/${PACKAGE_NAME}_deploy.sh
 chmod +x ~/tmp/${PACKAGE_NAME}_deploy.sh
+
+echo Remove shell scripts...
+rm ~/tmp/wdp_${VERSION}/target/package/bin/*
  
 echo Zip package...
 cd ~/tmp/wdp_${VERSION}/target/
