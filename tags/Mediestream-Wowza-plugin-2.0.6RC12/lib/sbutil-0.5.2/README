@@ -1,0 +1,32 @@
+SB Util README
+---------------
+
+ABOUT
+sbutil is a generic Java utility module containing commonly
+needed functionality for coding work done in The State and
+University Library - Statsbiblioteket, of Denmark.
+
+LICENSING
+Beware that sbutil has a version of xstream inlined in the release jar file.
+See lib/xstream-license.txt for details.
+
+The bundled program qaScan-<version>.jar contains an inlined versions of
+Apache's commons-cli and commons-logging as well as log4j.
+
+RELEASING
+When code has been added, do the following:
+
+- Update the version number in build.xml and commit. Compile the the release
+  *from a clean checkout*.
+
+- Ensure that the unit-tests completes (run ant test)
+  (you might need to right click on sbutil under ant and add JUnit.jar as library to ANT)
+  Make sure the tests run both in Idea and from the command line
+
+- Make a release (run ant release)
+  There is now a ZIP file in dist.
+
+- Copy the ZIP files dist/sbutil-<version>{.zip,-apidocs.zip,-src.zip} 
+  to hera:/d12/home/java-3part/sbutil
+
+- Unpack the ZIP file at hera (just for convenience)
