@@ -79,7 +79,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
 		Event logEvent = Event.STREAMING_START;
 		// Test
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		// Validate
 		assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
 		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
@@ -101,7 +101,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
 		Event logEvent = Event.STREAMING_START;
 		// Test
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		// Validate
 		assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
 		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
@@ -127,7 +127,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		Event logEvent = Event.STREAMING_START;
 		String timestamp = "2010-11-15 17:31:05.749";
 		// Test
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		logEntry.setTimestamp(sdf.parse(timestamp));
 		// Validate
 		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;tv2news;Nyheder;2007-03-04T00:00:00+0100";
@@ -149,7 +149,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		Event logEvent = Event.STREAMING_START;
 		String timestamp = "2010-11-15 17:31:05.749";
 		// Test
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		logEntry.setTimestamp(sdf.parse(timestamp));
 		// Validate
 		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;-;Nyheder[semicolon];2007-03-04T00:00:00+0100";
@@ -163,9 +163,63 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		String value = "au.dk";
 		properties.add(new TicketProperty(name, value));
 		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, Event.STREAMING_START, ticket);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, Event.STREAMING_START, ticket);
 		Map<String, String> map = logEntry.createMap(properties);
 		assertEquals(value, map.get(name));
+	}
+
+	@Test
+	public void testExtractLogEntry() throws InvalidLogLineParseException, HeadlineEncounteredException {
+		List<TicketProperty> properties = new ArrayList<TicketProperty>();
+		// Setup user info
+		properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
+		properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+		// Setup program info
+		properties.add(new TicketProperty("metaChannelName", "tv2news"));
+		properties.add(new TicketProperty("metaTitle", "Nyheder"));
+		properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
+		Event logEvent = Event.STREAMING_START;
+		// Test
+		String logEntryString = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket).getLogString();
+		logger.info("Logline as string is: " + logEntryString);
+		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, logEntryString);
+		// Validate
+		assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
+		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
+		assertEquals("StreamingStatLogEntry value", "au.dk", logEntry.getOrganisationID());
+		assertEquals("StreamingStatLogEntry value", "1x1", logEntry.getUserID());
+		assertEquals("StreamingStatLogEntry value", "tv2news", logEntry.getChannelID());
+		assertEquals("StreamingStatLogEntry value", "Nyheder", logEntry.getProgramTitle());
+		assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", logEntry.getProgramStart());
+	}
+	
+	@Test
+	public void testExtractLogEntryThrowingHeadlineEncounteredException() throws InvalidLogLineParseException {
+		// Test
+		String logEntryString = StreamingStatLogEntry.getLogStringHeadline();
+		logger.info("Logline as string is: " + logEntryString);
+		StreamingStatLogEntry logEntry;
+		try {
+			logEntry = new StreamingStatLogEntry(logger, logEntryString);
+			fail();
+		} catch (HeadlineEncounteredException e) {
+			//Expected behavior
+		}
+	}
+	
+	@Test
+	public void testExtractLogEntryThrowingInvalidLogLineParseException() throws HeadlineEncounteredException {
+		// Test
+		String logEntryString = "Some unparseable text";
+		logger.info("Logline as string is: " + logEntryString);
+		StreamingStatLogEntry logEntry;
+		try {
+			logEntry = new StreamingStatLogEntry(logger, logEntryString);
+			fail();
+		} catch (InvalidLogLineParseException e) {
+			//Expected behavior
+		}
 	}
 	
 	private String issueStandardTicket() {
@@ -176,6 +230,14 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		props.add(prop);
 		String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getID();
 		return ticketID;
+	}
+
+	@Override
+	public String toString() {
+		return "StreamingStatLogEntryTest [logger=" + logger + ", ticketTool="
+				+ ticketTool + ", defaultStream=" + defaultStream
+				+ ", defaultIClient=" + defaultIClient
+				+ ", defaultIAppInstance=" + defaultIAppInstance + "]";
 	}
 
 }
