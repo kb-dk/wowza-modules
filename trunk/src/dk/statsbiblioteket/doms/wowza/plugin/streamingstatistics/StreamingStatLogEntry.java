@@ -34,6 +34,9 @@ public class StreamingStatLogEntry {
 	private String connectionID;
 	private Event event;
 	
+	// Ticket information
+	private boolean wasTicketAttached;
+	
 	// User information
 	private String organisationID;
 	private String userID;
@@ -53,6 +56,19 @@ public class StreamingStatLogEntry {
 		this.setTimestamp(new Date());
 		this.connectionID = stream.getUniqueStreamIdStr();
 		this.event = event;
+		this.wasTicketAttached = (streamingTicket != null);
+		if	(this.wasTicketAttached) {
+			retrieveTicketInformation(streamingTicket);
+		} else {
+			this.organisationID = null;
+			this.userID = null;
+			this.channelID = null;
+			this.programTitle = null;
+			this.programStart = null;
+		}
+	}
+
+	private void retrieveTicketInformation(Ticket streamingTicket) {
 		Map<String, String> propertyMap = createMap(streamingTicket.getProperty());
 		if (propertyMap.get("eduPersonTargetedID")!=null) {
 			this.organisationID = propertyMap.get("schacHomeOrganization");
@@ -159,15 +175,27 @@ public class StreamingStatLogEntry {
 		sb.append(";");
 		sb.append(getEvent());
 		sb.append(";");
-		sb.append(escapeLogString(getUserID()));
-		sb.append(";");
-		sb.append(escapeLogString(getOrganisationID()));
-		sb.append(";");
-		sb.append(escapeLogString(getChannelID()));
-		sb.append(";");
-		sb.append(escapeLogString(getProgramTitle()));
-		sb.append(";");
-		sb.append(escapeLogString(getProgramStart()));
+		if (wasTicketAttached) {
+			sb.append(escapeLogString(getUserID()));
+			sb.append(";");
+			sb.append(escapeLogString(getOrganisationID()));
+			sb.append(";");
+			sb.append(escapeLogString(getChannelID()));
+			sb.append(";");
+			sb.append(escapeLogString(getProgramTitle()));
+			sb.append(";");
+			sb.append(escapeLogString(getProgramStart()));
+		} else {
+			sb.append("no user info");
+			sb.append(";");
+			sb.append("no organization info");
+			sb.append(";");
+			sb.append("Rick roll video");
+			sb.append(";");
+			sb.append("Rick roll video");
+			sb.append(";");
+			sb.append("Rick roll video");
+		}
 		return sb.toString();
 	}
 	

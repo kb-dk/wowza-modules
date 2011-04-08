@@ -135,7 +135,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
 			props.put("streamActionNotifier", streamActionNotify);
 		}
 		stream.addClientListener(streamActionNotify);
-		getLogger().info("onStreamCreate: Ready to log Streaming event");
+		getLogger().info("onStreamCreate: Ready to log Streaming event for stream: " + stream);
 		StreamingEventLogger.getInstance().logUserEventStreamingStarted(stream);
 	}
 

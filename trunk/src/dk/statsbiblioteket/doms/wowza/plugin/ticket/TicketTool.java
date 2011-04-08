@@ -56,6 +56,7 @@ public class TicketTool implements TicketToolInterface {
 			.path("/resolveTicket")
 			.queryParam("ID", ticketID)
 			.get(Ticket.class);
+			logger.info("resolveTicket: Ticket received.");
 			return ticketXml;
 
 		}  catch (UniformInterfaceException e) {

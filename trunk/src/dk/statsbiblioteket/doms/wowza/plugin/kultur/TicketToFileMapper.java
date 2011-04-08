@@ -93,8 +93,11 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 
 
 	private Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
+		logger.info("getTicket: Query: " + queryString);
 		String ticketID = QueryUtil.extractTicketID(queryString);
+		logger.info("getTicket: query: " + ticketID);
 		Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
+		logger.info("getTicket: streamingTicket: " + streamingTicket);
 		logger.info("queryString     : " + queryString);
 		logger.info("ticketID        : " + ticketID);
 		return streamingTicket;
