@@ -4,7 +4,7 @@ if [ $# -ne 1 ]
 then
     echo "Error in $0 - Invalid Argument Count"
     echo "Syntax: $0 version"
-    echo "Example: $0 1.0.4RC2"
+    echo "Example: $0 1.0.4rc2"
     echo "Previous tags:"
     svn list https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/ 
     echo 
@@ -44,7 +44,8 @@ sed "s/VERSION=\[VERSION_NUMBER\]/VERSION=${VERSION}/g" ~/tmp/wdp_${VERSION}/scr
 chmod +x ~/tmp/${PACKAGE_NAME}_deploy.sh
 
 echo Remove shell scripts...
-rm ~/tmp/wdp_${VERSION}/target/package/bin/*
+rm ~/tmp/wdp_${VERSION}/target/package/bin/createReleasePackage.sh
+rm ~/tmp/wdp_${VERSION}/target/package/bin/deploy-*
  
 echo Zip package...
 cd ~/tmp/wdp_${VERSION}/target/
