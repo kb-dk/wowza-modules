@@ -181,17 +181,19 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties );
 		Event logEvent = Event.STREAMING_START;
 		// Test
-		String logEntryString = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket).getLogString();
+		StreamingStatLogEntry originalLogEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
+		String logEntryString = originalLogEntry.getLogString();
 		logger.info("Logline as string is: " + logEntryString);
-		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, logEntryString);
+		StreamingStatLogEntry resultingLogEntry = new StreamingStatLogEntry(logger, logEntryString);
 		// Validate
-		assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
-		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
-		assertEquals("StreamingStatLogEntry value", "au.dk", logEntry.getOrganisationID());
-		assertEquals("StreamingStatLogEntry value", "1x1", logEntry.getUserID());
-		assertEquals("StreamingStatLogEntry value", "tv2news", logEntry.getChannelID());
-		assertEquals("StreamingStatLogEntry value", "Nyheder", logEntry.getProgramTitle());
-		assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", logEntry.getProgramStart());
+		assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, resultingLogEntry.getEvent());
+		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), resultingLogEntry.getConnectionID());
+		assertEquals("StreamingStatLogEntry value", "au.dk", resultingLogEntry.getOrganisationID());
+		assertEquals("StreamingStatLogEntry value", "1x1", resultingLogEntry.getUserID());
+		assertEquals("StreamingStatLogEntry value", "tv2news", resultingLogEntry.getChannelID());
+		assertEquals("StreamingStatLogEntry value", "Nyheder", resultingLogEntry.getProgramTitle());
+		assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", resultingLogEntry.getProgramStart());
+		assertEquals("StreamingStatLogEntry objects", originalLogEntry, resultingLogEntry);
 	}
 	
 	@Test

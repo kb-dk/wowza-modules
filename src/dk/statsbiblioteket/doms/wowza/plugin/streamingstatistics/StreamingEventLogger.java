@@ -20,6 +20,7 @@ public class StreamingEventLogger {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final String filenamePrefix = "StreamingStat-";
 	private String statLogFileHomeDir;
 	private File currentStatLogFile;
 	private FileWriter statLogWriter;
@@ -144,7 +145,7 @@ public class StreamingEventLogger {
 			if (statLogWriter!=null) {
 				statLogWriter.close();
 			}
-			String filenameWithCorrectDate = "StreamingStat-" + sdf.format(now) + ".log";
+			String filenameWithCorrectDate = getFilename(now);
 			this.currentStatLogFile = new File(this.statLogFileHomeDir, filenameWithCorrectDate);
 			this.logger.info("Creating log file: " + currentStatLogFile.getAbsolutePath());
 			this.dateForNewLogFile = getFollowingMidnight(now);
@@ -169,5 +170,9 @@ public class StreamingEventLogger {
 
 	protected void setDateForNewLogFile(Date dateForNewLogFile) {
 		this.dateForNewLogFile = dateForNewLogFile;
+	}
+
+	public static String getFilename(Date time) {
+		return filenamePrefix + sdf.format(time) + ".log";
 	}
 }

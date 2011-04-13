@@ -24,6 +24,7 @@ echo - Copy deploy-setup virtual host location
 cp -r ~/tmp/wowza-plugin_deploy-setup $VHOST_LOCATION
 
 echo - Create content folder with content file
+rmdir $VHOST_LOCATION/streamingContent
+rmdir $VHOST_LOCATION/streamingContentPreview
 ln -s ~larm/streamingContent $VHOST_LOCATION/streamingContent
 ln -s ~larm/previewDirectory $VHOST_LOCATION/streamingContentPreview
-mkdir $VHOST_LOCATION/streamingContentLive
