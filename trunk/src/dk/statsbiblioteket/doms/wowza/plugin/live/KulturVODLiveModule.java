@@ -30,7 +30,7 @@ import java.io.File;
 public class KulturVODLiveModule extends ModuleBase implements IModuleOnApp {
 
 	private static String pluginName = "Kultur Live Wowza plugin";
-	private static String pluginVersion = "2.0.8"; 
+	private static String pluginVersion = "2.0.9"; 
 
     public KulturVODLiveModule() {
         super();
@@ -71,7 +71,7 @@ public class KulturVODLiveModule extends ModuleBase implements IModuleOnApp {
 	                        streamFileMapper,
 	                        cr));
 	        // Setup streaming statistics logger
-	        String statLogFileHomeDir = vhostDir + "/" + cr.get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur-live");
+	        String statLogFileHomeDir = cr.get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur-live");
 	        StreamingEventLogger.createInstance(ticketTool, getLogger(), statLogFileHomeDir);
 	        getLogger().info("onAppStart: StreamFileMapper: \""
 	                         + DomsUriToFileMapper.class.getName() + "\".");
