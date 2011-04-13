@@ -40,7 +40,7 @@ import java.util.Map;
 public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
 	private static String pluginName = "Kultur Wowza plugin";
-	private static String pluginVersion = "2.0.8"; 
+	private static String pluginVersion = "2.0.9"; 
 
     public KulturVODModule() {
         super();
@@ -76,7 +76,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
 	        // Set File mapper
 	        appInstance.setStreamFileMapper(ticketToFileMapper);
 	        // Setup streaming statistics logger
-	        String statLogFileHomeDir = vhostDir + "/" + cr.get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur");
+	        String statLogFileHomeDir = cr.get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur");
 	        StreamingEventLogger.createInstance(ticketTool, getLogger(), statLogFileHomeDir);
 	        getLogger().info("onAppStart: StreamFileMapper: \""
 	                         + appInstance.getStreamFileMapper().getClass().getName() + "\".");

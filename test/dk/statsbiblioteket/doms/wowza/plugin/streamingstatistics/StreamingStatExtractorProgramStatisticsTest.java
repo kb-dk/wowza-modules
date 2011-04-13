@@ -89,34 +89,34 @@ public class StreamingStatExtractorProgramStatisticsTest  extends TestCase {
  	public void testAddMultipleEntries() throws InvalidLogLineParseException, HeadlineEncounteredException {
 		StreamingStatExtractorProgramStatistics programStat = new StreamingStatExtractorProgramStatistics(logger);
 		// 4x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-1;Program-1;2011-03-01T20:00:00+0100"));
 		// 5x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-04T20:00:00+0100"));
 		// 3x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-2;Program-1;2011-03-01T20:00:00+0100"));
 		// 1x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-01T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-01T20:00:00+0100"));
 		// 2x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-07T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-07T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-07T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-07T20:00:00+0100"));
 		// 6x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-3;Program-1;2011-03-04T20:00:00+0100"));
 		// 1x
-		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;orgId;Kanal-1;Program-2;2011-02-04T20:00:00+0100"));
+		programStat.add(new StreamingStatLogEntry(logger, "2011-04-12 13:49:26.789;streamID;STREAMING_START;userId;userRole;orgId;Kanal-1;Program-2;2011-02-04T20:00:00+0100"));
 		// Result
 		logger.info(programStat.toString());
 		

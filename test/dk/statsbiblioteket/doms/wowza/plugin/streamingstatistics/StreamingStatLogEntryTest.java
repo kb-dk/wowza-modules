@@ -118,6 +118,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		List<TicketProperty> properties = new ArrayList<TicketProperty>();
 		// Setup user info
 		properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
+		properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
 		properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
 		// Setup program info
 		properties.add(new TicketProperty("metaChannelName", "tv2news"));
@@ -130,7 +131,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		logEntry.setTimestamp(sdf.parse(timestamp));
 		// Validate
-		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;tv2news;Nyheder;2007-03-04T00:00:00+0100";
+		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;some role;au.dk;tv2news;Nyheder;2007-03-04T00:00:00+0100";
 		assertEquals("Log entry", expectedLogString, logEntry.getLogString());
 	}
 	
@@ -140,6 +141,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		List<TicketProperty> properties = new ArrayList<TicketProperty>();
 		// Setup user info
 		properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
+		properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
 		properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
 		// Setup program info
 		properties.add(new TicketProperty("metaChannelName", null));
@@ -152,7 +154,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
 		logEntry.setTimestamp(sdf.parse(timestamp));
 		// Validate
-		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;au.dk;-;Nyheder[semicolon];2007-03-04T00:00:00+0100";
+		String expectedLogString = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;some role;au.dk;-;Nyheder[semicolon];2007-03-04T00:00:00+0100";
 		assertEquals("Log entry", expectedLogString, logEntry.getLogString());
 	}
 	
@@ -173,6 +175,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		List<TicketProperty> properties = new ArrayList<TicketProperty>();
 		// Setup user info
 		properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
+		properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
 		properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
 		// Setup program info
 		properties.add(new TicketProperty("metaChannelName", "tv2news"));
@@ -190,6 +193,7 @@ public class StreamingStatLogEntryTest  extends TestCase {
 		assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), resultingLogEntry.getConnectionID());
 		assertEquals("StreamingStatLogEntry value", "au.dk", resultingLogEntry.getOrganisationID());
 		assertEquals("StreamingStatLogEntry value", "1x1", resultingLogEntry.getUserID());
+		assertEquals("StreamingStatLogEntry value", "some role", resultingLogEntry.getUserRole());
 		assertEquals("StreamingStatLogEntry value", "tv2news", resultingLogEntry.getChannelID());
 		assertEquals("StreamingStatLogEntry value", "Nyheder", resultingLogEntry.getProgramTitle());
 		assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", resultingLogEntry.getProgramStart());

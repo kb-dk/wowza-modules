@@ -19,7 +19,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 public class StreamingStatLogEntry {
 
 	// Format of log line is "Timestamp;Connection ID;Event;User ID;Organization ID;Channel ID;Program title;Program start"
-    private static Pattern logLinePattern = Pattern.compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
+    private static Pattern logLinePattern = Pattern.compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
@@ -39,6 +39,7 @@ public class StreamingStatLogEntry {
 	
 	// User information
 	private String organisationID;
+	private String userRole;
 	private String userID;
 	
 	// Media information
@@ -46,11 +47,12 @@ public class StreamingStatLogEntry {
 	private String programTitle;
 	private String programStart;
 
-	private static final String invalidSessionOrganisationID = "no user info";
-	private static final String invalidSessionUserID = "no organization info";
-	private static final String invalidSessionChannelID = "Rick roll video";
-	private static final String invalidSessionProgramTitle = "Rick roll video";
-	private static final String invalidSessionProgramStart = "Rick roll video";
+	private static final String invalidSessionOrganizationID = "no organization info";
+	private static final String invalidSessionUserRole = "no role info";
+	private static final String invalidSessionUserID = "no user info";
+	private static final String invalidSessionChannelID = "SB rick roll video";
+	private static final String invalidSessionProgramTitle = "SB rick roll video";
+	private static final String invalidSessionProgramStart = "SB rick roll video";
 	
 	public StreamingStatLogEntry(WMSLogger logger, String logLine) throws InvalidLogLineParseException, HeadlineEncounteredException {
 		this.logger = logger;
@@ -68,6 +70,7 @@ public class StreamingStatLogEntry {
 		} else {
 			this.organisationID = null;
 			this.userID = null;
+			this.userRole = null;
 			this.channelID = null;
 			this.programTitle = null;
 			this.programStart = null;
@@ -78,11 +81,14 @@ public class StreamingStatLogEntry {
 		Map<String, String> propertyMap = createMap(streamingTicket.getProperty());
 		if (propertyMap.get("eduPersonTargetedID")!=null) {
 			this.organisationID = propertyMap.get("schacHomeOrganization");
+			this.userRole = propertyMap.get("eduPersonScopedAffiliation");
 			this.userID = propertyMap.get("eduPersonTargetedID");
 		} else {
 			// In this case, the user is not authenticated by WAYF
 			// The user is assumed located in SB. Logging IP-address
+			// SB users does have a role attached
 			this.organisationID = "statsbiblioteket.dk";
+			this.userRole = propertyMap.get("eduPersonScopedAffiliation");
 			this.userID = streamingTicket.getUsername();
 		}
 		this.channelID = propertyMap.get("metaChannelName");
@@ -121,6 +127,14 @@ public class StreamingStatLogEntry {
 
 	public void setOrganisationID(String organisationID) {
 		this.organisationID = organisationID;
+	}
+
+	public String getUserRole() {
+		return transformNullValue(userRole);
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 
 	public String getUserID() {
@@ -184,6 +198,8 @@ public class StreamingStatLogEntry {
 		if (wasTicketAttached) {
 			sb.append(escapeLogString(getUserID()));
 			sb.append(";");
+			sb.append(escapeLogString(getUserRole()));
+			sb.append(";");
 			sb.append(escapeLogString(getOrganisationID()));
 			sb.append(";");
 			sb.append(escapeLogString(getChannelID()));
@@ -194,7 +210,9 @@ public class StreamingStatLogEntry {
 		} else {
 			sb.append(invalidSessionUserID);
 			sb.append(";");
-			sb.append(invalidSessionOrganisationID);
+			sb.append(invalidSessionUserRole);
+			sb.append(";");
+			sb.append(invalidSessionOrganizationID);
 			sb.append(";");
 			sb.append(invalidSessionChannelID);
 			sb.append(";");
@@ -214,6 +232,8 @@ public class StreamingStatLogEntry {
 		sb.append("Event");
 		sb.append(";");
 		sb.append("User ID");
+		sb.append(";");
+		sb.append("User Role");
 		sb.append(";");
 		sb.append("Organization ID");
 		sb.append(";");
@@ -240,10 +260,11 @@ public class StreamingStatLogEntry {
 			this.connectionID = matcher.group(2);
 			this.event = getEventFromString(matcher.group(3));
 			this.userID = matcher.group(4);
-			this.organisationID = matcher.group(5);
-			this.channelID = matcher.group(6);
-			this.programTitle = matcher.group(7);
-			this.programStart = matcher.group(8);
+			this.userRole = matcher.group(5);
+			this.organisationID = matcher.group(6);
+			this.channelID = matcher.group(7);
+			this.programTitle = matcher.group(8);
+			this.programStart = matcher.group(9);
 			this.wasTicketAttached = ((this.channelID != null) && (!this.channelID.equals(invalidSessionChannelID)));
 		} catch (ParseException e) {
 			if (getLogStringHeadline().equals(logLine)) {
@@ -294,6 +315,8 @@ public class StreamingStatLogEntry {
 		result = prime * result
 				+ ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((userID == null) ? 0 : userID.hashCode());
+		result = prime * result
+				+ ((userRole == null) ? 0 : userRole.hashCode());
 		result = prime * result + (wasTicketAttached ? 1231 : 1237);
 		return result;
 	}
@@ -344,6 +367,11 @@ public class StreamingStatLogEntry {
 				return false;
 		} else if (!userID.equals(other.userID))
 			return false;
+		if (userRole == null) {
+			if (other.userRole != null)
+				return false;
+		} else if (!userRole.equals(other.userRole))
+			return false;
 		if (wasTicketAttached != other.wasTicketAttached)
 			return false;
 		return true;
@@ -354,9 +382,11 @@ public class StreamingStatLogEntry {
 		return "StreamingStatLogEntry [timestamp=" + timestamp
 				+ ", connectionID=" + connectionID + ", event=" + event
 				+ ", wasTicketAttached=" + wasTicketAttached
-				+ ", organisationID=" + organisationID + ", userID=" + userID
-				+ ", channelID=" + channelID + ", programTitle=" + programTitle
-				+ ", programStart=" + programStart + "]";
+				+ ", organisationID=" + organisationID + ", userRole="
+				+ userRole + ", userID=" + userID + ", channelID=" + channelID
+				+ ", programTitle=" + programTitle + ", programStart="
+				+ programStart + "]";
 	}
+
 	
 }
