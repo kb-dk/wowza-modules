@@ -67,7 +67,8 @@ public class StreamingStatExtractorTest  extends TestCase {
 		int logSize = 10;
 		BufferedReader logReader = getLogReader(logSize);
 		StreamingStatExtractor extractor = new StreamingStatExtractor(logger, logReader);
-		List<StreamingStatLogEntry> logEntries = extractor.readLog(logReader);
+		extractor.readLog(logReader);
+		List<StreamingStatLogEntry> logEntries = extractor.listOfLogEntries;
 		// Validate
 		assertEquals(logSize, logEntries.size());
 		int i = 0;
@@ -89,7 +90,7 @@ public class StreamingStatExtractorTest  extends TestCase {
 		int logSize = 10;
 		BufferedReader logReader = getLogReader(logSize);
 		StreamingStatExtractor extractor = new StreamingStatExtractor(logger, logReader);
-		extractor.readAndCategorizeLog(logReader);
+		extractor.readLog(logReader);
 		// Validate
 		assertEquals(logSize, extractor.getNumberOfStartedProgramViews());
 	}

@@ -46,6 +46,12 @@ public class StreamingStatLogEntry {
 	private String programTitle;
 	private String programStart;
 
+	private static final String invalidSessionOrganisationID = "no user info";
+	private static final String invalidSessionUserID = "no organization info";
+	private static final String invalidSessionChannelID = "Rick roll video";
+	private static final String invalidSessionProgramTitle = "Rick roll video";
+	private static final String invalidSessionProgramStart = "Rick roll video";
+	
 	public StreamingStatLogEntry(WMSLogger logger, String logLine) throws InvalidLogLineParseException, HeadlineEncounteredException {
 		this.logger = logger;
         extractLogEntry(logLine);
@@ -186,15 +192,15 @@ public class StreamingStatLogEntry {
 			sb.append(";");
 			sb.append(escapeLogString(getProgramStart()));
 		} else {
-			sb.append("no user info");
+			sb.append(invalidSessionUserID);
 			sb.append(";");
-			sb.append("no organization info");
+			sb.append(invalidSessionOrganisationID);
 			sb.append(";");
-			sb.append("Rick roll video");
+			sb.append(invalidSessionChannelID);
 			sb.append(";");
-			sb.append("Rick roll video");
+			sb.append(invalidSessionProgramTitle);
 			sb.append(";");
-			sb.append("Rick roll video");
+			sb.append(invalidSessionProgramStart);
 		}
 		return sb.toString();
 	}
@@ -238,6 +244,7 @@ public class StreamingStatLogEntry {
 			this.channelID = matcher.group(6);
 			this.programTitle = matcher.group(7);
 			this.programStart = matcher.group(8);
+			this.wasTicketAttached = ((this.channelID != null) && (!this.channelID.equals(invalidSessionChannelID)));
 		} catch (ParseException e) {
 			if (getLogStringHeadline().equals(logLine)) {
 				throw new HeadlineEncounteredException("Log line could not be parsed. Was headline: " + logLine);
@@ -267,6 +274,89 @@ public class StreamingStatLogEntry {
         	throw new IllegalArgumentException("Event in log line does not match the expected pattern. Was: " + eventString);
 		}
 		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((channelID == null) ? 0 : channelID.hashCode());
+		result = prime * result
+				+ ((connectionID == null) ? 0 : connectionID.hashCode());
+		result = prime * result + ((event == null) ? 0 : event.hashCode());
+		result = prime * result
+				+ ((organisationID == null) ? 0 : organisationID.hashCode());
+		result = prime * result
+				+ ((programStart == null) ? 0 : programStart.hashCode());
+		result = prime * result
+				+ ((programTitle == null) ? 0 : programTitle.hashCode());
+		result = prime * result
+				+ ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((userID == null) ? 0 : userID.hashCode());
+		result = prime * result + (wasTicketAttached ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		StreamingStatLogEntry other = (StreamingStatLogEntry) obj;
+		if (channelID == null) {
+			if (other.channelID != null)
+				return false;
+		} else if (!channelID.equals(other.channelID))
+			return false;
+		if (connectionID == null) {
+			if (other.connectionID != null)
+				return false;
+		} else if (!connectionID.equals(other.connectionID))
+			return false;
+		if (event != other.event)
+			return false;
+		if (organisationID == null) {
+			if (other.organisationID != null)
+				return false;
+		} else if (!organisationID.equals(other.organisationID))
+			return false;
+		if (programStart == null) {
+			if (other.programStart != null)
+				return false;
+		} else if (!programStart.equals(other.programStart))
+			return false;
+		if (programTitle == null) {
+			if (other.programTitle != null)
+				return false;
+		} else if (!programTitle.equals(other.programTitle))
+			return false;
+		if (timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!timestamp.equals(other.timestamp))
+			return false;
+		if (userID == null) {
+			if (other.userID != null)
+				return false;
+		} else if (!userID.equals(other.userID))
+			return false;
+		if (wasTicketAttached != other.wasTicketAttached)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "StreamingStatLogEntry [timestamp=" + timestamp
+				+ ", connectionID=" + connectionID + ", event=" + event
+				+ ", wasTicketAttached=" + wasTicketAttached
+				+ ", organisationID=" + organisationID + ", userID=" + userID
+				+ ", channelID=" + channelID + ", programTitle=" + programTitle
+				+ ", programStart=" + programStart + "]";
 	}
 	
 }

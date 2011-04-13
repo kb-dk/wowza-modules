@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.logging.WMSLogger;
@@ -60,7 +61,9 @@ public class TicketTool implements TicketToolInterface {
 			return ticketXml;
 
 		}  catch (UniformInterfaceException e) {
-			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.", e);
+			// If the ticket does not exist, i.e. the session has timed out.
+			Status responseStatus = e.getResponse().getClientResponseStatus();
+			logger.info("The session might have timed out. Ticket service response status: " + responseStatus.getStatusCode());
 			return null;
 		}
 	}

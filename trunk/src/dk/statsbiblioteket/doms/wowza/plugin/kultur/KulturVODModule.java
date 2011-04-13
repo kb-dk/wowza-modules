@@ -40,7 +40,7 @@ import java.util.Map;
 public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
 	private static String pluginName = "Kultur Wowza plugin";
-	private static String pluginVersion = "2.0.7"; 
+	private static String pluginVersion = "2.0.8"; 
 
     public KulturVODModule() {
         super();
