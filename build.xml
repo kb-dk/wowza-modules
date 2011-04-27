@@ -133,7 +133,6 @@
 
         <!--Package data-->
         <mkdir  dir="${package.build.dir}/data"/>
-        <mkdir  dir="${package.build.dir}/logs/streamingStatistics"/>
         <mkdir  dir="${package.build.dir}/streamingContent"/>
         <mkdir  dir="${package.build.dir}/streamingContentLive"/>
         <mkdir  dir="${package.build.dir}/streamingContentPreview"/>
