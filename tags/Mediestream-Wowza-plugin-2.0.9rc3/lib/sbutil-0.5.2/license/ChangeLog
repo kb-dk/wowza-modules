@@ -1,0 +1,1819 @@
+2010-10-25 blekinge, toke-sb
+   
+      Feature: Added LRU and time bases caches.
+
+2010-07-29 15:33  hkirk
+
+	* [r254] test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Bugfix: added cleanup
+
+2010-07-29 15:17  hkirk
+
+	* [r253] src/dk/statsbiblioteket/util/Zips.java,
+	  test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Added getZipEntry() method to the Zips class along with a
+	  unittest for this method.
+	  Cleanup Javadoc
+
+2010-06-08 12:48  hkirk
+
+	* [r252] src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Cleanup: Import and override annotations
+
+2010-05-20 11:48  hkirk
+
+	* [r251] build.xml:
+	  
+	  Updated build.xml file, for next build.
+
+2010-05-20 11:43  hkirk
+
+	* [r250] ChangeLog, NEWS, build.xml:
+	  
+	  Updated news and changelog file, prio to 0.5.0 release.
+
+2010-05-20 11:26  hkirk
+
+	* [r249] src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Bugfix: simplified selectBoolean, which contained an error, when
+	  looking for an attribute with value 'false', and default value
+	  also was 'false'.
+
+2010-05-20 11:24  hkirk
+
+	* [r248] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Updated testcases, need to fix a TODO in this file
+
+2010-05-20 10:58  hkirk
+
+	* [r247]
+	  test/dk/statsbiblioteket/util/xml/XPathSelectorImplTest.java:
+	  
+	  Test cases for simplified selectBoolean method
+
+2010-05-04 13:49  toke-sb
+
+	* [r246] src/dk/statsbiblioteket/util/CachedCollator.java,
+	  test/dk/statsbiblioteket/util/CachedCollatorTest.java:
+	  
+	  Bugfix: The CachedCollator compared wrongly when the last
+	  character had secondary or tertiary difference
+
+2010-05-03 13:07  toke-sb
+
+	* [r245] ChangeLog, build.xml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java,
+	  test/data/xml/specific_problem.xml[ADD],
+	  test/dk/statsbiblioteket/util/xml/NamespaceRemoverTest.java:
+	  
+	  Half bugfix: The rules for prefixes for namespace removal was too
+	  strict. They are extended now, but not complete
+
+2010-01-07 08:56  toke-sb
+
+	* [r244] src/dk/statsbiblioteket/util/xml/DOM.java,
+	  src/dk/statsbiblioteket/util/xml/SynchronousXPathSelector.java[CPY],
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Feature: Implemented a thread safe XPathSelector that allows
+	  threaded parallel execution
+	  Bugfix: Made DOM thread safe by using the new XPathSelector
+
+2010-01-07 08:08  mkamstrup
+
+	* [r243] test/data/big.xml[ADD],
+	  test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Include a big XML document for testing purposes (even though we
+	  don't use it yet)
+
+2010-01-06 23:14  mkamstrup
+
+	* [r242] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Formally detect uncaught exceptions in threads in the threaded
+	  test cases for DOM.select*
+
+2010-01-06 23:01  mkamstrup
+
+	* [r241] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Add two unit tests that heavily excercises the DOM.select* API
+	  from 20 threads. They both pass just fine (although I had
+	  expeccted that they wouldn't)
+
+2010-01-06 22:29  mkamstrup
+
+	* [r240] sbutil.ipr:
+	  
+	  Set the project language level to Java 6 in the Idea settings -
+	  this allows for @Override on interface methods
+
+2010-01-06 22:06  mkamstrup
+
+	* [r239] sbutil.iml, sbutil.ipr:
+	  
+	  Re-instate changes to Idea project files from the reverted r237
+
+2010-01-06 22:03  mkamstrup
+
+	* [r238] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Revert r237. There was several problems with this commit:
+	  
+	  * @Override annotations for interface methods are fully legal in
+	  Java6,
+	  so why remove them?
+	  
+	  * Programs expecting DOM.select* methods to be thread safe are
+	  buggy.
+	  Synchronizing XPathSelectorImpl.selectObject() seems entirely the
+	  wrong
+	  solution to what I consider misuse of the DOM.select* API. If we
+	  want
+	  to make DOM.select* thread safe then I would very much like
+	  another solution
+	  
+	  * Mixing lots of Idea project file changes with a critical bugfix
+
+2010-01-06 16:29  toke-sb
+
+	* [r237] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Bugfix: The XPathSelectorImpl was not thread safe and was used
+	  from static methods in DOM. The current fix was to make the
+	  relevant method synchronized, which is a performance killer in
+	  multi threaded applications
+
+2009-12-09 08:32  toke-sb
+
+	* [r236] src/dk/statsbiblioteket/util/CachedCollator.java:
+	  
+	  Performance: Optimized the tight inner loop for cache-based
+	  String comparison for CachedCollator to use direct array-lookups
+	  and modified the arrays to contain the whole char-range
+
+2009-12-02 10:18  mkamstrup
+
+	* [r234] ChangeLog, NEWS, build.xml:
+	  
+	  Release SB Util 0.4.8
+
+2009-12-02 10:00  mkamstrup
+
+	* [r233] sbutil.iml, sbutil.ipr,
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java:
+	  
+	  Out comment an obsolete test case
+
+2009-12-02 08:43  toke-sb
+
+	* [r232] src/dk/statsbiblioteket/util/CachedCollator.java:
+	  
+	  Usability: Added predefined commonChars to the CachedCollator
+
+2009-12-02 08:13  toke-sb
+
+	* [r231] test/dk/statsbiblioteket/util/CachedCollatorTest.java:
+	  
+	  Testing: CachedCollator fix for sorting Strings with spaces is
+	  now tested
+
+2009-12-01 15:36  toke-sb
+
+	* [r230] src/dk/statsbiblioteket/util/CachedCollator.java,
+	  test/dk/statsbiblioteket/util/CachedCollatorTest.java:
+	  
+	  Feature: Added constructors to CachedCollator as well as fix for
+	  sorting Strings with spaces
+
+2009-09-25 10:03  mke
+
+	* [r229] src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Bugfix: The new fast path for namespace ignoring XSLT
+	  transformations was not always used
+
+2009-09-24 11:07  mke
+
+	* [r227] ChangeLog, NEWS, build.xml:
+	  
+	  Release SB Util 0.4.7
+
+2009-09-24 07:52  mke
+
+	* [r226] src/dk/statsbiblioteket/util/Checksums.java:
+	  
+	  Javadoc updates and code style improvements
+
+2009-09-24 07:47  mke
+
+	* [r225] test/dk/statsbiblioteket/util/BytesTest.java:
+	  
+	  Test: Implement some unit tests for the Bytes.toHex() method
+
+2009-09-24 06:53  mke
+
+	* [r224] build.xml, sbutil.iml, sbutil.ipr,
+	  test/dk/statsbiblioteket/util/BytesTest.java[ADD]:
+	  
+	  Test: Add test stub class for the Bytes utility module and add
+	  BytesTest to the list of tests to run from Ant
+
+2009-09-23 11:46  mke
+
+	* [r223] src/dk/statsbiblioteket/util/xml/NamespaceRemover.java:
+	  
+	  Make NamespaceRemover public.
+	  
+	  Javadoc updates for NamespaceRemover
+
+2009-09-23 11:42  mke
+
+	* [r222]
+	  src/dk/statsbiblioteket/util/xml/ParsingNamespaceRemover.java,
+	  src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Performance: Make the XSLT.transform() twice as fast in the case
+	  of namspace ignoring transformations. Normal namespace aware
+	  transformations are not affected.This is achieved tby using the
+	  NamespaceRemover reader instead of a DOM-parsing to strip
+	  namespaces.
+	  
+	  Deprecation: ParsingNamespaceRemover was slow and not very useful
+	  in the light of NamespaceRemover
+
+2009-09-23 11:22  mke
+
+	* [r221] src/dk/statsbiblioteket/util/Strings.java,
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java,
+	  test/dk/statsbiblioteket/util/StringsTest.java,
+	  test/dk/statsbiblioteket/util/xml/NamespaceRemoverTest.java:
+	  
+	  New functionality:
+	  * Add method Strings.asCharSequence(char[]) wrapping a char array
+	  as a CharSequence without any new allocations or memory copying
+	  
+	  * Add method Strings.indexOf(char, CharSequence) and
+	  Strings.indexOf(char, int offset, CharSequence) mirroring the
+	  same
+	  methods on the String class
+	  
+	  * Make NamespaceRemove in the xml package subclass ReplaceReader
+	  
+	  * Add unit tests for all of the above
+
+2009-09-22 11:50  mke
+
+	* [r220] src/dk/statsbiblioteket/util/ByteString.java[DEL],
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java:
+	  
+	  Code style: Rename the MODE enum to Mode and rename its members
+	  to ALLCAPS - to be in style with normal enum conventions
+
+2009-09-22 11:40  mke
+
+	* [r219] src/dk/statsbiblioteket/util/Bytes.java[CPY]:
+	  
+	  Rename ByteString to Bytes
+
+2009-09-22 11:38  mke
+
+	* [r218] src/dk/statsbiblioteket/util/ByteString.java:
+	  
+	  Implement a version of ByteString.toHex() that takes an
+	  Appendable as argument.
+	  
+	  Don't allocate a constant array for all hex characters on each
+	  invocation of toHex()
+
+2009-09-22 11:26  mke
+
+	* [r217] src/dk/statsbiblioteket/util/xml/NamespaceRemover.java,
+	  test/dk/statsbiblioteket/util/xml/NamespaceRemoverTest.java:
+	  
+	  Optimize NamespaceRemover to not compile its three regular
+	  expressions over and over again.
+
+2009-09-03 14:33  abr
+
+	* [r216] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/ByteString.java[ADD],
+	  src/dk/statsbiblioteket/util/DocumentUtils.java[ADD]:
+	  
+	  Added ByteString and DocumentUtils
+
+2009-08-03 09:39  mke
+
+	* [r214] ChangeLog, NEWS, build.xml:
+	  
+	  Make LineReader.binaryLineSearch() package private
+
+2009-06-29 14:00  toke
+
+	* [r213] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Bugfix: Inserted extra checks to LineReader code to make it
+	  handle EOF on readByte. The LineReader now passes the unit-tests
+
+2009-06-26 14:19  toke
+
+	* [r212] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Enhancement: Removed supposedly non-needed code from LineReader.
+	  Misses one unit-test though, so it's not production ready
+
+2009-06-26 11:06  mke
+
+	* [r210] build.xml:
+	  
+	  Bump version to 0.4.6-beta1
+
+2009-06-24 08:08  toke
+
+	* [r209] src/dk/statsbiblioteket/util/LineReader.java:
+	  
+	  Enhancement: The LineReader required an existing file on write.
+	  This limitation has been removed so that the LineReader creates a
+	  file is none is existing when a write-mode is requested
+
+2009-06-23 12:09  toke
+
+	* [r208] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Enhancement: The LineReader binarySearch now uses a single
+	  new-line as delimiter
+
+2009-06-23 11:45  toke
+
+	* [r207] src/dk/statsbiblioteket/util/LineReader.java:
+	  
+	  Bugfix: The binarySearch for LineReader was not public
+
+2009-06-23 11:44  toke
+
+	* [r206] src/dk/statsbiblioteket/util/LineReader.java:
+	  
+	  Bugfix: The binarySearch for LineReader now passes UTF-8 unit
+	  test
+
+2009-06-23 09:05  toke
+
+	* [r205] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Bugfix: Slight change to the binarySearch in LineReader to handle
+	  UTF-8
+
+2009-06-23 08:33  toke
+
+	* [r204] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Bugfix: Made the binary search for the LineReader work
+	  significantly better (only supports single char UTF-8 for now)
+
+2009-06-22 15:02  toke
+
+	* [r203] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  More work on the LineReader binary search
+
+2009-06-22 14:42  toke
+
+	* [r202] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Started work on a line-based binary search for the LineReader
+
+2009-05-28 11:37  mke
+
+	* [r200] ChangeLog, NEWS, build.xml:
+	  
+	  Release SBUtil 0.4.5
+
+2009-05-28 11:36  mke
+
+	* [r199]
+	  test/dk/statsbiblioteket/util/xml/XPathSelectorImplTest.java:
+	  
+	  Add additional unit test to check parallel selectors on different
+	  namespaces
+
+2009-05-28 10:46  mke
+
+	* [r198] src/dk/statsbiblioteket/util/console/Formatter.java,
+	  src/dk/statsbiblioteket/util/console/Table.java[ADD],
+	  test/dk/statsbiblioteket/util/console/TableTest.java[ADD]:
+	  
+	  Import the Layout class from Summa into the console package and
+	  call it Table. It can be used to print formatted tabular layouts
+	  to a terminal
+	  
+	  Add a method to Formatter to render into an Appendable
+
+2009-05-28 08:45  mke
+
+	* [r197] build.xml:
+	  
+	  Fix the 'test' build target when it was run without running the
+	  'release' target first. The issue was that 'test' depended on the
+	  XSLTs being copied over to the build dir by the 'jar' target.
+	  This closes #1607
+
+2009-05-28 08:33  mke
+
+	* [r196] src/dk/statsbiblioteket/util/xml/DOM.java:
+	  
+	  Fix unused imports
+
+2009-05-28 08:33  mke
+
+	* [r195] build.xml, src/dk/statsbiblioteket/util/xml/DOM.java,
+	  src/dk/statsbiblioteket/util/xml/XPathSelector.java,
+	  test/dk/statsbiblioteket/util/xml/XPathSelectorImplTest.java:
+	  
+	  Implement a DOM.streamToDOM method that respects namespaces
+	  
+	  Document all the selector methods on DOM
+	  
+	  Add XPathSelectorImplTest to the list of unit tests in the
+	  build.xml
+
+2009-05-27 13:06  mke
+
+	* [r194] src/dk/statsbiblioteket/util/xml/DOM.java,
+	  src/dk/statsbiblioteket/util/xml/DefaultNamespaceContext.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XPathSelector.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java[ADD],
+	  test/dk/statsbiblioteket/util/xml/XPathSelectorImplTest.java[ADD]:
+	  
+	  Add a namespace aware version of the XPath utilities. This
+	  involves
+	  - Adding the interface XPathSelector (with private impl
+	  XPathSelectorImpl)
+	  - Using DOM.createSelector() as static factory
+	  
+	  Include a DefaultNamespaceContext impl
+
+2009-05-24 21:21  toke
+
+	* [r193] src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/ReplaceFactoryTest.java,
+	  test/dk/statsbiblioteket/util/reader/StringReplacerTest.java:
+	  
+	  Bugfix: When using rules with targets longer than 10 characters
+	  together with ReplaceFactory and Streams, the rules were not
+	  honored
+
+2009-04-02 13:09  mke
+
+	* [r191] build.xml:
+	  
+	  Copy XSLTs from the source tree into the final .jar. This fix
+	  will make it to SBUtil 0.4.4
+
+2009-04-02 12:56  mke
+
+	* [r189] ChangeLog, build.xml:
+	  
+	  Release SBUtil 0.4.4
+	  Add ChangeLog and NEWS to the distributed files
+
+2009-04-02 12:50  mke
+
+	* [r188] NEWS:
+	  
+	  Prepare NEWS file for 0.4.4
+
+2009-04-02 12:22  mke
+
+	* [r187] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Add unit tests for DOM.selectInteger()
+
+2009-04-02 12:17  toke
+
+	* [r186] src/dk/statsbiblioteket/util/xml/DOM.java:
+	  
+	  Feature: Added getInteger to DOM
+
+2009-04-01 10:56  toke
+
+	* [r185] src/dk/statsbiblioteket/util/XProperties.java,
+	  test/dk/statsbiblioteket/util/XPropertiesTest.java:
+	  
+	  Feature: Added constructor to XProperties that throws an
+	  exception is the wanted resource could not be located
+
+2009-03-27 14:42  toke
+
+	* [r184] build.xml, sbutil.iml, sbutil.ipr:
+	  
+	  Bugfix: Corrected dependencies and the build-file to reflect the
+	  change to commons-logging-1.1.1
+
+2009-03-27 14:03  toke
+
+	* [r183]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/ReplaceFactory.java,
+	  src/dk/statsbiblioteket/util/reader/ReplaceReader.java,
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/ReplaceFactoryTest.java,
+	  test/dk/statsbiblioteket/util/reader/ReplacePerformanceTest.java:
+	  
+	  Update: Added clone to ReplaceReaders, making it very cheap to
+	  produce an array of Replacers sharing the same rules by creating
+	  a ReplaceFactory instance
+
+2009-03-25 15:19  toke
+
+	* [r182] src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Update: Changed the behaviour of transform in XSLT to throw
+	  transformation errors and exceptions
+
+2009-03-23 13:17  toke
+
+	* [r181] lib/commons-logging-1.1.1-javadoc.jar[ADD],
+	  lib/commons-logging-1.1.1-sources.jar[ADD],
+	  lib/commons-logging-1.1.1.jar[ADD],
+	  lib/commons-logging-1.1.jar[DEL], sbutil.iml, sbutil.ipr:
+	  
+	  Update: Changed to commons-logging 1.1.1 as it is more
+	  Maven-compatible
+
+2009-03-19 14:45  toke
+
+	* [r180]
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XSLT.java,
+	  test/data/xml/namespace_input.xml,
+	  test/data/xml/namespace_removed.xml[CPY],
+	  test/dk/statsbiblioteket/util/xml/NamespaceRemoverTest.java[ADD],
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java:
+	  
+	  Added first version of a non-DOM-parsing namespace remover. Right
+	  now it performs just as good (or bad) af DOM-parsing
+
+2009-03-19 13:51  toke
+
+	* [r179]
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java[DEL],
+	  src/dk/statsbiblioteket/util/xml/ParsingNamespaceRemover.java[CPY]:
+	  
+	  Refactoring: Renamed NamespaceRemover
+
+2009-03-19 13:08  toke
+
+	* [r178] sbutil.ipr,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java:
+	  
+	  Debug: Micro-tweak to debug from CharReplacer on faulty input
+
+2009-03-19 12:58  toke
+
+	* [r177] src/dk/statsbiblioteket/util/reader/CharReplacer.java:
+	  
+	  Debug: Microtweak to debug from CharReplacer on faulty input
+
+2009-03-19 12:40  toke
+
+	* [r176]
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java:
+	  
+	  Enhancement: AExtra unit-test of indexOf
+
+2009-03-19 12:34  toke
+
+	* [r175]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java:
+	  
+	  Enhancement: Added indexOf to CircularCharBuffer
+
+2009-03-18 16:07  toke
+
+	* [r174] src/dk/statsbiblioteket/util/xml/NamespaceRemover.java,
+	  src/dk/statsbiblioteket/util/xml/XSLT.java,
+	  src/dk/statsbiblioteket/util/xml/namespace_remover.xslt[ADD],
+	  test/data/xml/namespace_input.xml,
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java:
+	  
+	  Experimentation: Using an XSLT to remove the namespaces instead
+	  of a DOM proved to be leff effective, with regard to performance.
+	  The code is committed in the hope that it can be optimized
+
+2009-03-18 14:00  mke
+
+	* [r170] ChangeLog, NEWS, build.xml:
+	  
+	  Release 0.4.3
+
+2009-03-18 13:52  mke
+
+	* [r169] src/dk/statsbiblioteket/util/xml/NamespaceRemover.java:
+	  
+	  Make NamespaceRemover package private
+
+2009-03-18 13:42  toke
+
+	* [r168] src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  JavaDoc: Added general comment to XSLT
+
+2009-03-18 13:39  toke
+
+	* [r167] src/dk/statsbiblioteket/util/xml/LegacyXSLT.java[DEL],
+	  src/dk/statsbiblioteket/util/xml/XSLT.java,
+	  test/data/xml/namespace_expected_correct.xml[ADD],
+	  test/data/xml/namespace_expected_faulty.xml[ADD],
+	  test/data/xml/namespace_input.xml[ADD],
+	  test/data/xml/namespace_transform.xslt[ADD],
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java:
+	  
+	  Refactoring: Moved the legacy.handling of badly namespaces
+	  XML/XSLT's into from LegacyXSLT to XSLT
+
+2009-03-18 12:52  mke
+
+	* [r166]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  test/dk/statsbiblioteket/util/reader/ReplacerTest.java:
+	  
+	  Bug-fixes: Lots of edge cases with empty streams and buffers
+	  fixed
+	  
+	  Bug-fix: Before 0.4.0 CircularCharBuffer.take() was changed to
+	  raise a NoSuchElementException. This was not reflected everywhere
+	  in the code using it - still expecting a
+	  ArrayIndexOutOfBoundsException
+
+2009-03-18 12:39  toke
+
+	* [r165] build.xml,
+	  src/dk/statsbiblioteket/util/xml/LegacyXSLT.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Added legacy-handling class LegacyXSLT that ensures that
+	  namespace-mismatches XML/XSLT transformations works
+
+2009-03-17 18:50  mke
+
+	* [r163] build.xml:
+	  
+	  Fix project.version.extra which was set to -java1.5 by accident
+
+2009-03-17 18:43  mke
+
+	* [r159] ChangeLog, NEWS:
+	  
+	  Release SBUtil 0.4.2
+
+2009-03-17 18:33  mke
+
+	* [r158] build.xml,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java[DEL]:
+	  
+	  Add ability to append a project.version.extra property to the
+	  version string. This way it is easier to handle special builds
+	  like the Java 1.5 port
+	  
+	  Remove obsolete
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java
+	  file after renaming it to *TestBase.java
+
+2009-03-17 15:57  toke
+
+	* [r157] src/dk/statsbiblioteket/util/xml/XSLT.java,
+	  test/data/xml/parameter_expected.xml[CPY],
+	  test/data/xml/parameter_transform.xslt[CPY],
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java:
+	  
+	  Performance: The setting of parameters for transformations was
+	  not optimal
+	  Unit-test: Test for parameter-use with transformations
+
+2009-03-17 13:37  toke
+
+	* [r156]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/ReplacerTest.java,
+	  test/dk/statsbiblioteket/util/reader/StringReplacerTest.java:
+	  
+	  Bugfix: setSource did not work for StringReplacer and
+	  CharReplacer
+
+2009-03-17 12:47  mke
+
+	* [r153] ChangeLog, NEWS, build.xml:
+	  
+	  Release SB Util 0.4.1
+
+2009-03-17 12:36  toke
+
+	* [r152] src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/StringReplacerTest.java:
+	  
+	  Critical bugfix: The StringReplacer lost the final character on
+	  input of length 11 or more
+
+2009-03-16 14:18  mke
+
+	* [r148] ChangeLog[ADD]:
+	  
+	  Release sbutil-0.4.0
+	  
+	  Added ChangeLog to svn
+
+2009-03-16 14:10  mke
+
+	* [r147] NEWS,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestBase.java[CPY],
+	  test/dk/statsbiblioteket/util/rpc/RMIConnectionManagerTest.java,
+	  test/dk/statsbiblioteket/util/rpc/StaticConnectionManagerTest.java:
+	  
+	  Twiddle with NEWS file
+	  
+	  Rename ConnectionManagerTestCase to ConnectionManagerTestBase in
+	  a futile attempt at making Idea understand that it should not run
+	  it as a test (although it still does so, probably because it
+	  extends TestCase)
+
+2009-03-16 14:06  mke
+
+	* [r146]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacer.java:
+	  
+	  Rename CircularCharBuffer.getAll() to takeAll()
+	  
+	  Rename CircularCharBuffer.flushString() to takeString()
+
+2009-03-16 14:01  mke
+
+	* [r145]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java:
+	  
+	  Clarify take() javadocs
+	  
+	  Make take() throw a NoSuchElementException as seems the Java
+	  convention for such methods
+
+2009-03-16 13:52  toke
+
+	* [r144]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  src/dk/statsbiblioteket/util/xml/DOM.java,
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java,
+	  test/dk/statsbiblioteket/util/reader/ReplacePerformanceTest.java:
+	  
+	  Update: Reader-compatible methods added to CircularCharBuffer
+	  get() renamed to take()
+	  get(...) renamed to read(...)
+	  Reader-compatible read() introduced
+
+2009-03-16 13:10  toke
+
+	* [r143]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java:
+	  
+	  Update: Some methods from Queue<Character> added to
+	  CircularCharBuffer. In particular Iterable<Character>
+
+2009-03-16 13:04  mke
+
+	* [r142]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java:
+	  
+	  Clarify class usage with a bit o javadoc
+
+2009-03-16 12:53  toke
+
+	* [r141]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java:
+	  
+	  In progress: Making the CircularCharBuffer a Queue<Character>
+
+2009-03-16 12:36  mke
+
+	* [r140]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java:
+	  
+	  Replace CircularCharBuffer.put(String) with the more general
+	  put(CharSequence). This way one can insert a char buffer into
+	  another in a dual way to get(CircularCharBuffer, int)
+
+2009-03-16 12:18  toke
+
+	* [r139]
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java:
+	  
+	  Unit-test: asCharBuffer for CircularCharBuffer
+	  Bugfix: asCharBuffer in CircularCharBuffer
+
+2009-03-16 11:21  mke
+
+	* [r138] build.xml:
+	  
+	  Add test cases for all the new classes to the Ant script
+	  
+	  Re-enable the LineReader tests
+
+2009-03-16 11:14  mke
+
+	* [r137] NEWS[ADD], src/dk/statsbiblioteket/util/xml/DOM.java:
+	  
+	  Allow controlling the cache size of the compiled xpath
+	  expressions via a system property, sbutil.xpath.cache. Default
+	  cache size is 10
+	  
+	  Write a NEWS file
+
+2009-03-16 10:59  toke
+
+	* [r136] sbutil.ipr, src/dk/statsbiblioteket/util/xml/XSLT.java,
+	  test/data/xml[ADD], test/data/xml/expected1.xml[ADD],
+	  test/data/xml/expected2.xml[ADD],
+	  test/data/xml/trivial_input.xml[ADD],
+	  test/data/xml/trivial_transform1.xslt[ADD],
+	  test/data/xml/trivial_transform2.xslt[ADD],
+	  test/dk/statsbiblioteket/util/xml/XSLTTest.java[ADD]:
+	  
+	  Unit-test: threaded calls to XSLT.transform
+
+2009-03-16 10:45  mke
+
+	* [r135]
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java,
+	  src/dk/statsbiblioteket/util/reader/ReplaceFactory.java,
+	  src/dk/statsbiblioteket/util/reader/ReplaceReader.java,
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java,
+	  src/dk/statsbiblioteket/util/reader/TextTransformer.java,
+	  src/dk/statsbiblioteket/util/xml/XMLUtil.java,
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacer.java,
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacerTest.java,
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java,
+	  test/dk/statsbiblioteket/util/reader/ReplacePerformanceTest.java,
+	  test/dk/statsbiblioteket/util/reader/StringReplacerTest.java,
+	  test/dk/statsbiblioteket/util/xml/XMLUtilTest.java:
+	  
+	  Make ReplaceReader subclass FilterReader and make all subclasses
+	  use the protected 'in' Reader member of FilterReader
+	  
+	  Add constructors to all ReplaceReaders taking a source reader ass
+	  first arg next to the rule map
+	  
+	  Likewise add methods to ReplaceFactory taking a source reader as
+	  first arg next to the rule map
+	  
+	  Add "'" -> "&apos;" escaping to XMLUtil.encode()
+	  
+	  Make TextTransformer.setSource() methods always return 'this'.
+	  Note that this also affects all ReplaceReaders
+	  
+	  Implement CharSequence interface on top of CircularCharBuffer.
+	  This is unit tested, although one of the unit tests fail while
+	  checking the maximum allowed size of a child buffer allocated
+	  with buf.subSequence().
+
+2009-03-13 14:19  mke
+
+	* [r134] src/dk/statsbiblioteket/util/Strings.java,
+	  test/dk/statsbiblioteket/util/StringsTest.java:
+	  
+	  Make Strings.join() use the thread local StringBuilder we already
+	  have in the Strings class
+	  
+	  Add more unit tests for Strings
+
+2009-03-13 13:42  mke
+
+	* [r133] src/dk/statsbiblioteket/util/xml/XMLUtil.java:
+	  
+	  Javadoc cosmetics
+
+2009-03-13 13:41  mke
+
+	* [r132] src/dk/statsbiblioteket/util/Strings.java,
+	  src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Add convenience variants of Strings.flush()
+	  
+	  Cosmetics in XSLT
+
+2009-03-13 13:22  mke
+
+	* [r131] src/dk/statsbiblioteket/util/Strings.java,
+	  src/dk/statsbiblioteket/util/reader/ReplaceFactory.java,
+	  src/dk/statsbiblioteket/util/xml/XMLUtil.java,
+	  test/dk/statsbiblioteket/util/StringsTest.java,
+	  test/dk/statsbiblioteket/util/xml/XMLUtilTest.java[ADD]:
+	  
+	  Add convenience method to ReplaceFactory taking a variable number
+	  of strings defining the rule map
+	  
+	  Add methods Strings.flush() and Strings.flushLocal() that dumps a
+	  Reader into a String with a minimum memory overhead. Also add
+	  unit tests for this
+	  
+	  Optimize the XMLUtil.encode() method by using a thread local
+	  ReplaceReader and the new Strings.flushLocal() method. Also add
+	  unit test for this
+
+2009-03-13 12:15  mke
+
+	* [r130] src/dk/statsbiblioteket/util/xml/DOM.java,
+	  src/dk/statsbiblioteket/util/xml/LRUCache.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/LocalConnectionManagerTest.java[DEL],
+	  test/dk/statsbiblioteket/util/xml[ADD],
+	  test/dk/statsbiblioteket/util/xml/DOMSelectTest.java[ADD]:
+	  
+	  Tweak API of xml.DOM to be more uniform and simple and introduce
+	  a collection of convenience methods
+	  
+	  Implement thread local caching of compiled XPath expression in
+	  xml.DOM. The way it was done before the xpath expression where
+	  compiled several times on each request.
+	  
+	  Implement an (package private) LRUCahe for statement caching and
+	  what not in the xml package
+
+2009-03-12 22:00  toke
+
+	* [r129] src/dk/statsbiblioteket/util/xml/DOM.java:
+	  
+	  Copied missing methods from XmlOperations in webcommons to DOM
+
+2009-03-12 15:59  toke
+
+	* [r128] src/dk/statsbiblioteket/util/xml[ADD],
+	  src/dk/statsbiblioteket/util/xml/DOM.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XMLUtil.java[ADD],
+	  src/dk/statsbiblioteket/util/xml/XSLT.java[ADD]:
+	  
+	  Initial version of XML-helpers. Needs unit-testing and some
+	  methods moved from XmlOperations in webcommons
+
+2009-03-12 15:05  mke
+
+	* [r127] build.xml, sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/LineReader.java,
+	  src/dk/statsbiblioteket/util/Profiler.java,
+	  src/dk/statsbiblioteket/util/reader[CPY],
+	  src/dk/statsbiblioteket/util/reader/CharArrayReplacer.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/CharReplacer.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/CharSequenceReader.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/CircularCharBuffer.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/ReplaceFactory.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/ReplaceReader.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/StringReplacer.java[CPY],
+	  src/dk/statsbiblioteket/util/reader/TextTransformer.java[CPY],
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  src/dk/statsbiblioteket/util/rpc/StaticConnectionFactory.java[ADD],
+	  test/dk/statsbiblioteket/util/LineReaderTest.java,
+	  test/dk/statsbiblioteket/util/ProfilerTest.java,
+	  test/dk/statsbiblioteket/util/reader[CPY],
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacer.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/BaselineReplacerTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/CharSequenceReaderTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/CircularCharBufferTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/ReplaceFactoryTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/ReplacePerformanceTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/ReplacerTest.java[CPY],
+	  test/dk/statsbiblioteket/util/reader/StringReplacerTest.java[CPY],
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java,
+	  test/dk/statsbiblioteket/util/rpc/StaticConnectionManagerTest.java[CPY],
+	  test/log4j.xml:
+	  
+	  Import branch sbutil-signalling-reader with Toke's work on a
+	  streaming replacement framework. See the new 'reader' packe
+	  
+	  Bump version number to 0.4.0
+	  
+	  Import CharSequenceReader from Summa/Common
+	  
+	  Implement a StaticConnectionFactory for the rpc package allowing
+	  'local rpc'
+	  
+	  Fix bug in ConnectionManagerTest where we only waited x2 timeout.
+	  This had a race with the clean up thread meaning that we must
+	  minimally wait x3 timeout
+
+2009-02-21 23:37  toke
+
+	* [r122] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Added some unit-tests for the LineReader
+
+2009-02-20 11:10  toke
+
+	* [r121] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Unit-test: Added test for closing, deleting and re-creating files
+
+2009-02-16 10:10  toke
+
+	* [r116] src/dk/statsbiblioteket/util/Profiler.java,
+	  test/dk/statsbiblioteket/util/ProfilerTest.java:
+	  
+	  Feature: Verbose status for Profiler
+
+2009-01-28 20:08  mke
+
+	* [r102] src/dk/statsbiblioteket/util/CircularCharBuffer.java[DEL],
+	  src/dk/statsbiblioteket/util/ReplaceReader.java[DEL],
+	  test/dk/statsbiblioteket/util/CircularCharBufferTest.java[DEL],
+	  test/dk/statsbiblioteket/util/ReplaceReaderTest.java[DEL]:
+	  
+	  Move Tokes fast ReplaceReader implementation into the
+	  'sbutil-signalling-reader' branch
+
+2009-01-27 01:26  toke
+
+	* [r93] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/CircularCharBuffer.java[ADD],
+	  src/dk/statsbiblioteket/util/ReplaceReader.java[ADD],
+	  test/dk/statsbiblioteket/util/CircularCharBufferTest.java[ADD],
+	  test/dk/statsbiblioteket/util/ReplaceReaderTest.java[ADD]:
+	  
+	  Added ReplaceReader, the helper-class CircularCharBuffer and
+	  Unit-tests
+
+2008-12-04 10:25  mke
+
+	* [r90] scripts/sshbg:
+	  
+	  Fix static ref to pc286 in sshbg
+
+2008-12-04 10:09  mke
+
+	* [r89] scripts/sshbg[ADD]:
+	  
+	  Initial import of the sshbg script - used to background a ssh job
+	  with correctly set user environment
+
+2008-10-23 14:21  mke
+
+	* [r88] scripts/fiendish[ADD]:
+	  
+	  Initial import of the `fiendish' script to daemonize shell
+	  commands
+
+2008-10-20 10:43  mke
+
+	* [r86] build.xml:
+	  
+	  Release 0.3.4
+
+2008-10-20 10:34  mke
+
+	* [r85] sbutil.ipr,
+	  src/dk/statsbiblioteket/util/watch/FolderWatcher.java,
+	  src/dk/statsbiblioteket/util/watch/RecursiveFolderWatcher.java[ADD],
+	  test/dk/statsbiblioteket/util/watch/RecursiveFolderWatcherTest.java[ADD]:
+	  
+	  Implement a RecursiveFolderWatcher that can monitor a directory
+	  structure for changes to a configurable depth.
+	  
+	  Apply micro tweaks to FolderWatcher to make it better suited for
+	  sub classing
+
+2008-09-03 12:08  toke
+
+	* [r84] src/dk/statsbiblioteket/util/XProperties.java:
+	  
+	  Bugfix: store did not accept absolute paths
+
+2008-09-02 07:49  mke
+
+	* [r83] build.xml:
+	  
+	  Bump to version 0.3.3
+	  
+	  RELEASE 0.3.3
+
+2008-09-02 07:44  mke
+
+	* [r82] test/dk/statsbiblioteket/util/FilesTest.java:
+	  
+	  Remove debugging test case that should never have been committed
+
+2008-09-01 12:50  toke
+
+	* [r81] src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Bugfix: Linereader did not work for randomized writes
+
+2008-08-28 15:42  toke
+
+	* [r80] test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Discovered an error in LineReader. The unit-test LineReaderTest
+	  demonstrates it. Not fixed yet
+
+2008-08-28 15:20  toke
+
+	* [r79] src/dk/statsbiblioteket/util/CachedCollator.java,
+	  src/dk/statsbiblioteket/util/LineReader.java,
+	  test/dk/statsbiblioteket/util/LineReaderTest.java:
+	  
+	  Removed a delaying log-call in LineReader and added a Unit test
+
+2008-08-28 13:09  toke
+
+	* [r78] src/dk/statsbiblioteket/util/CachedCollator.java,
+	  test/dk/statsbiblioteket/util/CachedCollatorTest.java,
+	  test/log4j.xml:
+	  
+	  More unit-tests to CachedCollator
+
+2008-08-28 09:10  mke
+
+	* [r77] test/dk/statsbiblioteket/util/StringsTest.java:
+	  
+	  Build fix
+
+2008-08-28 09:10  mke
+
+	* [r76]
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java:
+	  
+	  Add unit test for ProcessRunner to run a command with an arg
+	  containing a white space
+
+2008-08-28 09:03  mke
+
+	* [r75]
+	  src/dk/statsbiblioteket/util/FilePermissionException.java[ADD],
+	  src/dk/statsbiblioteket/util/Files.java,
+	  src/dk/statsbiblioteket/util/InvalidFileTypeException.java[ADD],
+	  test/dk/statsbiblioteket/util/FilesTest.java:
+	  
+	  Commit base work for atomic impl of Files.move(). TE to complete
+	  it by making the copy/delete fallback atomic
+
+2008-08-27 11:35  mke
+
+	* [r74] src/dk/statsbiblioteket/util/Strings.java:
+	  
+	  Add method Strings.join() taking an array of objects instead of a
+	  collection
+
+2008-08-17 20:32  mke
+
+	* [r73] src/dk/statsbiblioteket/util/console/ProcessRunner.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionContext.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  src/dk/statsbiblioteket/util/watch/FolderWatcher.java:
+	  
+	  Daemonize all thread usage. This allows the JVM to exit even
+	  though the daemonized thread is still alive.
+	  
+	  Add convenience method ConnectionManager.checkError(), to mark a
+	  connection as broken if a throwable arg is of a
+	  connection-problem-related type
+
+2008-08-06 13:26  mke
+
+	* [r71] MAINTAINERS:
+	  
+	  Fix typos.
+	  
+	  RELEASE 0.3.2
+
+2008-08-06 13:18  abr
+
+	* [r70] build.xml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/console/ProcessRunner.java,
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java:
+	  
+	  ProcessRunner updated with the Planets changes
+
+2008-08-06 12:59  mke
+
+	* [r69] src/dk/statsbiblioteket/util/rpc/ConnectionManager.java:
+	  
+	  Fix incredibale sneaky race condition in the ConnectionManager's
+	  ConnectionMonitor thread, triggered by the new scheduler in the
+	  linux kernel of Ubuntu Hardy Heron.
+	  
+	  Short description: The monitor thread picked up the default
+	  linger time from the manager before it was set by the unit test.
+	  Ie the new scheduler switched to the monitor thread faster than
+	  the old scheduler.
+
+2008-08-06 09:50  mke
+
+	* [r68]
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java:
+	  
+	  Add assertion text at a place where we often appear to fail.
+	  Again :-)
+
+2008-08-06 09:48  mke
+
+	* [r67]
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java:
+	  
+	  Add assertion text at a place where we often appear to fail.
+
+2008-08-06 09:47  mke
+
+	* [r66] src/dk/statsbiblioteket/util/rpc/ConnectionManager.java:
+	  
+	  Add more logging
+
+2008-08-06 09:23  mke
+
+	* [r65] src/dk/statsbiblioteket/util/rpc/ConnectionContext.java:
+	  
+	  Make ConnectionContext.ref() and ConnectionContext.unref()
+	  public.
+
+2008-08-06 08:19  mke
+
+	* [r64] src/dk/statsbiblioteket/util/console/ProcessRunner.java,
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java:
+	  
+	  Add varargs constructor ProcessRunner(String... commands) so we
+	  don't have to do Arrays.asList() all the time.
+	  
+	  Add unit test for new constructor.
+	  
+	  Fix HUGE bug where ProcessRunner calls wait() where it should
+	  have called Thread.sleep(). I wonder how ProcessRunner ever
+	  worked.
+
+2008-08-06 07:55  mke
+
+	* [r63] src/dk/statsbiblioteket/util/Zips.java,
+	  test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Introduce new methods Zips.gzipBuffer() and Zips.gunzipBuffer()
+	  and corresponding unit tests
+
+2008-06-13 12:25  toke
+
+	* [r62] src/dk/statsbiblioteket/util/Streams.java,
+	  test/dk/statsbiblioteket/util/FilesTest.java,
+	  test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  readLong method to Streams, unit-test for Files
+
+2008-03-28 09:31  abr
+
+	* [r61] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Updated javadoc
+
+2008-03-14 13:00  toke
+
+	* [r60] build.xml:
+	  
+	  Bumped sbutil version to 0.3.2 in preparation of a new release
+
+2008-03-14 12:54  toke
+
+	* [r59] src/dk/statsbiblioteket/util/Profiler.java:
+	  
+	  Removed Calendar-usage from Profiler constructor
+	  (System.currentTimeMillis is used instead). Added pause/unpause
+
+2008-03-14 12:52  toke
+
+	* [r58] src/dk/statsbiblioteket/util/Profiler.java:
+	  
+	  Added unit-test for Profiler pause
+
+2008-03-14 12:51  toke
+
+	* [r57] test/dk/statsbiblioteket/util/ProfilerTest.java:
+	  
+	  Added unit-test for Profiler pause
+
+2008-03-03 14:35  toke
+
+	* [r56] test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Added half a unit-test for ZIPping with permissions
+
+2008-02-04 11:02  abr
+
+	* [r55] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Updated javadoc
+
+2008-02-04 08:54  abr
+
+	* [r54] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Minor minor bug in processrunner
+
+2008-02-04 08:52  abr
+
+	* [r53] build.xml,
+	  src/dk/statsbiblioteket/util/console/ProcessRunner.java,
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java:
+	  
+	  ProcessRunner is now Runnable. Has a better, more consistent
+	  interface. Has a lot of deprecated methods. Release 0.3.1
+
+2008-01-25 09:58  mke
+
+	* [r52] src/dk/statsbiblioteket/util/watch/FolderWatcher.java:
+	  
+	  Fix logging domain from LineReader to FolderWatcher
+
+2008-01-24 08:14  abr
+
+	* [r51] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Better interface to ProcessRunner
+
+2008-01-21 15:19  abr
+
+	* [r49] src/dk/statsbiblioteket/util/XProperties.java:
+	  
+	  Javadoc format error, very minor, fixed
+
+2008-01-21 14:00  mke
+
+	* [r48] build.xml:
+	  
+	  RELEASE 0.3.0
+
+2008-01-21 13:54  mke
+
+	* [r47] test/dk/statsbiblioteket/util/XPropertiesTest.java,
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java:
+	  
+	  Fix test cases broken due to recent API changes.
+
+2008-01-21 13:51  mke
+
+	* [r46] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Clean up javadocs
+
+2008-01-21 13:40  mke
+
+	* [r45] src/dk/statsbiblioteket/util/Projects.java,
+	  src/dk/statsbiblioteket/util/Streams.java,
+	  src/dk/statsbiblioteket/util/XProperties.java,
+	  test/dk/statsbiblioteket/util/StreamsTest.java:
+	  
+	  This change introduces API breaks.
+	  
+	  Rename document root of serialized XProperties to 'xstream' from
+	  'xproperties'. This resolves bug
+	  https://gforge.statsbiblioteket.dk/tracker/index.php?func=detail&aid=1189
+	  
+	  Create Streams.pipe() methods and deprecate Streams.pipeStream().
+	  
+	  Deprecate the whole Projects class since it was buggy at a
+	  fundamental (unresolvable) level
+
+2008-01-21 12:35  mke
+
+	* [r44] src/dk/statsbiblioteket/util/qa/QAInfo.java:
+	  
+	  Update javadocs with comments from the DOMS team
+
+2008-01-21 09:53  abr
+
+	* [r43] src/dk/statsbiblioteket/util/console/ProcessRunner.java:
+	  
+	  Extra constructors for ProcessRunner
+
+2008-01-18 12:33  mke
+
+	* [r42] src/dk/statsbiblioteket/util/console/Formatter.java,
+	  test/dk/statsbiblioteket/util/console/FormatterTest.java:
+	  
+	  Add method to reset the style. Make package private members
+	  private. This is technically an API break, but we are going to
+	  break API for 0.3.0 anyways...
+
+2008-01-18 11:06  mke
+
+	* [r41]
+	  src/dk/statsbiblioteket/util/console/NativeRunner.java[DEL],
+	  test/dk/statsbiblioteket/util/console/NativeRunnerTest.java[DEL]:
+	  
+	  Remove obsolete files
+
+2008-01-18 11:05  mke
+
+	* [r40] build.xml,
+	  src/dk/statsbiblioteket/util/console/ProcessRunner.java[ADD],
+	  test/dk/statsbiblioteket/util/console/ProcessRunnerTest.java[ADD]:
+	  
+	  Rename NativeRunner to ProcessRunner
+
+2008-01-17 14:58  mke
+
+	* [r39] build.xml,
+	  src/dk/statsbiblioteket/util/NativeExecution[DEL],
+	  src/dk/statsbiblioteket/util/console/NativeRunner.java[ADD],
+	  test/dk/statsbiblioteket/util/NativeExecution[DEL],
+	  test/dk/statsbiblioteket/util/console/NativeRunnerTest.java[CPY]:
+	  
+	  WARNING: API break. Move NativeRunner to the console package.
+
+2008-01-17 14:16  mke
+
+	* [r38] src/dk/statsbiblioteket/util/XProperties.java:
+	  
+	  Fix class javadoc header
+	  
+	  Better error reporting when we encounter buggy XProperties input
+	  streams
+
+2008-01-17 12:10  mke
+
+	* [r37] build.xml:
+	  
+	  Add tests for NativeRunner to the test cases run by the "test"
+	  build target
+
+2008-01-17 12:09  mke
+
+	* [r36] test/dk/statsbiblioteket/util/XPropertiesTest.java:
+	  
+	  Fix unit tests to clean up any added system properties. If we
+	  didn't do this other tests would fail because of the unexpected
+	  properties loaded automatically by the "new XProperties()"
+	  statement.
+
+2008-01-17 10:54  mke
+
+	* [r35] build.xml,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTest.java[DEL]:
+	  
+	  Delete obsolete test class
+	  
+	  Make "test" build target use the RMIConnectionManagerTest
+
+2008-01-17 10:53  mke
+
+	* [r34]
+	  test/dk/statsbiblioteket/util/NativeExecution/NativeRunnerTest.java:
+	  
+	  Add test for null environments
+
+2008-01-17 10:29  mke
+
+	* [r33] src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTestCase.java[CPY],
+	  test/dk/statsbiblioteket/util/rpc/LocalConnectionManagerTest.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/RMIConnectionManagerTest.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRemoteIFaceImpl.java:
+	  
+	  Make the ConnectionManager.close() method interrupt its
+	  ConnectionMonitor thread properly.
+	  
+	  Restructure test cases for said class to be more modular.
+
+2008-01-16 16:08  abr
+
+	* [r32]
+	  src/dk/statsbiblioteket/util/NativeExecution/NativeRunner.java:
+	  
+	  Minor NullPointer fix
+
+2008-01-16 12:31  mke
+
+	* [r31] test/dk/statsbiblioteket/util/XPropertiesTest.java:
+	  
+	  Add test for storing and loading XProperties
+
+2008-01-15 09:21  mke
+
+	* [r29] build.xml:
+	  
+	  RELEASE 0.2.4
+
+2008-01-15 09:16  mke
+
+	* [r28] src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  test/dk/statsbiblioteket/util/StringsTest.java:
+	  
+	  Kill a few compiler warnings by using generics in StringsTest
+	  
+	  Relax some of the generics in ConnectionManager
+
+2008-01-15 09:07  abr
+
+	* [r27] src/dk/statsbiblioteket/util/NativeExecution[ADD],
+	  src/dk/statsbiblioteket/util/NativeExecution/NativeRunner.java[ADD],
+	  test/dk/statsbiblioteket/util/NativeExecution[ADD],
+	  test/dk/statsbiblioteket/util/NativeExecution/NativeRunnerTest.java[ADD]:
+	  
+	  Added and reworked the NativeRunner provided byte TE.
+
+2008-01-14 15:42  mke
+
+	* [r26]
+	  test/dk/statsbiblioteket/util/rpc/RelayedIFaceConsumer.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRelayIFace.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRelayIFaceImpl.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRemoteIFaceImpl.java:
+	  
+	  Include a test that shows that it is possible to relay RMI
+	  connections and then close the intermidiate host and still have
+	  the connection working.
+
+2008-01-14 14:11  mke
+
+	* [r25] src/dk/statsbiblioteket/util/rpc/ConnectionFactory.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  src/dk/statsbiblioteket/util/rpc/RMIConnectionFactory.java:
+	  
+	  Optimize connection creation time in RMIConnectionFactory
+	  
+	  Make sure we close the monitor thread in ConnectionManager, by
+	  invoking it from finalize().
+
+2008-01-14 13:46  mke
+
+	* [r24] src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTest.java:
+	  
+	  Use looser generics to allow the connection factory to use
+	  specialized connection classes.
+
+2008-01-11 13:35  mke
+
+	* [r23] src/dk/statsbiblioteket/util/rpc/RMIConnectionFactory.java:
+	  
+	  Suppress unchecked cast warnings
+
+2008-01-11 13:34  mke
+
+	* [r22] test/log4j.xml:
+	  
+	  Bump log level (in tests) to INFO. This fixes bug 1183.
+
+2008-01-08 08:42  toke
+
+	* [r21] test/dk/statsbiblioteket/util/LineReaderTest.java,
+	  test/log4j.xml:
+	  
+	  Changes the output-level for test-logging til DEBUG instead of
+	  TRACE, as TRACE prduces excessive amount of information when
+	  unit-testing
+
+2008-01-03 13:37  mke
+
+	* [r20] build.xml:
+	  
+	  Use 512 mb heap size in unit tests
+	  
+	  Disable LineReader unit tests because of excessive RAM usage (bug
+	  1183)
+	  
+	  RELEASE 0.2.3
+
+2008-01-03 10:15  mke
+
+	* [r19] build.xml,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionContext.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionFactory.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  src/dk/statsbiblioteket/util/rpc/RMIConnectionFactory.java:
+	  
+	  Extensive doc updates
+	  
+	  Don't include private symbols in Javadoc (only protected and
+	  public)
+
+2008-01-02 14:27  mke
+
+	* [r18] src/dk/statsbiblioteket/util/rpc/ConnectionContext.java,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java,
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTest.java:
+	  
+	  Add test case for reportError on the ConnectionManager.
+	  
+	  Javadoc updates
+
+2008-01-02 14:05  mke
+
+	* [r17] sbutil.ipr,
+	  src/dk/statsbiblioteket/util/rpc/ConnectionContext.java[ADD],
+	  src/dk/statsbiblioteket/util/rpc/ConnectionFactory.java[ADD],
+	  src/dk/statsbiblioteket/util/rpc/ConnectionManager.java[ADD],
+	  src/dk/statsbiblioteket/util/rpc/RMIConnectionFactory.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/ConnectionManagerTest.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestConnectionFactory.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestIFace.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRemoteIFace.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc/TestRemoteIFaceImpl.java[ADD],
+	  test/log4j.xml:
+	  
+	  Initial stab at a generic RPC framework and stateless connection
+	  handling.
+
+2007-12-20 12:06  mke
+
+	* [r16] build.xml:
+	  
+	  Bumpt to 0.2.2 and RELEASE
+
+2007-12-20 12:04  mke
+
+	* [r15] src/dk/statsbiblioteket/util/qa/BasicReport.java,
+	  src/dk/statsbiblioteket/util/qa/HTMLReport.java,
+	  src/dk/statsbiblioteket/util/qa/Report.java,
+	  test/dk/statsbiblioteket/util/qa/PackageScannerTest.java:
+	  
+	  Add option to set the outputstream of Report implementations. Use
+	  this to silence the PackageScanner tests.
+
+2007-12-20 10:56  mke
+
+	* [r14] src/dk/statsbiblioteket/util/Strings.java,
+	  test/dk/statsbiblioteket/util/StringsTest.java:
+	  
+	  Add a String.join method and corresponding unit tests.
+
+2007-12-19 13:59  mke
+
+	* [r13] build.xml:
+	  
+	  Add console tests to default ant test runs
+
+2007-12-19 12:26  mke
+
+	* [r12] src/dk/statsbiblioteket/util/Logs.java,
+	  test/dk/statsbiblioteket/util/LogsTest.java:
+	  
+	  Graceful handling of nulls in expand-methods.
+	  
+	  Add missing switch case for loglevel WARN.
+	  
+	  Add a test that hits these two items.
+
+2007-12-19 11:55  mke
+
+	* [r11] src/dk/statsbiblioteket/util/Logs.java:
+	  
+	  Add javadoc to some public methods
+
+2007-12-19 11:53  mke
+
+	* [r10] src/dk/statsbiblioteket/util/console[ADD],
+	  src/dk/statsbiblioteket/util/console/Color.java[ADD],
+	  src/dk/statsbiblioteket/util/console/Formatter.java[ADD],
+	  src/dk/statsbiblioteket/util/console/Hint.java[ADD],
+	  test/dk/statsbiblioteket/util/console[ADD],
+	  test/dk/statsbiblioteket/util/console/FormatterTest.java[ADD]:
+	  
+	  Import dk.statsbiblioteket.util.console a new utility for
+	  coloured output to a console (with test suite)
+
+2007-12-05 11:49  mke
+
+	* [r7] build.xml:
+	  
+	  RELEASE 0.2.1
+
+2007-12-05 11:46  mke
+
+	* [r6] build.xml:
+	  
+	  Remove changelog target.
+
+2007-12-05 11:43  mke
+
+	* [r5] src/dk/statsbiblioteket/util/Files.java,
+	  test/dk/statsbiblioteket/util/FilesTest.java:
+	  
+	  Re-instate Files.delete(String path) and add corresponding unit
+	  test.
+
+2007-12-04 14:19  mke
+
+	* [r3] .classpath[ADD], .cvsignore[ADD], .project[ADD],
+	  .settings[ADD], .settings/org.eclipse.jdt.core.prefs[ADD],
+	  .settings/org.eclipse.jdt.ui.prefs[ADD], COPYING[ADD],
+	  LOGGING[ADD], MAINTAINERS[ADD], POLICY[ADD], README[ADD],
+	  build.xml[ADD], config[ADD], config/log4j.xml[ADD], lib[ADD],
+	  lib/ant-changelog.xsl[ADD], lib/commons-cli-1.1.jar[ADD],
+	  lib/commons-cli_license.txt[ADD],
+	  lib/commons-logging-1.1.jar[ADD],
+	  lib/commons-logging_license.txt[ADD], lib/junit-4.1.jar[ADD],
+	  lib/junit_license-cpl-v10.html[ADD], lib/log4j-1.2.14.jar[ADD],
+	  lib/log4j_license.txt[ADD], lib/xstream-1.2.2.jar[ADD],
+	  lib/xstream-license.txt[ADD], sbutil.iml[ADD], sbutil.ipr[ADD],
+	  scripts[ADD], scripts/template.sh[ADD], src[ADD], src/dk[ADD],
+	  src/dk/statsbiblioteket[ADD], src/dk/statsbiblioteket/util[ADD],
+	  src/dk/statsbiblioteket/util/CachedCollator.java[ADD],
+	  src/dk/statsbiblioteket/util/Checksums.java[ADD],
+	  src/dk/statsbiblioteket/util/DigestException.java[ADD],
+	  src/dk/statsbiblioteket/util/FileAlreadyExistsException.java[ADD],
+	  src/dk/statsbiblioteket/util/Files.java[ADD],
+	  src/dk/statsbiblioteket/util/InvalidPropertiesException.java[ADD],
+	  src/dk/statsbiblioteket/util/LineReader.java[ADD],
+	  src/dk/statsbiblioteket/util/Logs.java[ADD],
+	  src/dk/statsbiblioteket/util/Profiler.java[ADD],
+	  src/dk/statsbiblioteket/util/Projects.java[ADD],
+	  src/dk/statsbiblioteket/util/Streams.java[ADD],
+	  src/dk/statsbiblioteket/util/Strings.java[ADD],
+	  src/dk/statsbiblioteket/util/XProperties.java[ADD],
+	  src/dk/statsbiblioteket/util/Zips.java[ADD],
+	  src/dk/statsbiblioteket/util/caching[ADD],
+	  src/dk/statsbiblioteket/util/files[ADD],
+	  src/dk/statsbiblioteket/util/i18n[ADD],
+	  src/dk/statsbiblioteket/util/i18n/BundleCache.java[ADD],
+	  src/dk/statsbiblioteket/util/i18n/EmptyResourceBundle.java[ADD],
+	  src/dk/statsbiblioteket/util/i18n/EscapeUTF8Stream.java[ADD],
+	  src/dk/statsbiblioteket/util/i18n/Translator.java[ADD],
+	  src/dk/statsbiblioteket/util/qa[ADD],
+	  src/dk/statsbiblioteket/util/qa/BasicReport.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/DynamicClassLoader.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/HTMLReport.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/PackageScanner.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/PackageScannerDriver.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/QAInfo.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/Report.java[ADD],
+	  src/dk/statsbiblioteket/util/qa/ReportElement.java[ADD],
+	  src/dk/statsbiblioteket/util/rpc[ADD],
+	  src/dk/statsbiblioteket/util/rpc/methods[ADD],
+	  src/dk/statsbiblioteket/util/watch[ADD],
+	  src/dk/statsbiblioteket/util/watch/CurrentListener.java[ADD],
+	  src/dk/statsbiblioteket/util/watch/CurrentWatcher.java[ADD],
+	  src/dk/statsbiblioteket/util/watch/FolderEvent.java[ADD],
+	  src/dk/statsbiblioteket/util/watch/FolderListener.java[ADD],
+	  src/dk/statsbiblioteket/util/watch/FolderWatcher.java[ADD],
+	  src/dk/statsbiblioteket/util/watch/Observable.java[ADD],
+	  test[ADD], test/data[ADD],
+	  test/data/website-performance-info.log.2007-04-01[ADD],
+	  test/data/website-performance-info.log.2007-04-05[ADD],
+	  test/data/website-performance-info.log.2007-04-09[ADD],
+	  test/dk[ADD], test/dk/statsbiblioteket[ADD],
+	  test/dk/statsbiblioteket/util[ADD],
+	  test/dk/statsbiblioteket/util/CachedCollatorTest.java[ADD],
+	  test/dk/statsbiblioteket/util/ChecksumsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/FilesTest.java[ADD],
+	  test/dk/statsbiblioteket/util/I18nTest.java[ADD],
+	  test/dk/statsbiblioteket/util/LineReaderTest.java[ADD],
+	  test/dk/statsbiblioteket/util/LogsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/ProfilerTest.java[ADD],
+	  test/dk/statsbiblioteket/util/ProjectsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/StreamsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/StringsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/XPropertiesTest.java[ADD],
+	  test/dk/statsbiblioteket/util/ZipsTest.java[ADD],
+	  test/dk/statsbiblioteket/util/files[ADD],
+	  test/dk/statsbiblioteket/util/i18n[ADD],
+	  test/dk/statsbiblioteket/util/i18n/EscapeUTF8StreamTest.java[ADD],
+	  test/dk/statsbiblioteket/util/qa[ADD],
+	  test/dk/statsbiblioteket/util/qa/PackageScannerTest.java[ADD],
+	  test/dk/statsbiblioteket/util/rpc[ADD],
+	  test/dk/statsbiblioteket/util/watch[ADD],
+	  test/dk/statsbiblioteket/util/watch/FolderWatcherTest.java[ADD],
+	  test/log4j.xml[ADD], test/messages.properties[ADD],
+	  test/messages_da.properties[ADD]:
+	  
+	  Import sbutil codebase
+
+2007-12-04 13:36  mke
+
+	* [r1] .[ADD]:
+	  
+	  Create trunk
+
