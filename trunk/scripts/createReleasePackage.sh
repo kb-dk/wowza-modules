@@ -43,7 +43,12 @@ echo Create deploy script for release package
 sed "s/VERSION=\[VERSION_NUMBER\]/VERSION=${VERSION}/g" ~/tmp/wdp_${VERSION}/scripts/deploy-release-package_template.sh | sed "s/PACKAGE_NAME=\[PACKAGE_NAME\]/PACKAGE_NAME=${PACKAGE_NAME}/g" > ~/tmp/${PACKAGE_NAME}_deploy.sh
 chmod +x ~/tmp/${PACKAGE_NAME}_deploy.sh
 
-echo Remove shell scripts...
+# Keep the following scripts:
+# - getTicket.sh
+# - stream-monitor.py
+# - streaming_statistics.sh
+
+echo Remove irrelevant shell scripts...
 rm ~/tmp/wdp_${VERSION}/target/package/bin/createReleasePackage.sh
 rm ~/tmp/wdp_${VERSION}/target/package/bin/deploy-*
  
