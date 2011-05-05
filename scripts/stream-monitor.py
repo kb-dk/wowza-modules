@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # vim: set fileencoding=utf-8 :
+# the above line is also used by Python
 
 import datetime
 import os.path
@@ -10,8 +11,8 @@ pathToLogDirectory = "./"
 
 # Mail konfiguration
 SERVER = "post"
-FROM = "pdj@statsbiblioteket.dk"
-TO = ["pdj@statsbiblioteket.dk"] # must be a list
+FROM = "modtager@statsbiblioteket.dk"
+TO = ["modtager@statsbiblioteket.dk"] # must be a list
 SUBJECT = "Advarsel om potentielt misbrug af Mediestream"
 
 
