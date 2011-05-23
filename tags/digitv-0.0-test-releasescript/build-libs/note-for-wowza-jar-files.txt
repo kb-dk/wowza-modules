@@ -1,0 +1,2 @@
+
+Remember to attach the Wowza library jar files to the project. They are found in <Wowza install dir>/lib
