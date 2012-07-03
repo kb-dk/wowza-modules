@@ -1,0 +1,15 @@
+<Exception>
+	<Message>The SessionID is not valid</Message>
+	<Fullname>Geckon.Security.Web.SessionNotAuthenticatedException</Fullname>
+	<Stacktrace>
+		at Geckon.Portal.Web.Service.PortalServiceBase.GetUserInfo(UserInfo userInfo, Products productFlags) in C:\Geckon\Repository\Active\Geckon.Portal\trunk\src\app\Geckon.Portal.Web.Service\PortalServiceBase.cs:line 106
+		at Geckon.Portal.Web.Service.PortalServiceBase.GetUserInfo(String sessionID, Products productFlags) in C:\Geckon\Repository\Active\Geckon.Portal\trunk\src\app\Geckon.Portal.Web.Service\PortalServiceBase.cs:line 125
+   		at Geckon.Portal.Web.Service.PortalService.Object_Get(String sessionID, Nullable`1 objectID, Nullable`1 objectTypeID, Nullable`1 folderID, Nullable`1 objectCollectionID, Nullable`1 mediaTypeID, Nullable`1 metadataSchemaID, Nullable`1 pageSize, Nullable`1 pageIndex, Nullable`1 includeFiles, Nullable`1 includePhrases, Nullable`1 includeMetadata, Int32[] metadataLanguageIDs, Nullable`1 includePublishSettings, Nullable`1 includePhrasesAndFiles, String metadataFreeTextQuery, Nullable`1 channelID, String[] metadataAliases, String[] metadataAliasConditions, String[] metadataOrderByConditions, Nullable`1 segmentSeparator, String[] metadataXPathFilters, Nullable`1 metadataStandardID, Nullable`1 includeRelations) in C:\Geckon\Repository\Active\Geckon.Portal\trunk\src\app\Geckon.Portal.Web.Service\PortalService.cs:line 144
+   		at SyncInvokeObject_Get(Object , Object[] , Object[] )
+   		at System.ServiceModel.Dispatcher.SyncMethodInvoker.Invoke(Object instance, Object[] inputs, Object[]&amp; outputs)
+   		at System.ServiceModel.Dispatcher.DispatchOperationRuntime.InvokeBegin(MessageRpc&amp; rpc)
+   		at System.ServiceModel.Dispatcher.ImmutableDispatchRuntime.ProcessMessage5(MessageRpc&amp; rpc)
+   		at System.ServiceModel.Dispatcher.ImmutableDispatchRuntime.ProcessMessage31(MessageRpc&amp; rpc)
+   		at System.ServiceModel.Dispatcher.MessageRpc.Process(Boolean isOperationContextSet)
+   	</Stacktrace>
+ </Exception>
