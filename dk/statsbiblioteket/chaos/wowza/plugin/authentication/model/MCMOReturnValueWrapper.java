@@ -17,10 +17,10 @@ import org.xml.sax.SAXException;
 
 public class MCMOReturnValueWrapper {
 
-	private Logger logger;
-	private boolean isSessionValid;
-	private String objectID;
-	private List<String> filenames;
+	protected Logger logger;
+	protected boolean isSessionValid;
+	protected String objectID;
+	protected List<String> filenames;
 	
 	public MCMOReturnValueWrapper(Logger logger, InputStream inputStreamFromMCM) throws MCMOutputException {
 		super();
@@ -28,7 +28,7 @@ public class MCMOReturnValueWrapper {
 		extractReturnValuesFromXML(inputStreamFromMCM);
 	}
 
-	private void extractReturnValuesFromXML(InputStream mcmXMLOutputIS) throws MCMOutputException {
+	protected void extractReturnValuesFromXML(InputStream mcmXMLOutputIS) throws MCMOutputException {
 		try {
 			Document dom = null;
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -45,7 +45,7 @@ public class MCMOReturnValueWrapper {
 		}
 	}
 
-	private void extractReturnValuesForSession(Element docEle) throws MCMOutputException {
+	protected void extractReturnValuesForSession(Element docEle) throws MCMOutputException {
 		String returnType = docEle.getNodeName();
 		if (returnType.equals("ICollection")) {
 			this.isSessionValid = true;
@@ -62,7 +62,7 @@ public class MCMOReturnValueWrapper {
 		}
 	}
 
-	private String extractStringContent(Element docEle, String elementName) {
+	protected String extractStringContent(Element docEle, String elementName) {
 		Element folderPathElement = null;
 		NodeList nodelist = docEle.getElementsByTagName(elementName);
 		if(nodelist != null && nodelist.getLength() > 0) {
@@ -72,7 +72,7 @@ public class MCMOReturnValueWrapper {
 		return stringContent;
 	}
 
-	private List<String> extractMultipleElementsStringContent(Element docEle, String elementName) {
+	protected List<String> extractMultipleElementsStringContent(Element docEle, String elementName) {
 		List<String> extractedValues = new ArrayList<String>();
 		NodeList nodelist = docEle.getElementsByTagName(elementName);
 		for (int i=0;i<nodelist.getLength();i++) {

@@ -18,9 +18,15 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
     private static String propertyMCMServerURLKey = "GeneralMCMServerURL";
     private static String propertyMCMValidationMethod = "ValidationMCMValidationMethod";
 
-    private WMSLogger logger;
-    private String connectionURLString;
-    private String validationMethodAtServer;
+    protected WMSLogger logger;
+    protected String connectionURLString;
+    protected String validationMethodAtServer;
+
+    /**
+     * Only to be called by subclasses, that must initialize logger, connectionURLString and validationMethodAtServer.
+     */
+    protected MCMSessionAndFilenameValidater() {
+    }
 
     /**
      * Reads server connection configuration from property-file. Property file
@@ -29,7 +35,7 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
      * Example of content in property file could be:
      *
      * MCMServerURL=http://web.server00.geckon.com/portal/api/portalservice.svc
-     * MCMValidationMethod=Object_Get
+     * ValidationGeneralMCMValidationMethod=Object_Get
      *
      * @throws FileNotFoundException if property file is not found
      * @throws IOException           if reading process failed
@@ -52,8 +58,8 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
      *
      * Example of content in property file could be:
      *
-     * MCMServerURL=http://web.server00.geckon.com/portal/api/portalservice.svc
-     * MCMValidationMethod=Object_Get
+     * GeneralMCMServerURL=http://web.server00.geckon.com/portal/api/portalservice.svc
+     * ValidationMCMValidationMethod=Object_Get
      *
      * @throws FileNotFoundException if property file is not found
      * @throws IOException           if reading process failed
@@ -138,7 +144,7 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
         return filename;
     }
 
-    private MCMOReturnValueWrapper getInputFromMCM(String sessionID, String objectID)
+    protected MCMOReturnValueWrapper getInputFromMCM(String sessionID, String objectID)
             throws IOException, MalformedURLException, MCMOutputException {
         String urlStringToMCM = connectionURLString + "/" + validationMethodAtServer + "?" + "sessionID=" + sessionID
                 + "&" + "objectID=" + objectID + "&" + "includeFiles=true";

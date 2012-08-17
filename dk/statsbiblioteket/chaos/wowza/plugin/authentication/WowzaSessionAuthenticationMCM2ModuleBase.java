@@ -1,25 +1,31 @@
 package dk.statsbiblioteket.chaos.wowza.plugin.authentication;
 
+import com.wowza.wms.amf.AMFDataList;
+import com.wowza.wms.application.IApplicationInstance;
+import com.wowza.wms.application.WMSProperties;
+import com.wowza.wms.client.IClient;
+import com.wowza.wms.module.IModuleOnApp;
+import com.wowza.wms.module.IModuleOnCall;
+import com.wowza.wms.module.IModuleOnConnect;
+import com.wowza.wms.module.IModuleOnStream;
+import com.wowza.wms.module.ModuleBase;
+import com.wowza.wms.request.RequestFunction;
+import com.wowza.wms.stream.IMediaStream;
+import com.wowza.wms.stream.IMediaStreamActionNotify;
+import com.wowza.wms.stream.IMediaStreamActionNotify2;
+
+import dk.statsbiblioteket.chaos.wowza.plugin.authentication.model.MCM2SessionAndFilenameValidater;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.wowza.wms.application.*;
-import com.wowza.wms.amf.*;
-import com.wowza.wms.client.*;
-import com.wowza.wms.module.*;
-import com.wowza.wms.request.*;
-import com.wowza.wms.stream.*;
-
-import dk.statsbiblioteket.chaos.wowza.plugin.authentication.model.MCMSessionAndFilenameValidater;
-
-
-public class WowzaSessionAuthenticationModuleBase extends ModuleBase 
+public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall {
 
 	private static String pluginName = "CHAOS Wowza plugin - Authentication";
-	private static String pluginVersion = "2.1.0 MCM Authentication";
-	
-	public WowzaSessionAuthenticationModuleBase() {
+	private static String pluginVersion = "2.1.0 MCM 2 Authentication";
+
+	public WowzaSessionAuthenticationMCM2ModuleBase() {
 		super();
 	}
 
@@ -98,7 +104,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
 		IMediaStreamActionNotify2 streamAuthenticater;
 		try {
 			streamAuthenticater = new StreamAuthenticater(getLogger(), 
-					new MCMSessionAndFilenameValidater(getLogger(), appInstance));
+					new MCM2SessionAndFilenameValidater(getLogger(), appInstance));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not initialize stream authenticater.", e); 
 		} catch (IOException e) {
