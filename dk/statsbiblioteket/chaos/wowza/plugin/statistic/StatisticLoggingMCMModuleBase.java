@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
 
     private static String pluginName = "CHAOS Wowza plugin - Statistics MCM";
-    private static String pluginVersion = "2.1.0 MCM statistics";
+    private static String pluginVersion = "2.2.0 MCM statistics";
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);

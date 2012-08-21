@@ -18,7 +18,7 @@ import dk.statsbiblioteket.chaos.wowza.plugin.util.StringAndTextUtil;
 public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
 
     private static String pluginName = "CHAOS Wowza plugin - Statistics SB";
-    private static String pluginVersion = "2.1.0 Database statistics";
+    private static String pluginVersion = "2.2.0 Database statistics";
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);

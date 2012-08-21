@@ -17,7 +17,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall {
 
 	private static String pluginName = "CHAOS Wowza plugin - Authentication";
-	private static String pluginVersion = "2.1.0 MCM Authentication";
+	private static String pluginVersion = "2.2.0 MCM Authentication";
 	
 	public WowzaSessionAuthenticationModuleBase() {
 		super();

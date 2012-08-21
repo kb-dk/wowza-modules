@@ -22,7 +22,7 @@ public class BesModuleBase extends ModuleBase
     private static String propertyBESRestURL = "GeneralBESServerURL";
 
     private static String pluginName = "CHAOS Wowza plugin - file location resolver";
-    private static String pluginVersion = "2.1.0 SB DOMS file streaming";
+    private static String pluginVersion = "2.2.0 SB DOMS file streaming";
 
     public BesModuleBase() {
         super();
