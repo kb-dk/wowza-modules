@@ -80,7 +80,6 @@
             <fileMode>0755</fileMode>
             <excludes>
                 <exclude>deploy*.sh</exclude>
-                <exclude>createReleasePackage.sh</exclude>
             </excludes>
         </fileSet>
     </fileSets>
