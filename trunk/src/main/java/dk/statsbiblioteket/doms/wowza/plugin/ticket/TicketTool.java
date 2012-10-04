@@ -126,16 +126,6 @@ public class TicketTool implements TicketToolInterface {
 		System.out.println("Stream : " + fileExtension + ":" + filename);
 		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
 		System.out.println("");
-		System.out.println("-[kultur_live]---[valid]---------------------------------------------------------------------------------------------------");
-		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + ticket.getID());
-		System.out.println("Stream : " + "stream" + ":" + Bytes.toHex(Checksums.md5(ticket.getID())) + ".stream");
-		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("");
-		System.out.println("-[kultur_live]---[invalid]-------------------------------------------------------------------------------------------------");
-		System.out.println("Server : " + streamingURL + "/kultur_live?ticket=" + invalidTicketID);
-		System.out.println("Stream : " + "stream" + ":" + Bytes.toHex(Checksums.md5(invalidTicketID)) + ".stream");
-		System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("");
 		System.out.println("-[kultur_preview]----------------------------------------------------------------------------------------------------------");
 		System.out.println("Server : " + streamingURL + "/kultur_preview");
 		System.out.println("Stream : " + previewFileExtension + ":" + previewFilename);

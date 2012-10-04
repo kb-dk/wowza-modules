@@ -28,8 +28,6 @@ rmdir ~/services/wowza_vhost_kultur/streamingContent
 ln -s ~/Downloads ~/services/wowza_vhost_kultur/streamingContent
 rmdir ~/services/wowza_vhost_kultur/streamingContentPreview
 ln -s ~/Downloads ~/services/wowza_vhost_kultur/streamingContentPreview
-#mkdir ~/services/wowza_vhost_kultur/streamingContentLive
-#ln -s ~/services/wowza_vhost_kultur/data ~/services/wowza_vhost_kultur/streamingContent 
 
 echo Finished deploying Wowza plugin on server
 echo

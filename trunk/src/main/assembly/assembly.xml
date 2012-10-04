@@ -24,14 +24,6 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>applications/kultur_live</outputDirectory>
-            <directory>src/main/data</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-              <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
             <outputDirectory>applications/kultur_preview</outputDirectory>
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
@@ -41,14 +33,6 @@
         </fileSet>
         <fileSet>
             <outputDirectory>streamingContent</outputDirectory>
-            <directory>src/main/data</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-              <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>streamingContentLive</outputDirectory>
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
