@@ -1,0 +1,248 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <wms.version>2.2.3</wms.version>
+        <wms.basedir>/usr/local/WowzaMediaServer-${wms.version}</wms.basedir>
+    </properties>
+
+    <parent>
+        <groupId>org.sbforge</groupId>
+        <artifactId>sbforge-parent</artifactId>
+        <version>12</version>
+    </parent>
+
+    <groupId>dk.statsbiblioteket.doms</groupId>
+    <artifactId>doms-wowza-streaming-server-plugin</artifactId>
+    <version>2.0.10-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <description>Wowza plugins for DOMS</description>
+    <inceptionYear>2011</inceptionYear>
+
+    <organization>
+        <name>The State and University Library, Denmark</name>
+        <url>http://statsbiblioteket.dk</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache2</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Henning Böttger</name>
+            <email>heb@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Kåre Fiedler Christiansen</name>
+            <email>kfc@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</connection>
+        <developerConnection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</developerConnection>
+        <url>https://svn.statsbiblioteket.dk/viewvc/doms-wowza-streaming-server-plugin</url>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>sbprojects-nexus</id>
+            <url>https://sbprojects.statsbiblioteket.dk/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.2</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <!-- this is used for inheritance merges -->
+                        <phase>package</phase>
+                        <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal>
+                            <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <generateBundle>true</generateBundle>
+                    <failIfWarning>true</failIfWarning>
+                    <useMissingFile>true</useMissingFile>
+                    <extraExtensions>
+                        <xsd>xml</xsd>
+                    </extraExtensions>
+                    <licenseName>apache_v2</licenseName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <debug>true</debug>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+                <executions>
+                    <execution>
+                        <id>Install Wmsserver</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-server</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-server.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmscore</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-core</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-core.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmsserver stream-publish library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-stream-publish</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-stream-publish.jar</file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>dk.statsbiblioteket.sbutil</groupId>
+            <artifactId>sbutil</artifactId>
+            <version>0.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-server</artifactId>
+            <version>${wms.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-core</artifactId>
+            <version>${wms.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-stream-publish</artifactId>
+            <version>${wms.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-ext-jdk15</artifactId>
+            <version>1.45</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
