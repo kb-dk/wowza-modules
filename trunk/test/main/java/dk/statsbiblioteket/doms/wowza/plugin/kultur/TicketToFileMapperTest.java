@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -48,9 +49,9 @@ public class TicketToFileMapperTest extends TestCase {
 	}
 
 	@Test
-	public void testStdCase() {
+	public void testStdCase() throws IOException {
 		// Setup environment
-		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
@@ -68,13 +69,13 @@ public class TicketToFileMapperTest extends TestCase {
 		// Run test
 		File result = ticketToFileMapper.streamToFileForRead(stream);
 		// Validate result
-		assertEquals("Expected equal result", storageDir + "/a/0/6/3/" + shardID + ".flv", 
+		assertEquals("Expected equal result", new File(storageDir + "/../radio_0/files/e/f/8/" + shardID + ".flv").getAbsolutePath(),
 				result.getAbsolutePath());
 	}
 	
 	public void testUserNotAllowedToPlayFile() {
 		// Setup environment
-		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.2-Invalid-ip";
@@ -98,7 +99,7 @@ public class TicketToFileMapperTest extends TestCase {
 
 	public void testNonExistingTicket() {
 		// Setup environment
-		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
@@ -121,7 +122,7 @@ public class TicketToFileMapperTest extends TestCase {
 	
 	public void testGetFileToStreamSucces() {
 		// Setup
-		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
@@ -139,13 +140,13 @@ public class TicketToFileMapperTest extends TestCase {
 		// Test
 		File result = ticketToFileMapper.getFileToStream(stream, ticket);
 		// Validate
-		assertEquals("Expected equal result", storageDir + "/a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv", 
-				result.getAbsolutePath());
+            assertEquals("Expected equal result", new File(storageDir + "/../radio_0/files/e/f/8/" + shardID + ".flv").getAbsolutePath(),
+          				result.getAbsolutePath());
 	}
 	
 	public void testRetrieveMediaFileRelativePath() {
 		// Setup
-		String shardID = "a0639529-124a-453f-b4ea-59f833b47333";
+		String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 		String shardURL = "http://www.statsbiblioteket.dk/doms/shard/uuid:" + shardID;
 		TicketToolInterface ticketToolMock = new TicketToolMock();
 		String username = "127.0.0.1";
@@ -163,7 +164,7 @@ public class TicketToFileMapperTest extends TestCase {
 		// Test
 		String result = ticketToFileMapper.retrieveMediaFileRelativePath(stream, shardID);
 		// Validate
-		assertEquals("Expected equal result", "a/0/6/3/a0639529-124a-453f-b4ea-59f833b47333.flv", 
+		assertEquals("Expected equal result", "../radio_0/files/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv",
 				result);
 	}
 }
