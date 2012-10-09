@@ -179,6 +179,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <artifactId>content-resolver-lib</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>dk.statsbiblioteket.sbutil</groupId>
             <artifactId>sbutil</artifactId>
             <version>0.5.2</version>

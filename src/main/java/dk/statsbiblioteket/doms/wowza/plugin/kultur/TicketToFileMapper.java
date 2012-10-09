@@ -1,44 +1,37 @@
 package dk.statsbiblioteket.doms.wowza.plugin.kultur;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 
-import dk.statsbiblioteket.doms.wowza.plugin.bes.ObjectStatus;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
+import dk.statsbiblioteket.medieplatform.contentresolver.model.Resource;
 
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
-	private WMSLogger logger;
-	private IMediaStreamFileMapper defaultMapper;
-	private TicketToolInterface ticketTool;
-	private String invalidTicketVideo;
-	private Object mediaContentRootFolder;
-	private WebResource besRestApi;
+	private final WMSLogger logger;
+	private final IMediaStreamFileMapper defaultMapper;
+	private final TicketToolInterface ticketTool;
+	private final String invalidTicketVideo;
+    private final ContentResolver contentResolver;
 
-	
-	public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool, 
-			String invalidTicketVideo, String mediaContentRootFolder, WebResource restApi) {
+    public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool,
+                              String invalidTicketVideo, ContentResolver contentResolver) {
 		super();
 		this.defaultMapper = defaultMapper;
-		this.logger = WMSLoggerFactory.getLogger(this.getClass());
+        this.contentResolver = contentResolver;
+        this.logger = WMSLoggerFactory.getLogger(this.getClass());
 		this.ticketTool = ticketTool;
 		this.invalidTicketVideo = invalidTicketVideo;
-		this.mediaContentRootFolder = mediaContentRootFolder;
-		this.besRestApi = restApi;
 	}
 
 	@Override
@@ -55,7 +48,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 		logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query)");
     	IClient client = stream.getClient();
         if (client == null) {
-        	// This is the case when a live stream is generated. 
+        	// This is the case when a live stream is generated.
         	// Two streams are created, and one streams from VLC to Wowza and has no client.
         	// If omitted, no live stream is played.
             logger.info("No client, returning ", stream);
@@ -69,7 +62,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 			logger.info("Ticket received: " + streamingTicket);
 			if ((streamingTicket != null) && (isClientAllowedStreamingContent(stream, streamingTicket))) {
 				logger.info("Streaming allowed");
-				streamingFile = getFileToStream(stream, streamingTicket);
+				streamingFile = getFileToStream(streamingTicket);
 			} else {
 				logger.info("Client not allowed to get content streamed");
 				streamingFile = getErrorMediaFile();
@@ -88,7 +81,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 	}
 
 	private File getErrorMediaFile() {
-		return new File(this.invalidTicketVideo); 
+		return new File(this.invalidTicketVideo);
 	}
 
 
@@ -112,40 +105,38 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 		return isAllowed;
 	}
 
-	protected File getFileToStream(IMediaStream stream, Ticket streamingTicket) {
-		String shardURL = streamingTicket.getResource();
-	    Pattern queryPattern = Pattern.compile(
-	            "http://www.statsbiblioteket.dk/doms/shard/uuid:([^&]*)");
-        Matcher matcher = queryPattern.matcher(shardURL);
-        if (!matcher.find()) {
-        	throw new RuntimeException("Resource (shardURL did not match the " +
-        			"expected format. Was " + shardURL);
-        }
+	protected File getFileToStream(Ticket streamingTicket) {
         // Extract
-        String shardID = matcher.group(1);
-        String filenameAndPath = retrieveMediaFileRelativePath(stream, shardID);
-		File streamingFile = new File(mediaContentRootFolder + "/" + filenameAndPath);
+        String shardID = streamingTicket.getResource();
+        String filenameAndPath = getErrorMediaFile().getPath();
+        logger.info("Looking up '" + shardID + "'");
+        List<Resource> resources = contentResolver.getContent(shardID).getResources();
+        if (resources != null) {
+            for (Resource resource : resources) {
+                if (resource.getType().equals("streaming")) {
+                    filenameAndPath = resource.getUris().get(0).getPath();
+                }
+            }
+        }
+        File streamingFile = new File(filenameAndPath);
 		logger.info("filenameAndPath : " + filenameAndPath);
-		logger.info("mediaContentRoot: " + mediaContentRootFolder);
 		return streamingFile;
 	}
 
-	protected String retrieveMediaFileRelativePath(IMediaStream stream, String shardID) {
+	protected String retrieveMediaFilePath(String shardID) {
 		String filenameAndPath = null;
-		try {
-			logger.info("ObjectStatus: " + besRestApi
-					.path("/getobjectstatus")
-					.queryParam("programpid", "uuid:" + shardID).toString());
-			ObjectStatus objectStatusXml = besRestApi
-					.path("/getobjectstatus")
-					.queryParam("programpid", "uuid:" + shardID)
-					.get(ObjectStatus.class);
-			String streamID = objectStatusXml.getStreamId();
-			int indexOfColon = streamID.indexOf(":");
-			filenameAndPath = streamID.substring(indexOfColon+1, streamID.length());
-		}  catch (UniformInterfaceException e) {
-			logger.warn("UniformInterfaceException occured. Ticket might be invalidated.", e);
-		}
+        logger.info("Looking up '" + shardID + "'");
+        List<Resource> resources = contentResolver.getContent(shardID).getResources();
+        if (resources != null) {
+            for (Resource resource : resources) {
+                if (resource.getType().equals("streaming")) {
+                    filenameAndPath = resource.getUris().get(0).getPath();
+                }
+            }
+        }
+        if (filenameAndPath == null) {
+            filenameAndPath = getErrorMediaFile().getPath();
+        }
 		logger.info("Resolved relative path: " + filenameAndPath);
 		return filenameAndPath;
 	}
