@@ -17,25 +17,19 @@ import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
 
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.ConfigReader;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class handles events that happen during streaming. Also sets up the file
  * mapper that is needed for identifying the file to be played.
  *
- * @author heb + jrg + abr
+ * @author heb + jrg + abr + kfc
  */
 public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
@@ -48,7 +42,7 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
 
     /**
      * Called when Wowza is started.
-     * We use this to set up the DomsUriToFileMapper. 
+     * We use this to set up the TicketToFileMapper.
      *
      * @param appInstance The application running.
      */
@@ -71,8 +65,14 @@ public class KulturVODModule extends ModuleBase implements IModuleOnApp, IModule
 	        String ticketCheckerLocation = cr.get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
 	        TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
 	        String invalidTicketVideo = vhostDir + "/" + (cr.get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
-	        WebResource besRestApi = Client.create().resource(cr.get("broadcastExtractionServiceRestApi", "missing-bes-service-location-in-property-file"));
-	        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo, appInstance.getStreamStorageDir(), besRestApi);
+            File baseDirectory = new File(appInstance.getStreamStorageDir()).getAbsoluteFile();
+            int characterDirs = Integer.parseInt(cr.get("characterDirs", "4"));
+            String filenameRegexPattern = cr.get("filenameRegexPattern", "missing-filename-regex-pattern-in-property-file");
+            String uriPattern = "file://" + baseDirectory + "/%s";
+            ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", baseDirectory, characterDirs,
+                                                                                filenameRegexPattern, uriPattern);
+	        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool, invalidTicketVideo,
+                                                                           contentResolver);
 	        // Set File mapper
 	        appInstance.setStreamFileMapper(ticketToFileMapper);
 	        // Setup streaming statistics logger
