@@ -107,10 +107,13 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 
 	protected File getFileToStream(Ticket streamingTicket) {
         // Extract
-        String shardID = streamingTicket.getResource();
+        String programID = streamingTicket.getResource();
+        if (programID.contains(":")) {
+            programID = programID.substring(programID.lastIndexOf(':') + 1);
+        }
         String filenameAndPath = getErrorMediaFile().getPath();
-        logger.info("Looking up '" + shardID + "'");
-        List<Resource> resources = contentResolver.getContent(shardID).getResources();
+        logger.info("Looking up '" + programID + "'");
+        List<Resource> resources = contentResolver.getContent(programID).getResources();
         if (resources != null) {
             for (Resource resource : resources) {
                 if (resource.getType().equals("streaming")) {
@@ -123,25 +126,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 		return streamingFile;
 	}
 
-	protected String retrieveMediaFilePath(String shardID) {
-		String filenameAndPath = null;
-        logger.info("Looking up '" + shardID + "'");
-        List<Resource> resources = contentResolver.getContent(shardID).getResources();
-        if (resources != null) {
-            for (Resource resource : resources) {
-                if (resource.getType().equals("streaming")) {
-                    filenameAndPath = resource.getUris().get(0).getPath();
-                }
-            }
-        }
-        if (filenameAndPath == null) {
-            filenameAndPath = getErrorMediaFile().getPath();
-        }
-		logger.info("Resolved relative path: " + filenameAndPath);
-		return filenameAndPath;
-	}
-
-	@Override
+    @Override
 	public File streamToFileForWrite(IMediaStream stream) {
 		logger.info("streamToFileForWrite(IMediaStream stream):" + stream);
 		return defaultMapper.streamToFileForRead(stream);
