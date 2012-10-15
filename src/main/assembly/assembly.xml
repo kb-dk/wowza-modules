@@ -20,7 +20,8 @@
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-              <exclude>*</exclude>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -28,7 +29,8 @@
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-              <exclude>*</exclude>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -36,7 +38,8 @@
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-              <exclude>*</exclude>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -44,7 +47,8 @@
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-              <exclude>*</exclude>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
             </excludes>
         </fileSet>
         <fileSet>
