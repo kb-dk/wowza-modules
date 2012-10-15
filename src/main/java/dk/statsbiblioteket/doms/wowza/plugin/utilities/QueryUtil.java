@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 public class QueryUtil {
 
     // Create a pattern to match a correct query string
-    private static Pattern queryPattern = Pattern.compile(
-            "ticket=([^&]*)");
+    private static Pattern queryPattern = Pattern.compile("ticket=([^&]*)");
 
     public static String extractTicketID(String queryString) throws IllegallyFormattedQueryStringException {
-        return extract(queryString,1);
+        return extract(queryString, 1);
     }
 
     private static String extract(String queryString, int group) throws IllegallyFormattedQueryStringException {
@@ -29,7 +28,7 @@ public class QueryUtil {
             return matcher.group(group);
         } else {
             throw new IllegallyFormattedQueryStringException(
-            		"Query string '"+queryString+"' is not of the expected format.");
+                    "Query string '" + queryString + "' is not of the expected format.");
         }
 
     }

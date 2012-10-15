@@ -6,7 +6,6 @@
  */
 package dk.statsbiblioteket.doms.wowza.plugin.utilities;
 
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -22,7 +21,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * <p>Native command executor. Based on ProcessBuilder.
@@ -44,10 +42,10 @@ import java.util.Map;
  * <p> This code is not yet entirely thread safe. Be sure to only call a given
  * processRunner from one thread, and do not reuse it. </p>
  */
-public class ProcessRunner implements Runnable{
-    private InputStream processInput =   null;
+public class ProcessRunner implements Runnable {
+    private InputStream processInput = null;
     private InputStream processOutput = null;
-    private InputStream processError =  null;
+    private InputStream processError = null;
 
     private String processOutString = null;
     private String processErrorString = null;
@@ -56,8 +54,7 @@ public class ProcessRunner implements Runnable{
      * The threads that polls the output from the commands. When a thread is
      * finished, it removes itself from this list.
      */
-    private final List<Thread> threads =
-            Collections.synchronizedList(new LinkedList<Thread>());
+    private final List<Thread> threads = Collections.synchronizedList(new LinkedList<Thread>());
 
     private final int MAXINITIALBUFFER = 1000000;
     private final int THREADTIMEOUT = 1000; // Milliseconds
@@ -81,7 +78,7 @@ public class ProcessRunner implements Runnable{
      * Create a new ProcessRunner. Cannot run, until you specify something with
      * the assessor methods.
      */
-    public ProcessRunner(){
+    public ProcessRunner() {
         pb = new ProcessBuilder();
     }
 
@@ -89,6 +86,7 @@ public class ProcessRunner implements Runnable{
      * Create a new ProcessRunner with just this command, with no arguments.
      * Spaces are not allowed in the
      * string
+     *
      * @param command the command to run
      */
     public ProcessRunner(String command) {
@@ -102,6 +100,7 @@ public class ProcessRunner implements Runnable{
      * Create a new ProcessRunner with the given command. Each element in the
      * list should be a command or argument. If the element should not be parsed
      * enclose it in \"'s.
+     *
      * @param commands the command to run
      */
     public ProcessRunner(List<String> commands) {
@@ -113,6 +112,7 @@ public class ProcessRunner implements Runnable{
      * Create a new ProcessRunner with the given command and arguments.
      * The first arguments is the command to execute and the remaining
      * are any arguments to pass.
+     *
      * @param commands The command and arguments
      */
     public ProcessRunner(String... commands) {
@@ -127,11 +127,12 @@ public class ProcessRunner implements Runnable{
      * echo $FLIM
      * </pre>
      * put "FLIM","flam" in the enviroment.
+     *
      * @param enviroment The Map containing the mapping in the enviroment.
      */
-    public void setEnviroment(Map<String,String> enviroment){
-        if (enviroment != null){
-            Map<String,String> env = pb.environment();
+    public void setEnviroment(Map<String, String> enviroment) {
+        if (enviroment != null) {
+            Map<String, String> env = pb.environment();
             env.putAll(enviroment);
         }
     }
@@ -140,63 +141,69 @@ public class ProcessRunner implements Runnable{
      * Set the inputstream, from which the process should read. To be
      * used if you need to give commands to the process, after it has
      * begun.
+     *
      * @param processInput to read from.
      */
-    public void setInputStream(InputStream processInput){
+    public void setInputStream(InputStream processInput) {
         this.processInput = processInput;
     }
 
     /**
      * The directory to be used as starting dir. If not set, uses the dir of the
      * current process.
+     *
      * @param startingDir the starting dir.
      */
-    public void setStartingDir(File startingDir){
+    public void setStartingDir(File startingDir) {
         pb.directory(startingDir);
     }
 
-
     /**
      * Set the command for this ProcessRunner
+     *
      * @param commands the new command.
      */
-    public void setCommand(List<String> commands){
+    public void setCommand(List<String> commands) {
         pb.command(commands);
     }
 
     /**
      * Set the timeout. Default to Long.MAX_VALUE in millisecs
+     *
      * @param timeout the new timeout in millisecs
      */
-    public void setTimeout(long timeout){
+    public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
 
     /**
      * Decide if the outputstreams should be collected. Default true, ie, collect
      * the output.
+     *
      * @param collect should we collect the output
      */
-    public void setCollection(boolean collect){
+    public void setCollection(boolean collect) {
         this.collect = collect;
     }
 
     /**
      * How many bytes should we collect from the ErrorStream. Will block when
      * limit is reached. Default 31000. If set to negative values, will collect until out of memory.
+     *
      * @param maxError number of bytes to max collect.
      */
-    public void setErrorCollectionByteSize(int maxError){
+    public void setErrorCollectionByteSize(int maxError) {
         this.maxError = maxError;
     }
 
     /**
      * How many bytes should we collect from the OutputStream. Will block when
      * limit is reached. Default 31000; If set to negative values, will collect until out of memory.
+     *
      * @param maxOutput number of bytes to max collect.
      */
 
-    public void setOutputCollectionByteSize(int maxOutput){
+    public void setOutputCollectionByteSize(int maxOutput) {
         this.maxOutput = maxOutput;
     }
 
@@ -204,10 +211,11 @@ public class ProcessRunner implements Runnable{
      * The OutputStream will either be the OutputStream directly from the
      * execution of the native commands or a cache with the output of the
      * execution of the native commands
+     *
      * @return the output of the native commands.
      */
     public synchronized InputStream getProcessOutput() {
-        if (processOutString != null){
+        if (processOutString != null) {
             return new ByteArrayInputStream(processOutString.getBytes());
         } else {
             return processOutput;
@@ -218,10 +226,11 @@ public class ProcessRunner implements Runnable{
      * The OutputStream will either be the error-OutputStream directly from the
      * execution of the native commands  or a cache with the error-output of
      * the execution of the native commands
+     *
      * @return the error-output of the native commands.
      */
     public synchronized InputStream getProcessError() {
-        if (processErrorString != null){
+        if (processErrorString != null) {
             return new ByteArrayInputStream(processErrorString.getBytes());
         } else {
             return processError;
@@ -232,15 +241,17 @@ public class ProcessRunner implements Runnable{
      * Get the return code of the process. If the process timed out and was
      * killed, the return code will be -1. But this is not exclusive to this
      * scenario, other programs can also use this return code.
+     *
      * @return the return code
      */
-    public int getReturnCode(){
+    public int getReturnCode() {
         return return_code;
     }
 
     /**
      * Tells whether the process has timedout. Only valid after the process has
      * been run, of course.
+     *
      * @return has the process timed out.
      */
     public boolean isTimedOut() {
@@ -249,13 +260,13 @@ public class ProcessRunner implements Runnable{
 
     /**
      * Return what was printed on the output channel of a _finished_ process,
-     *  as a string, including newlines
+     * as a string, including newlines
+     *
      * @return the output as a string
      */
     public synchronized String getProcessOutputAsString() {
 
-
-        if (processOutString == null){
+        if (processOutString == null) {
             String out = getStringContent(getProcessOutput());
             processOutString = out;
         }
@@ -265,21 +276,19 @@ public class ProcessRunner implements Runnable{
     /**
      * Return what was printed on the error channel of a _finished_ process,
      * as a string, including newlines
+     *
      * @return the error as a string
      */
     public synchronized String getProcessErrorAsString() {
 
-        if (processErrorString == null){
+        if (processErrorString == null) {
             String err = getStringContent(getProcessError());
             processErrorString = err;
         }
-        return  processErrorString;
+        return processErrorString;
     }
 
-
-    /**
-     * Wait for the polling threads to finish.
-     */
+    /** Wait for the polling threads to finish. */
     private void waitForThreads() {
         long endTime = System.currentTimeMillis() + THREADTIMEOUT;
         while (System.currentTimeMillis() < endTime && threads.size() > 0) {
@@ -293,6 +302,7 @@ public class ProcessRunner implements Runnable{
 
     /**
      * Utility Method for reading a stream into a string, for returning
+     *
      * @param stream the string to read
      * @return A string with the contents of the stream.
      */
@@ -305,7 +315,7 @@ public class ProcessRunner implements Runnable{
         int c;
         try {
             while ((c = in.read()) != -1) {
-                sw.append((char)c);
+                sw.append((char) c);
             }
             return sw.toString();
         } catch (IOException e) {
@@ -313,7 +323,6 @@ public class ProcessRunner implements Runnable{
         }
 
     }
-
 
     /**
      * Run the method, feeding it input, and killing it if the timeout is exceeded.
@@ -323,11 +332,9 @@ public class ProcessRunner implements Runnable{
         try {
             Process p = pb.start();
 
-            if (collect){
-                ByteArrayOutputStream pOut =
-                        collectProcessOutput(p.getInputStream(), this.maxOutput);
-                ByteArrayOutputStream pError =
-                        collectProcessOutput(p.getErrorStream(), this.maxError);
+            if (collect) {
+                ByteArrayOutputStream pOut = collectProcessOutput(p.getInputStream(), this.maxOutput);
+                ByteArrayOutputStream pError = collectProcessOutput(p.getErrorStream(), this.maxError);
                 return_code = execute(p);
                 waitForThreads();
                 processOutput = new ByteArrayInputStream(pOut.toByteArray());
@@ -339,37 +346,37 @@ public class ProcessRunner implements Runnable{
                 return_code = execute(p);
             }
         } catch (IOException e) {
-            throw new RuntimeException("An io error occurred when running the command",e);
+            throw new RuntimeException("An io error occurred when running the command", e);
         }
     }
 
-    public void stop(){
+    public void stop() {
         mustStop = true;
     }
 
-    private  int execute(Process p){
+    private int execute(Process p) {
         long startTime = System.currentTimeMillis();
         feedProcess(p, processInput);
         int return_value;
 
-        while (true){
+        while (true) {
             //is the thread finished?
             try {
                 //then return
-                return_value =  p.exitValue();
+                return_value = p.exitValue();
                 break;
-            }catch (IllegalThreadStateException e){
+            } catch (IllegalThreadStateException e) {
                 //not finished
             }
             //is the runtime exceeded?
-            if (System.currentTimeMillis()-startTime > timeout){
+            if (System.currentTimeMillis() - startTime > timeout) {
                 //then return
                 p.destroy();
                 return_value = -1;
                 timedOut = true;
                 break;
             }
-            if (mustStop){
+            if (mustStop) {
                 p.destroy();
                 return_value = -1;
                 break;
@@ -386,17 +393,12 @@ public class ProcessRunner implements Runnable{
 
     }
 
-
-
-
-    private ByteArrayOutputStream collectProcessOutput(
-            final InputStream inputStream, final int maxCollect) {
+    private ByteArrayOutputStream collectProcessOutput(final InputStream inputStream, final int maxCollect) {
         final ByteArrayOutputStream stream;
-        if (maxCollect < 0){
+        if (maxCollect < 0) {
             stream = new ByteArrayOutputStream();
         } else {
-            stream = new ByteArrayOutputStream(Math.min(MAXINITIALBUFFER,
-                                                        maxCollect));
+            stream = new ByteArrayOutputStream(Math.min(MAXINITIALBUFFER, maxCollect));
         }
 
         Thread t = new Thread() {
@@ -425,20 +427,18 @@ public class ProcessRunner implements Runnable{
                     }
                 } catch (IOException e) {
                     // This seems ugly
-                    throw new RuntimeException("Couldn't read output from " +
-                                               "process.", e);
+                    throw new RuntimeException("Couldn't read output from " + "process.", e);
                 }
                 threads.remove(this);
             }
         };
-        t.setDaemon (true); // Allow the JVM to exit even if t is alive
+        t.setDaemon(true); // Allow the JVM to exit even if t is alive
         threads.add(t);
         t.start();
         return stream;
     }
 
-    private void feedProcess(final Process process,
-                             InputStream processInput) {
+    private void feedProcess(final Process process, InputStream processInput) {
         if (processInput == null) {
             // No complaints here - null just means no input
             return;
@@ -464,18 +464,16 @@ public class ProcessRunner implements Runnable{
                     }
                 } catch (IOException e) {
                     // This seems ugly
-                    throw new RuntimeException("Couldn't write input to " +
-                                               "process.", e);
+                    throw new RuntimeException("Couldn't write input to " + "process.", e);
                 }
             }
         };
 
-        Thread.UncaughtExceptionHandler u =
-                new Thread.UncaughtExceptionHandler() {
-                    public void uncaughtException(Thread t, Throwable e) {
-                        //Might not be the prettiest solution...
-                    }
-                };
+        Thread.UncaughtExceptionHandler u = new Thread.UncaughtExceptionHandler() {
+            public void uncaughtException(Thread t, Throwable e) {
+                //Might not be the prettiest solution...
+            }
+        };
         t.setDaemon(true); // Allow the JVM to exit even if t lives
         t.setUncaughtExceptionHandler(u);
         t.start();
