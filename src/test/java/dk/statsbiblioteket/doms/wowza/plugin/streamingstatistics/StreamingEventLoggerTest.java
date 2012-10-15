@@ -30,8 +30,7 @@ public class StreamingEventLoggerTest extends TestCase {
     // Default test values
     private String defaultStatLogDir = "/log/dir";
     private String defaultUsername = "127.0.0.1";
-    private String defaultResource
-            = "http://www.statsbiblioteket.dk/doms/shard/uuid:a0639529-124a-453f-b4ea-59f833b47333";
+    private String defaultResource = "a0639529-124a-453f-b4ea-59f833b47333";
     private String defaultEduPersonTargetedID = "0123456789abcd";
 
     public StreamingEventLoggerTest() {

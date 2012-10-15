@@ -48,11 +48,10 @@ public class TicketToFileMapperTest extends TestCase {
     @Test
     public void testStdCase() throws IOException {
         // Setup environment
-        String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        String shardURL = shardID;
+        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
         TicketToolInterface ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
+        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
         String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
         String storageDir = new File(
@@ -71,17 +70,16 @@ public class TicketToFileMapperTest extends TestCase {
         // Run test
         File result = ticketToFileMapper.streamToFileForRead(stream);
         // Validate result
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + shardID + ".flv").getAbsolutePath(),
+        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
                      result.getAbsolutePath());
     }
 
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
-        String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        String shardURL = shardID;
+        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
         TicketToolInterface ticketToolMock = new TicketToolMock();
         String username = "127.0.0.2-Invalid-ip";
-        Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
+        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
         String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
         String storageDir = new File(
@@ -105,8 +103,7 @@ public class TicketToFileMapperTest extends TestCase {
 
     public void testNonExistingTicket() {
         // Setup environment
-        String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        String shardURL = shardID;
+        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
         TicketToolInterface ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
         String name = "name_of_stream";
@@ -132,11 +129,10 @@ public class TicketToFileMapperTest extends TestCase {
 
     public void testGetFileToStreamSucces() {
         // Setup
-        String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        String shardURL = shardID;
+        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
         TicketToolInterface ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
+        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
         String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
         String storageDir = new File(
@@ -155,17 +151,16 @@ public class TicketToFileMapperTest extends TestCase {
         // Test
         File result = ticketToFileMapper.getFileToStream(ticket);
         // Validate
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + shardID + ".flv").getAbsolutePath(),
+        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
                      result.getAbsolutePath());
     }
 
     public void testRetrieveMediaFileRelativePath() {
         // Setup
-        String shardID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        String shardURL = shardID;
+        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
         TicketToolInterface ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, shardURL, new ArrayList<TicketProperty>());
+        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
         String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
         String storageDir = new File(
@@ -183,7 +178,7 @@ public class TicketToFileMapperTest extends TestCase {
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
         String result = ticketToFileMapper
-                .getFileToStream(new Ticket("test", shardID, "test", Collections.<TicketProperty>emptyList()))
+                .getFileToStream(new Ticket("test", programID, "test", Collections.<TicketProperty>emptyList()))
                 .getPath();
         // Validate
         assertEquals("Expected equal result", "0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result);

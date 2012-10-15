@@ -33,8 +33,7 @@ public class StreamingStatLogEntryTest extends TestCase {
     private static final String defaultQueryString = "ticket=abcd";
     private static final String defaulStreamName = "default-stream-name";
     private static final String defaultUsername = "127.0.0.1";
-    private static final String defaultResource
-            = "http://www.statsbiblioteket.dk/doms/shard/uuid:a0639529-124a-453f-b4ea-59f833b47333";
+    private static final String defaultResource = "a0639529-124a-453f-b4ea-59f833b47333";
     private static final String defaultEduPersonTargetedID = "0123456789abcd";
     private static final String defaulStorageDir = "/vhost/storage/dir";
     private IMediaStreamMock defaultStream;
