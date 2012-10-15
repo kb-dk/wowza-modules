@@ -36,7 +36,7 @@ public class TicketToolTest extends TestCase {
     @Test
     public void testValidateTicket() {
         // Setup environment
-        TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/tickets", logger);
+        TicketToolInterface ticketTool = new TicketTool("http://alhena:7480/authchecker-service/tickets", logger);
         String username = "aUsername";
         String url = "anURL";
         Ticket issuedTicket = issueTicket(username, url, new ArrayList<TicketProperty>());
@@ -49,7 +49,7 @@ public class TicketToolTest extends TestCase {
 
     private Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
         try {
-            WebResource query = Client.create().resource("http://alhena:7880/authchecker-service/tickets")
+            WebResource query = Client.create().resource("http://alhena:7480/authchecker-service/tickets")
                     .path("/issueTicket").queryParam("username", username)
                     .queryParam("resource", resource);
             for (TicketProperty prop : properties) {
