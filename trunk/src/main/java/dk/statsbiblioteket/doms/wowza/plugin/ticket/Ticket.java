@@ -1,7 +1,9 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
-import javax.xml.bind.annotation.*;
-import java.util.Date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /* $Id$
@@ -31,12 +33,7 @@ import java.util.List;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ticket", propOrder = {
-        "ID",
-        "resource",
-        "username",
-        "property"
-})
+@XmlType(name = "ticket", propOrder = {"ID", "resource", "username", "property"})
 @XmlRootElement
 public class Ticket {
     private String ID;
@@ -44,7 +41,7 @@ public class Ticket {
     private String resource;
 
     private String username;
-    
+
     private List<TicketProperty> property;
 
     public Ticket() {
@@ -58,10 +55,10 @@ public class Ticket {
     }
 
     public List<TicketProperty> getProperty() {
-		return property;
-	}
+        return property;
+    }
 
-	public String getResource() {
+    public String getResource() {
         return resource;
     }
 
@@ -73,46 +70,55 @@ public class Ticket {
         return ID;
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((ID == null) ? 0 : ID.hashCode());
-		result = prime * result + ((resource == null) ? 0 : resource.hashCode());
-		result = prime * result
-				+ ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ID == null) ? 0 : ID.hashCode());
+        result = prime * result + ((resource == null) ? 0 : resource.hashCode());
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Ticket other = (Ticket) obj;
-		if (ID == null) {
-			if (other.ID != null)
-				return false;
-		} else if (!ID.equals(other.ID))
-			return false;
-		if (resource == null) {
-			if (other.resource != null)
-				return false;
-		} else if (!resource.equals(other.resource))
-			return false;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Ticket other = (Ticket) obj;
+        if (ID == null) {
+            if (other.ID != null) {
+                return false;
+            }
+        } else if (!ID.equals(other.ID)) {
+            return false;
+        }
+        if (resource == null) {
+            if (other.resource != null) {
+                return false;
+            }
+        } else if (!resource.equals(other.resource)) {
+            return false;
+        }
+        if (username == null) {
+            if (other.username != null) {
+                return false;
+            }
+        } else if (!username.equals(other.username)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return "Ticket [ID=" + ID + ", resource=" + resource + ", username=" + username + ", property=" + property + "]";
-	}
+    @Override
+    public String toString() {
+        return "Ticket [ID=" + ID + ", resource=" + resource + ", username=" + username + ", property=" + property
+                + "]";
+    }
 }

@@ -1,5 +1,18 @@
 package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
+import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -9,120 +22,105 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-
 public class StreamingEventLoggerTest extends TestCase {
 
-	private WMSLogger logger;
-	private TicketToolInterface ticketTool;
-	
-	// Default test values
-	private String defaultStatLogDir = "/log/dir";
-	private String defaultUsername = "127.0.0.1";
-	private String defaultResource = "http://www.statsbiblioteket.dk/doms/shard/uuid:a0639529-124a-453f-b4ea-59f833b47333";
-	private String defaultEduPersonTargetedID = "0123456789abcd";
+    private WMSLogger logger;
+    private TicketToolInterface ticketTool;
 
-	public StreamingEventLoggerTest() {
-		super();
-		this.logger = WMSLoggerFactory.getLogger(this.getClass());
-		ticketTool = new TicketToolMock();
-	}
+    // Default test values
+    private String defaultStatLogDir = "/log/dir";
+    private String defaultUsername = "127.0.0.1";
+    private String defaultResource
+            = "http://www.statsbiblioteket.dk/doms/shard/uuid:a0639529-124a-453f-b4ea-59f833b47333";
+    private String defaultEduPersonTargetedID = "0123456789abcd";
 
-	@Before
-	public void setUp() throws Exception {
-		org.apache.log4j.BasicConfigurator.configure();
-	}
+    public StreamingEventLoggerTest() {
+        super();
+        this.logger = WMSLoggerFactory.getLogger(this.getClass());
+        ticketTool = new TicketToolMock();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		org.apache.log4j.BasicConfigurator.resetConfiguration();
-	}
+    @Before
+    public void setUp() throws Exception {
+        org.apache.log4j.BasicConfigurator.configure();
+    }
 
-	@Test
-	public void testGetTicket() {
-		StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, defaultStatLogDir);
-		String ticketIDOrig = issueStandardTicket();
-		String ticketParam = "ticket=" + ticketIDOrig;
-		try {
-			Ticket ticket = eventLogger.getTicket(ticketParam);
-			assertEquals(ticketIDOrig, ticket.getID());
-		} catch (IllegallyFormattedQueryStringException e) {
-			fail();
-		}
-	}
-	
-	@Test
-	public void testWriteEventLogAppendToExisting() {
-		String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
-		deleteDir(logFolder);
-		createDir(logFolder);
-		StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-		for (int i=0; i<350;i++) {
-			eventLogger.writeEventLog("First eventlog number: " + i);
-		}
-		// Simulate Wowza restart and start new event logger
-		eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-		for (int i=0; i<350;i++) {
-			eventLogger.writeEventLog("Second eventlog number: " + i);
-		}
-		// Check that the file has been created and contains log entries.
-	}
+    @After
+    public void tearDown() throws Exception {
+        org.apache.log4j.BasicConfigurator.resetConfiguration();
+    }
 
-	@Test
-	public void testGetStatLogWriterChangingLogFile() throws IOException, ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
-		deleteDir(logFolder);
-		createDir(logFolder);
-		StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-		Writer beforeWriter = eventLogger.getStatLogWriter();
-		Writer afterWriter = eventLogger.getStatLogWriter();
-		assertTrue("Same writer expected.", beforeWriter.equals(afterWriter));
-		eventLogger.setDateForNewLogFile(sdf.parse("2000-01-01"));
-		afterWriter = eventLogger.getStatLogWriter();
-		assertFalse("New writer expected.", beforeWriter.equals(afterWriter));
-	}
+    @Test
+    public void testGetTicket() {
+        StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, defaultStatLogDir);
+        String ticketIDOrig = issueStandardTicket();
+        String ticketParam = "ticket=" + ticketIDOrig;
+        try {
+            Ticket ticket = eventLogger.getTicket(ticketParam);
+            assertEquals(ticketIDOrig, ticket.getID());
+        } catch (IllegallyFormattedQueryStringException e) {
+            fail();
+        }
+    }
 
-	@Test
-	public void testGetFollowingMidnight() throws IOException, ParseException {
-		// Setup
-		String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
-		deleteDir(logFolder);
-		createDir(logFolder);
-		StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		Date someDate = sdf.parse("2011-01-14 13:20");
-		// Test
-		Date followingMidnight = eventLogger.getFollowingMidnight(someDate);
-		assertTrue("Evaluating the following midnight.", sdf.format(followingMidnight).equals("2011-01-15 00:00"));
-	}
+    @Test
+    public void testWriteEventLogAppendToExisting() {
+        String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
+        deleteDir(logFolder);
+        createDir(logFolder);
+        StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
+        for (int i = 0; i < 350; i++) {
+            eventLogger.writeEventLog("First eventlog number: " + i);
+        }
+        // Simulate Wowza restart and start new event logger
+        eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
+        for (int i = 0; i < 350; i++) {
+            eventLogger.writeEventLog("Second eventlog number: " + i);
+        }
+        // Check that the file has been created and contains log entries.
+    }
 
+    @Test
+    public void testGetStatLogWriterChangingLogFile() throws IOException, ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
+        deleteDir(logFolder);
+        createDir(logFolder);
+        StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
+        Writer beforeWriter = eventLogger.getStatLogWriter();
+        Writer afterWriter = eventLogger.getStatLogWriter();
+        assertTrue("Same writer expected.", beforeWriter.equals(afterWriter));
+        eventLogger.setDateForNewLogFile(sdf.parse("2000-01-01"));
+        afterWriter = eventLogger.getStatLogWriter();
+        assertFalse("New writer expected.", beforeWriter.equals(afterWriter));
+    }
 
-	private void createDir(String folderPath) {
-		File targetFolder = new File(folderPath);
-		if (!(targetFolder.isDirectory())) {
-			targetFolder.mkdirs();
-		}
-	}
+    @Test
+    public void testGetFollowingMidnight() throws IOException, ParseException {
+        // Setup
+        String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
+        deleteDir(logFolder);
+        createDir(logFolder);
+        StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date someDate = sdf.parse("2011-01-14 13:20");
+        // Test
+        Date followingMidnight = eventLogger.getFollowingMidnight(someDate);
+        assertTrue("Evaluating the following midnight.", sdf.format(followingMidnight).equals("2011-01-15 00:00"));
+    }
+
+    private void createDir(String folderPath) {
+        File targetFolder = new File(folderPath);
+        if (!(targetFolder.isDirectory())) {
+            targetFolder.mkdirs();
+        }
+    }
 
     private boolean deleteDir(String folderPath) {
-    	File dir = new File(folderPath);
+        File dir = new File(folderPath);
         if (dir.isDirectory()) {
             String[] children = dir.list();
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]).getAbsolutePath());
                 if (!success) {
                     return false;
@@ -133,14 +131,14 @@ public class StreamingEventLoggerTest extends TestCase {
         return dir.delete();
     }
 
-	private String issueStandardTicket() {
-		List<TicketProperty> props = new ArrayList<TicketProperty>();
-		TicketProperty prop = new TicketProperty();
-		prop.setName("eduPersonTargetedID");
-		prop.setValue(defaultEduPersonTargetedID);
-		props.add(prop);
-		String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getID();
-		return ticketID;
-	}
+    private String issueStandardTicket() {
+        List<TicketProperty> props = new ArrayList<TicketProperty>();
+        TicketProperty prop = new TicketProperty();
+        prop.setName("eduPersonTargetedID");
+        prop.setValue(defaultEduPersonTargetedID);
+        props.add(prop);
+        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getID();
+        return ticketID;
+    }
 
 }
