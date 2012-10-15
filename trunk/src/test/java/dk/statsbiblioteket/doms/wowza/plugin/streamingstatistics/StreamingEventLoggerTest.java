@@ -25,7 +25,7 @@ import java.util.List;
 public class StreamingEventLoggerTest extends TestCase {
 
     private WMSLogger logger;
-    private TicketToolInterface ticketTool;
+    private TicketToolMock ticketTool;
 
     // Default test values
     private String defaultStatLogDir = "/log/dir";

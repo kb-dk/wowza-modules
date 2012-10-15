@@ -22,7 +22,7 @@ import java.util.List;
 public class StreamingStatExtractorProgramStatisticsTest extends TestCase {
 
     private WMSLogger logger;
-    private TicketToolInterface ticketTool;
+    private TicketToolMock ticketTool;
 
     private static final String defaultQueryString = "ticket=abcd";
     private static final String defaulStreamName = "default-stream-name";

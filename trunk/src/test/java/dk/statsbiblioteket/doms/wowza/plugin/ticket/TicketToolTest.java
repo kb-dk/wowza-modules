@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import junit.framework.TestCase;
@@ -8,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TicketToolTest extends TestCase {
 
@@ -29,31 +34,31 @@ public class TicketToolTest extends TestCase {
     }
 
     @Test
-    public void testGenerateTicket() {
-        // Setup environment
-        TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/tickets", logger);
-        String username = "aUsername";
-        String resource = "anURL";
-        Ticket ticket = ticketTool.issueTicket(username, resource, new ArrayList<TicketProperty>());
-        logger.debug("Ticket: " + ticket);
-        assertEquals("Expected equal result", username, ticket.getUsername());
-        assertEquals("Expected equal result", resource, ticket.getResource());
-        assertEquals("Expected equal result", resource, ticket.getResource());
-
-    }
-
-    @Test
     public void testValidateTicket() {
         // Setup environment
         TicketToolInterface ticketTool = new TicketTool("http://alhena:7880/authchecker-service/tickets", logger);
         String username = "aUsername";
         String url = "anURL";
-        Ticket issuedTicket = ticketTool.issueTicket(username, url, new ArrayList<TicketProperty>());
+        Ticket issuedTicket = issueTicket(username, url, new ArrayList<TicketProperty>());
         logger.debug("Issued ticket: " + issuedTicket);
         String ticketID = issuedTicket.getID();
         Ticket resolvedTicket = ticketTool.resolveTicket(ticketID);
         logger.debug("Resolved ticket: " + resolvedTicket);
         assertEquals(issuedTicket, resolvedTicket);
+    }
+
+    private Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
+        try {
+            WebResource query = Client.create().resource("http://alhena:7880/authchecker-service/tickets")
+                    .path("/issueTicket").queryParam("username", username)
+                    .queryParam("resource", resource);
+            for (TicketProperty prop : properties) {
+                query = query.queryParam(prop.getName(), prop.getValue());
+            }
+            return query.post(Ticket.class);
+        } catch (UniformInterfaceException e) {
+            throw new RuntimeException("Unexpected event", e);
+        }
     }
 
 }
