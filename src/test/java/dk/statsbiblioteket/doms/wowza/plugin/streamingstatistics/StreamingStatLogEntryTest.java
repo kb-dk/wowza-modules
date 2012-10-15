@@ -27,7 +27,7 @@ public class StreamingStatLogEntryTest extends TestCase {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private WMSLogger logger;
-    private TicketToolInterface ticketTool;
+    private TicketToolMock ticketTool;
 
     // Default test values
     private static final String defaultQueryString = "ticket=abcd";

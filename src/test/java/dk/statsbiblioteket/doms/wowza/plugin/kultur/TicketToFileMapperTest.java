@@ -49,7 +49,7 @@ public class TicketToFileMapperTest extends TestCase {
     public void testStdCase() throws IOException {
         // Setup environment
         String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolInterface ticketToolMock = new TicketToolMock();
+        TicketToolMock ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
         Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
@@ -77,7 +77,7 @@ public class TicketToFileMapperTest extends TestCase {
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
         String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolInterface ticketToolMock = new TicketToolMock();
+        TicketToolMock ticketToolMock = new TicketToolMock();
         String username = "127.0.0.2-Invalid-ip";
         Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
@@ -130,7 +130,7 @@ public class TicketToFileMapperTest extends TestCase {
     public void testGetFileToStreamSucces() {
         // Setup
         String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolInterface ticketToolMock = new TicketToolMock();
+        TicketToolMock ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
         Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";
@@ -158,7 +158,7 @@ public class TicketToFileMapperTest extends TestCase {
     public void testRetrieveMediaFileRelativePath() {
         // Setup
         String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolInterface ticketToolMock = new TicketToolMock();
+        TicketToolMock ticketToolMock = new TicketToolMock();
         String username = "127.0.0.1";
         Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
         String name = "name_of_stream";

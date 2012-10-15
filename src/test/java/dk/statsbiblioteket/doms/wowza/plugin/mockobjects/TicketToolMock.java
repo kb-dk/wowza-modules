@@ -18,7 +18,6 @@ public class TicketToolMock implements TicketToolInterface {
         this.counter = 0;
     }
 
-    @Override
     public synchronized Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
         String id = "ticket-id-" + counter++;
         Ticket ticket = new Ticket(id, resource, username, properties);

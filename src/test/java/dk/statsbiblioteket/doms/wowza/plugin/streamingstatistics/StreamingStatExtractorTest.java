@@ -26,7 +26,7 @@ import java.util.List;
 public class StreamingStatExtractorTest extends TestCase {
 
     private WMSLogger logger;
-    private TicketToolInterface ticketTool;
+    private TicketToolMock ticketTool;
 
     // Default test values
     private static final String defaultStatLogDir = "/log/dir";
