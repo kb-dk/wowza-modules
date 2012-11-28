@@ -1,5 +1,17 @@
+2.0.11
+Failed release 2.0.10. No functional changes.
+r134 | kfc | 2012-11-28 11:28:07 +0100 (Wed, 28 Nov 2012) | 1 line||Fix wrong scm url|
+r133 | kfc | 2012-11-28 11:11:18 +0100 (Wed, 28 Nov 2012) | 1 line||[maven-release-plugin] prepare for next development iteration|
+r131 | kfc | 2012-11-28 11:11:15 +0100 (Wed, 28 Nov 2012) | 1 line||[maven-release-plugin] prepare release doms-wowza-streaming-server-plugin-2.0.10|
+r130 | kfc | 2012-11-28 11:10:46 +0100 (Wed, 28 Nov 2012) | 1 line||SCM url is svn.statsbiblioteket.dk not merkur.statsbiblioteket.dk|
+r129 | kfc | 2012-11-28 11:09:55 +0100 (Wed, 28 Nov 2012) | 1 line||[maven-release-plugin] rollback the release of doms-wowza-streaming-server-plugin-2.0.10|
+r128 | kfc | 2012-11-28 11:08:51 +0100 (Wed, 28 Nov 2012) | 1 line||[maven-release-plugin] prepare release doms-wowza-streaming-server-plugin-2.0.10|
+
 2.0.10
 Remove live transcoding. Disable previews. Work on program pids, not shard urls.
+r127 | kfc | 2012-11-28 11:08:01 +0100 (Wed, 28 Nov 2012) | 1 line||Added changelog|
+r126 | kfc | 2012-11-28 10:59:29 +0100 (Wed, 28 Nov 2012) | 1 line||Remove obsolete scripts|
+r125 | kfc | 2012-11-28 10:59:20 +0100 (Wed, 28 Nov 2012) | 1 line||Exclude preview application|
 r124 | kfc | 2012-10-15 14:16:55 +0200 (Mon, 15 Oct 2012) | 1 line||Use 7480 everywhere, rather than just somewhere|
 r123 | kfc | 2012-10-15 13:39:56 +0200 (Mon, 15 Oct 2012) | 1 line||Remove code to issue tickets|
 r122 | kfc | 2012-10-15 12:09:43 +0200 (Mon, 15 Oct 2012) | 1 line||Remove the word "shard" everywhere|
