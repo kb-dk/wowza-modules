@@ -1,0 +1,15 @@
+2.0.10
+Remove live transcoding. Disable previews. Work on program pids, not shard urls.
+r124 | kfc | 2012-10-15 14:16:55 +0200 (Mon, 15 Oct 2012) | 1 line||Use 7480 everywhere, rather than just somewhere|
+r123 | kfc | 2012-10-15 13:39:56 +0200 (Mon, 15 Oct 2012) | 1 line||Remove code to issue tickets|
+r122 | kfc | 2012-10-15 12:09:43 +0200 (Mon, 15 Oct 2012) | 1 line||Remove the word "shard" everywhere|
+r121 | kfc | 2012-10-15 12:00:38 +0200 (Mon, 15 Oct 2012) | 1 line||Reindented all files to remove tabs|
+r120 | kfc | 2012-10-15 11:39:05 +0200 (Mon, 15 Oct 2012) | 1 line||Add comment about creating empty directory|
+r119 | kfc | 2012-10-10 14:44:39 +0200 (Wed, 10 Oct 2012) | 3 lines||Remove unused code|Rename shard to program|Ignore prefix of ids|
+r118 | kfc | 2012-10-09 11:20:59 +0200 (Tue, 09 Oct 2012) | 1 line|||
+r117 | kfc | 2012-10-09 11:19:59 +0200 (Tue, 09 Oct 2012) | 4 lines||Moved test folder to correct place|Removed obsolete code|Read PID rather than ticket id from tickets|Use content resolver to find files|
+r116 | kfc | 2012-10-09 11:18:32 +0200 (Tue, 09 Oct 2012) | 4 lines||Moved test folder to correct place|Removed obsolete code|Read PID rather than ticket id from tickets|Use content resolver to find files|
+r115 | kfc | 2012-10-04 22:32:14 +0200 (Thu, 04 Oct 2012) | 1 line||Remove live transcoding plugin|
+r114 | kfc | 2012-10-04 22:31:36 +0200 (Thu, 04 Oct 2012) | 1 line||Fix tests to use correct environment|
+r113 | kfc | 2012-10-04 07:19:30 +0200 (Thu, 04 Oct 2012) | 1 line||Merged in branch maven - mavenized project|
+
