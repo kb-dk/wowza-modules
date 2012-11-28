@@ -24,15 +24,16 @@
                 <exclude>*</exclude>
             </excludes>
         </fileSet>
-        <fileSet>
+        <!-- Te reenable previews, remove this commenting -->
+        <!--fileSet>
             <outputDirectory>applications/kultur_preview</outputDirectory>
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-                <!-- Create empty directory -->
+                <!- - Create empty directory - ->
                 <exclude>*</exclude>
             </excludes>
-        </fileSet>
+        </fileSet-->
         <fileSet>
             <outputDirectory>streamingContent</outputDirectory>
             <directory>src/main/data</directory>
@@ -42,18 +43,24 @@
                 <exclude>*</exclude>
             </excludes>
         </fileSet>
-        <fileSet>
+        <!-- Te reenable previews, remove this commenting -->
+        <!--fileSet>
             <outputDirectory>streamingContentPreview</outputDirectory>
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
-                <!-- Create empty directory -->
+                <!- - Create empty directory - ->
                 <exclude>*</exclude>
             </excludes>
-        </fileSet>
+        </fileSet-->
         <fileSet>
             <outputDirectory>conf</outputDirectory>
             <directory>src/main/config/wowza_vhost_kultur/conf</directory>
+            <!-- To re-enable previews, remove this exclude -->
+            <excludes>
+                <exclude>kultur_preview</exclude>
+                <exclude>kultur_preview/*</exclude>
+            </excludes>
             <directoryMode>0775</directoryMode>
         </fileSet>
         <fileSet>
