@@ -14,7 +14,7 @@
 
     <groupId>dk.statsbiblioteket.doms</groupId>
     <artifactId>doms-wowza-streaming-server-plugin</artifactId>
-    <version>2.0.10-SNAPSHOT</version>
+    <version>2.0.10</version>
     <packaging>jar</packaging>
 
     <description>Wowza plugins for DOMS</description>
@@ -55,9 +55,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</connection>
-        <developerConnection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</developerConnection>
-        <url>https://svn.statsbiblioteket.dk/viewvc/doms-wowza-streaming-server-plugin</url>
+        <connection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/doms-wowza-streaming-server-plugin-2.0.10</connection>
+        <developerConnection>scm:svn:https://merkur.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/tags/doms-wowza-streaming-server-plugin-2.0.10</developerConnection>
+        <url>https://svn.statsbiblioteket.dk/viewvc/doms-wowza-streaming-server-plugin/tags/doms-wowza-streaming-server-plugin-2.0.10</url>
     </scm>
 
     <repositories>
@@ -181,7 +181,7 @@
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>content-resolver-lib</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
 
         <dependency>
