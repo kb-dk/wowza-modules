@@ -55,8 +55,8 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</connection>
-        <developerConnection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin</developerConnection>
+        <connection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk</connection>
+        <developerConnection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk</developerConnection>
         <url>https://svn.statsbiblioteket.dk/viewvc/doms-wowza-streaming-server-plugin</url>
     </scm>
 
