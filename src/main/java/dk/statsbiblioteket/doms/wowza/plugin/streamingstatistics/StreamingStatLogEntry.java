@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class StreamingStatLogEntry {
 
     // Format of log line is "Timestamp;Connection ID;Event;User ID;Organization ID;Channel ID;Program title;Program start"
+    // TODO add to this the Role of the user, the Doms uuid of the program, and check that the event is implemented ok
     private static Pattern logLinePattern = Pattern
             .compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
 
@@ -26,9 +27,8 @@ public class StreamingStatLogEntry {
     private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private WMSLogger logger;
 
+    // LIVE_STREAMING_START is for streaming a live-recorded (or not recorded) signal, and not used by SB
     public enum Event {LIVE_STREAMING_START, STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END}
-
-    ;
 
     // Log information
     private Date timestamp;
@@ -68,6 +68,7 @@ public class StreamingStatLogEntry {
         this.setTimestamp(new Date());
         this.connectionID = stream.getUniqueStreamIdStr();
         this.event = event;
+
         this.wasTicketAttached = (streamingTicket != null);
         if (this.wasTicketAttached) {
             retrieveTicketInformation(streamingTicket);
@@ -81,6 +82,10 @@ public class StreamingStatLogEntry {
         }
     }
 
+    /**
+     * Extract information for the log line from a streaming ticket
+     * @param streamingTicket The ticket from which to extract information for the log line
+     */
     private void retrieveTicketInformation(Ticket streamingTicket) {
         Map<String, String> propertyMap = createMap(streamingTicket.getProperty());
         if (propertyMap.get("eduPersonTargetedID") != null) {
@@ -191,6 +196,10 @@ public class StreamingStatLogEntry {
         return returnString;
     }
 
+    /**
+     * Build the log line from gathered information
+     * @return The log line
+     */
     public String getLogString() {
         StringBuilder sb = new StringBuilder();
         sb.append(sdf.format(timestamp));
@@ -227,6 +236,10 @@ public class StreamingStatLogEntry {
         return sb.toString();
     }
 
+    /**
+     * Build the headline for the log
+     * @return The headline for the log
+     */
     public static String getLogStringHeadline() {
         StringBuilder sb = new StringBuilder();
         sb.append("Timestamp");

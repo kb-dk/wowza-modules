@@ -105,6 +105,11 @@ public class StreamingEventLogger {
         //logUserEvent(stream, Event.SEEK);
     }
 
+    /**
+     * Log the given event
+     * @param stream Stream from which to get the ticket needed for creating the log line
+     * @param event The event to log
+     */
     private void logUserEvent(IMediaStream stream, Event event) {
         String clientQueryString = stream.getClient().getQueryStr();
         try {
@@ -118,6 +123,12 @@ public class StreamingEventLogger {
         }
     }
 
+    /**
+     * Get ticket extracted from the query string
+     * @param queryString Query string from which to extract the ticket
+     * @return Ticket extracted
+     * @throws IllegallyFormattedQueryStringException If query string is illegally formatted
+     */
     protected Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
         Ticket streamingTicket = null;
         if (ticketTool != null) {
