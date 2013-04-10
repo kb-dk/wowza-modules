@@ -2,16 +2,14 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
+import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
-import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +54,7 @@ public class StreamingEventLoggerTest extends TestCase {
         String ticketParam = "ticket=" + ticketIDOrig;
         try {
             Ticket ticket = eventLogger.getTicket(ticketParam);
-            assertEquals(ticketIDOrig, ticket.getID());
+            assertEquals(ticketIDOrig, ticket.getId());
         } catch (IllegallyFormattedQueryStringException e) {
             fail();
         }
@@ -131,12 +129,12 @@ public class StreamingEventLoggerTest extends TestCase {
     }
 
     private String issueStandardTicket() {
-        List<TicketProperty> props = new ArrayList<TicketProperty>();
-        TicketProperty prop = new TicketProperty();
+        List<Property> props = new ArrayList<Property>();
+        Property prop = new Property();
         prop.setName("eduPersonTargetedID");
         prop.setValue(defaultEduPersonTargetedID);
         props.add(prop);
-        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getID();
+        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getId();
         return ticketID;
     }
 

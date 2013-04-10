@@ -5,24 +5,23 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
+import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
-import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -67,8 +66,8 @@ public class TicketToFileMapperTest {
     @Test
     public void testStdCase() throws IOException {
         // Setup environment
-        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -89,8 +88,8 @@ public class TicketToFileMapperTest {
     @Test
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
-        Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<TicketProperty>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
+        Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<Property>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -128,8 +127,8 @@ public class TicketToFileMapperTest {
     @Test
     public void testGetFileToStreamSucces() {
         // Setup
-        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
@@ -148,8 +147,8 @@ public class TicketToFileMapperTest {
     @Test
     public void testRetrieveMediaFileRelativePath() {
         // Setup
-        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -161,7 +160,7 @@ public class TicketToFileMapperTest {
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
         String result = ticketToFileMapper
-                .getFileToStream(new Ticket("test", programID, "test", Collections.<TicketProperty>emptyList()))
+                .getFileToStream(new Ticket("Streame", goodIP, Arrays.asList(programID),null))
                 .getPath();
         // Validate
         assertEquals("Expected equal result", "0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result);

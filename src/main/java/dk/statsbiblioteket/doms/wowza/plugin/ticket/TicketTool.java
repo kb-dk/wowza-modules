@@ -4,12 +4,10 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class TicketTool implements TicketToolInterface {
 
@@ -18,7 +16,9 @@ public class TicketTool implements TicketToolInterface {
 
     public TicketTool(String serviceURL, WMSLogger logger) {
         super();
-        Client client = Client.create();
+        ClientConfig clientConfig = new DefaultClientConfig();
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        Client client = Client.create(clientConfig);
         restApi = client.resource(serviceURL);
         this.logger = logger;
     }
@@ -27,9 +27,9 @@ public class TicketTool implements TicketToolInterface {
       * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#resolveTicket(java.lang.String)
       */
     @Override
-    public Ticket resolveTicket(String ticketID) {
+    public dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID) {
         try {
-            Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(Ticket.class);
+            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket.class);
             logger.info("resolveTicket: Ticket received.");
             return ticketXml;
 

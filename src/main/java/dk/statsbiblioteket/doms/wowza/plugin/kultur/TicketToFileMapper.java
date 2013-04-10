@@ -5,8 +5,6 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
-
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
@@ -71,7 +69,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         String clientQuery = stream.getClient().getQueryStr();
         File streamingFile;
         try {
-            Ticket streamingTicket = getTicket(clientQuery);
+            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQuery);
             logger.info("Ticket received: " + streamingTicket);
             if (
                     streamingTicket != null &&
@@ -100,8 +98,8 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamingFile;
     }
 
-    private boolean doesTicketAllowThisStream(IMediaStream stream, Ticket streamingTicket) {
-        String ticketResource = streamingTicket.getResource();
+    private boolean doesTicketAllowThisStream(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+
 
         //TODO implement this method
         return true;  //To change body of created methods use File | Settings | File Templates.
@@ -117,11 +115,11 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      * @return an Unmarshalled ticket
      * @throws IllegallyFormattedQueryStringException
      */
-    private Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
+    private dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
         logger.info("getTicket: Query: " + queryString);
         String ticketID = QueryUtil.extractTicketID(queryString);
         logger.info("getTicket: query: " + ticketID);
-        Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
+        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
         logger.info("getTicket: streamingTicket: " + streamingTicket);
         logger.info("queryString     : " + queryString);
         logger.info("ticketID        : " + ticketID);
@@ -134,12 +132,12 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      * @param streamingTicket the ticket
      * @return true if the ip is the same for the ticket and the user
      */
-    private boolean isClientAllowedStreamingContent(IMediaStream stream, Ticket streamingTicket) {
+    private boolean isClientAllowedStreamingContent(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
-        boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUsername()));
+        boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
         logger.info("isClientAllowedStreamingContent - ipOfClient: " + ipOfClient);
         logger.info(
-                "isClientAllowedStreamingContent - streamingTicket.getUsername(): " + streamingTicket.getUsername());
+                "isClientAllowedStreamingContent - streamingTicket.getUsername(): " + streamingTicket.getUserIdentifier());
         logger.info("isClientAllowedStreamingContent - isAllowed: " + isAllowed);
         return isAllowed;
     }
@@ -150,9 +148,10 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      * @param streamingTicket the ticket
      * @return the file to stream
      */
-    protected File getFileToStream(Ticket streamingTicket) {
+    protected File getFileToStream(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         // Extract
-        String programID = streamingTicket.getResource();
+        //FIXME: this thing just takes the first entry in the list
+        String programID = streamingTicket.getResources().get(0);
         if (programID.contains(":")) {
             programID = programID.substring(programID.lastIndexOf(':') + 1);
         }

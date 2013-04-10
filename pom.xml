@@ -193,14 +193,21 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.3</version>
+            <version>1.17.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.3</version>
+            <version>1.17.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.17.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>junit</groupId>
@@ -251,6 +258,10 @@
             <scope>provided</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform.ticketsystem</groupId>
+            <artifactId>ticket-system-common</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

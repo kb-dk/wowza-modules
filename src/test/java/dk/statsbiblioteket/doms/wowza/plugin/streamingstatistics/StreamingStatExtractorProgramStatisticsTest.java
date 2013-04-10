@@ -2,19 +2,16 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +42,17 @@ public class StreamingStatExtractorProgramStatisticsTest extends TestCase {
     }
 
     private StreamingStatLogEntry createDefaultLogEntry() {
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup user info
-        properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-        properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", "tv2news"));
-        properties.add(new TicketProperty("metaTitle", "Nyheder"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
+        properties.add(new Property("metaChannelName", "tv2news"));
+        properties.add(new Property("metaTitle", "Nyheder"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticket = ticketTool.issueTicket(
+
+                defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);

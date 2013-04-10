@@ -2,15 +2,12 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
-
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -63,7 +60,8 @@ public class StreamingStatLogEntry {
         extractLogEntry(logLine);
     }
 
-    public StreamingStatLogEntry(WMSLogger logger, IMediaStream stream, Event event, Ticket streamingTicket) {
+    public StreamingStatLogEntry(WMSLogger logger, IMediaStream stream, Event event,
+                                 dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         this.logger = logger;
         this.setTimestamp(new Date());
         this.connectionID = stream.getUniqueStreamIdStr();
@@ -86,30 +84,40 @@ public class StreamingStatLogEntry {
      * Extract information for the log line from a streaming ticket
      * @param streamingTicket The ticket from which to extract information for the log line
      */
-    private void retrieveTicketInformation(Ticket streamingTicket) {
-        Map<String, String> propertyMap = createMap(streamingTicket.getProperty());
+    private void retrieveTicketInformation(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+        Map<String, List<String>> propertyMap = streamingTicket.getUserAttributes();
         if (propertyMap.get("eduPersonTargetedID") != null) {
-            this.organisationID = propertyMap.get("schacHomeOrganization");
-            this.userRole = propertyMap.get("eduPersonScopedAffiliation");
-            this.userID = propertyMap.get("eduPersonTargetedID");
+
+            this.organisationID = getFirst(propertyMap, "schacHomeOrganization");
+            this.userRole = getFirst(propertyMap,"eduPersonScopedAffiliation");
+            this.userID = getFirst(propertyMap,"eduPersonTargetedID");
         } else {
             // In this case, the user is not authenticated by WAYF
             // The user is assumed located in SB. Logging IP-address
             // SB users does have a role attached
             this.organisationID = "statsbiblioteket.dk";
-            this.userRole = propertyMap.get("eduPersonScopedAffiliation");
-            this.userID = streamingTicket.getUsername();
+            this.userRole = getFirst(propertyMap,"eduPersonScopedAffiliation");
+            this.userID = streamingTicket.getUserIdentifier();
         }
-        this.channelID = propertyMap.get("metaChannelName");
-        this.programTitle = propertyMap.get("metaTitle");
-        this.programStart = propertyMap.get("metaDateTimeStart");
+        this.channelID = getFirst(propertyMap,"metaChannelName");
+        this.programTitle = getFirst(propertyMap,"metaTitle");
+        this.programStart = getFirst(propertyMap,"metaDateTimeStart");
     }
 
-    protected Map<String, String> createMap(List<TicketProperty> properties) {
+    private String getFirst(Map<String, List<String>> propertyMap, String key) {
+        List<String> list = propertyMap.get(key);
+        if (list != null && ! list.isEmpty()){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    protected Map<String, String> createMap(List<Property> properties) {
         Map<String, String> propertyMap = new HashMap<String, String>();
-        for (Iterator<TicketProperty> i = properties.iterator(); i.hasNext(); ) {
-            TicketProperty prop = i.next();
-            propertyMap.put(prop.getName(), prop.getValue());
+        if (properties != null){
+            for (Property property : properties) {
+                propertyMap.put(property.getName(),property.getValue());
+            }
         }
         return propertyMap;
     }

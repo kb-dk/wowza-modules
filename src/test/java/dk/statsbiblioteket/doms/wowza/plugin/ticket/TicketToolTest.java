@@ -3,16 +3,21 @@ package dk.statsbiblioteket.doms.wowza.plugin.ticket;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TicketToolTest extends TestCase {
 
@@ -36,26 +41,34 @@ public class TicketToolTest extends TestCase {
     @Test
     public void testValidateTicket() {
         // Setup environment
-        TicketToolInterface ticketTool = new TicketTool("http://alhena:7480/authchecker-service/tickets", logger);
+        TicketToolInterface ticketTool = new TicketTool("http://alhena:7950/ticket-system-service/tickets", logger);
         String username = "aUsername";
-        String url = "anURL";
-        Ticket issuedTicket = issueTicket(username, url, new ArrayList<TicketProperty>());
-        logger.debug("Issued ticket: " + issuedTicket);
-        String ticketID = issuedTicket.getID();
-        Ticket resolvedTicket = ticketTool.resolveTicket(ticketID);
+        String url = "doms_reklamefilm:uuid:35a1aa76-97a1-4f1b-b5aa-ad2a246eeeec";
+        Map<String, String> ticketMap = issueTicket(username, url, Arrays.asList(new Property("ip_role_mapper.SBIPRoleMapper", "SB_PUB")));
+        String issuedTicketId = null;
+        for (String key : ticketMap.keySet()) {
+            issuedTicketId = ticketMap.get(key);
+        }
+        logger.debug("Issued ticket: " + issuedTicketId);
+        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolvedTicket = ticketTool.resolveTicket(issuedTicketId);
         logger.debug("Resolved ticket: " + resolvedTicket);
-        assertEquals(issuedTicket, resolvedTicket);
+        assertEquals(url, resolvedTicket.getResources().get(0));
+        assertEquals(username,resolvedTicket.getUserIdentifier());
+
     }
 
-    private Ticket issueTicket(String username, String resource, List<TicketProperty> properties) {
+    private Map<String,String> issueTicket(String username, String resource, List<Property> properties) {
         try {
-            WebResource query = Client.create().resource("http://alhena:7480/authchecker-service/tickets")
-                    .path("/issueTicket").queryParam("username", username)
-                    .queryParam("resource", resource);
-            for (TicketProperty prop : properties) {
+            ClientConfig clientConfig = new DefaultClientConfig();
+            clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+            Client client = Client.create(clientConfig);
+            WebResource query = client.resource("http://alhena:7950/ticket-system-service/tickets")
+                    .path("/issueTicket").queryParam("userIdentifier", username)
+                    .queryParam("id", resource).queryParam("type","Streame");
+            for (Property prop : properties) {
                 query = query.queryParam(prop.getName(), prop.getValue());
             }
-            return query.post(Ticket.class);
+            return query.accept(MediaType.APPLICATION_JSON).post(Map.class);
         } catch (UniformInterfaceException e) {
             throw new RuntimeException("Unexpected event", e);
         }

@@ -2,9 +2,7 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
-
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
@@ -113,7 +111,7 @@ public class StreamingEventLogger {
     private void logUserEvent(IMediaStream stream, Event event) {
         String clientQueryString = stream.getClient().getQueryStr();
         try {
-            Ticket streamingTicket = getTicket(clientQueryString);
+            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQueryString);
             String logString = new StreamingStatLogEntry(logger, stream, event, streamingTicket).getLogString();
             logger.info("Streaming statistics logging line: " + logString);
             writeEventLog(logString);
@@ -129,8 +127,8 @@ public class StreamingEventLogger {
      * @return Ticket extracted
      * @throws IllegallyFormattedQueryStringException If query string is illegally formatted
      */
-    protected Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
-        Ticket streamingTicket = null;
+    protected dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
+        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = null;
         if (ticketTool != null) {
             // This check is a security precaution. TicketTool is created in onAppStart and not in constructor
             String ticketID = QueryUtil.extractTicketID(queryString);

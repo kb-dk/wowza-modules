@@ -2,19 +2,17 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -96,14 +94,14 @@ public class StreamingStatExtractorTest extends TestCase {
     private BufferedReader getLogReader(int logSize) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < logSize; i++) {
-            List<TicketProperty> properties = new ArrayList<TicketProperty>();
+            List<Property> properties = new ArrayList<Property>();
             // Setup user info
-            properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-            properties.add(new TicketProperty("eduPersonTargetedID", "1x1-" + i));
+            properties.add(new Property("schacHomeOrganization", "au.dk"));
+            properties.add(new Property("eduPersonTargetedID", "1x1-" + i));
             // Setup program info
-            properties.add(new TicketProperty("metaChannelName", "tv2news"));
-            properties.add(new TicketProperty("metaTitle", "Nyheder"));
-            properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+            properties.add(new Property("metaChannelName", "tv2news"));
+            properties.add(new Property("metaTitle", "Nyheder"));
+            properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
             Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
             Event logEvent = Event.STREAMING_START;
             // Test

@@ -2,19 +2,17 @@ package dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,14 +60,14 @@ public class StreamingStatLogEntryTest extends TestCase {
     @Test
     public void testConstructorValueMappingWithWAYF() {
         // Setup environment
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup user info
-        properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-        properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", "tv2news"));
-        properties.add(new TicketProperty("metaTitle", "Nyheder"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        properties.add(new Property("metaChannelName", "tv2news"));
+        properties.add(new Property("metaTitle", "Nyheder"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
@@ -87,11 +85,11 @@ public class StreamingStatLogEntryTest extends TestCase {
     @Test
     public void testConstructorValueMappingWithoutWAYF() {
         // Setup environment
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", "tv2news"));
-        properties.add(new TicketProperty("metaTitle", "Nyheder"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        properties.add(new Property("metaChannelName", "tv2news"));
+        properties.add(new Property("metaTitle", "Nyheder"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
@@ -109,15 +107,15 @@ public class StreamingStatLogEntryTest extends TestCase {
     @Test
     public void testGetLogString() throws ParseException {
         // Setup environment
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup user info
-        properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-        properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
-        properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", "tv2news"));
-        properties.add(new TicketProperty("metaTitle", "Nyheder"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        properties.add(new Property("metaChannelName", "tv2news"));
+        properties.add(new Property("metaTitle", "Nyheder"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         String timestamp = "2010-11-15 17:31:05.749";
@@ -133,15 +131,15 @@ public class StreamingStatLogEntryTest extends TestCase {
     @Test
     public void testGetLogStringWithEscapeCharacters() throws ParseException {
         // Setup environment
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup user info
-        properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-        properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
-        properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", null));
-        properties.add(new TicketProperty("metaTitle", "Nyheder;"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        properties.add(new Property("metaChannelName", null));
+        properties.add(new Property("metaTitle", "Nyheder;"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         String timestamp = "2010-11-15 17:31:05.749";
@@ -156,10 +154,10 @@ public class StreamingStatLogEntryTest extends TestCase {
 
     @Test
     public void testCreateMap() {
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         String name = "schacHomeOrganization";
         String value = "au.dk";
-        properties.add(new TicketProperty(name, value));
+        properties.add(new Property(name, value));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, Event.STREAMING_START,
                                                                    ticket);
@@ -169,15 +167,15 @@ public class StreamingStatLogEntryTest extends TestCase {
 
     @Test
     public void testExtractLogEntry() throws InvalidLogLineParseException, HeadlineEncounteredException {
-        List<TicketProperty> properties = new ArrayList<TicketProperty>();
+        List<Property> properties = new ArrayList<Property>();
         // Setup user info
-        properties.add(new TicketProperty("schacHomeOrganization", "au.dk"));
-        properties.add(new TicketProperty("eduPersonScopedAffiliation", "some role"));
-        properties.add(new TicketProperty("eduPersonTargetedID", "1x1"));
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup program info
-        properties.add(new TicketProperty("metaChannelName", "tv2news"));
-        properties.add(new TicketProperty("metaTitle", "Nyheder"));
-        properties.add(new TicketProperty("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        properties.add(new Property("metaChannelName", "tv2news"));
+        properties.add(new Property("metaTitle", "Nyheder"));
+        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
@@ -227,12 +225,12 @@ public class StreamingStatLogEntryTest extends TestCase {
     }
 
     private String issueStandardTicket() {
-        List<TicketProperty> props = new ArrayList<TicketProperty>();
-        TicketProperty prop = new TicketProperty();
+        List<Property> props = new ArrayList<Property>();
+        Property prop = new Property();
         prop.setName("eduPersonTargetedID");
         prop.setValue(defaultEduPersonTargetedID);
         props.add(prop);
-        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getID();
+        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getId();
         return ticketID;
     }
 
