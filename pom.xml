@@ -187,7 +187,7 @@
         <dependency>
             <groupId>dk.statsbiblioteket.sbutil</groupId>
             <artifactId>sbutil</artifactId>
-            <version>0.5.2</version>
+            <version>0.5.7</version>
         </dependency>
 
         <dependency>
@@ -250,5 +250,7 @@
             <version>1.2.16</version>
             <scope>provided</scope>
         </dependency>
+
+
     </dependencies>
 </project>
