@@ -5,7 +5,6 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +16,6 @@ import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.doms.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.Ticket;
 import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketProperty;
-import dk.statsbiblioteket.doms.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
 
@@ -26,9 +24,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class TicketToFileMapperTest extends TestCase {
+import static org.junit.Assert.assertEquals;
 
+public class TicketToFileMapperTest {
+
+    public static final String RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET = "rtmp://hypothetical-test-machine:1935/doms?ticket=";
     private Logger logger;
+
+    String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
+    TicketToolMock ticketToolMock;
+
+    String storageDir = new File(
+            getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
+            .toString();
+    IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
+
+
+    String goodIP = "127.0.0.1";
+    String badIP = "127.0.0.2-Invalid-ip";
+    String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
+
+    String name = "name_of_stream";
+
 
     public TicketToFileMapperTest() {
         super();
@@ -38,6 +56,7 @@ public class TicketToFileMapperTest extends TestCase {
     @Before
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
+        ticketToolMock = new TicketToolMock();
     }
 
     @After
@@ -48,21 +67,14 @@ public class TicketToFileMapperTest extends TestCase {
     @Test
     public void testStdCase() throws IOException {
         // Setup environment
-        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolMock ticketToolMock = new TicketToolMock();
-        String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
-        String name = "name_of_stream";
-        String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
-        String storageDir = new File(
-                getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-                .toString();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
         IMediaStreamFileMapper defaultMapper = null;
-        ;
-        IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
+
+
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
@@ -74,23 +86,16 @@ public class TicketToFileMapperTest extends TestCase {
                      result.getAbsolutePath());
     }
 
+    @Test
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
-        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolMock ticketToolMock = new TicketToolMock();
-        String username = "127.0.0.2-Invalid-ip";
-        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
-        String name = "name_of_stream";
-        String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
-        String storageDir = new File(
-                getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-                .toString();
+        Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<TicketProperty>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
         IMediaStreamFileMapper defaultMapper = null;
-        ;
-        IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
+
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
@@ -101,22 +106,15 @@ public class TicketToFileMapperTest extends TestCase {
         assertEquals("Expected equal result", ticketInvalidErrorFile, result.getAbsolutePath());
     }
 
+    @Test
     public void testNonExistingTicket() {
         // Setup environment
-        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolInterface ticketToolMock = new TicketToolMock();
-        String username = "127.0.0.1";
-        String name = "name_of_stream";
-        String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + "InvalidID";
-        String storageDir = new File(
-                getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-                .toString();
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + "InvalidID";
         IMediaStreamFileMapper defaultMapper = null;
-        ;
-        IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
+
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
@@ -127,23 +125,15 @@ public class TicketToFileMapperTest extends TestCase {
         assertEquals("Expected equal result", ticketInvalidErrorFile, result.getAbsolutePath());
     }
 
+    @Test
     public void testGetFileToStreamSucces() {
         // Setup
-        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolMock ticketToolMock = new TicketToolMock();
-        String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
-        String name = "name_of_stream";
-        String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
-        String storageDir = new File(
-                getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-                .toString();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
         IMediaStreamFileMapper defaultMapper = null;
-        ;
-        IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
@@ -155,23 +145,16 @@ public class TicketToFileMapperTest extends TestCase {
                      result.getAbsolutePath());
     }
 
+    @Test
     public void testRetrieveMediaFileRelativePath() {
         // Setup
-        String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
-        TicketToolMock ticketToolMock = new TicketToolMock();
-        String username = "127.0.0.1";
-        Ticket ticket = ticketToolMock.issueTicket(username, programID, new ArrayList<TicketProperty>());
-        String name = "name_of_stream";
-        String queryString = "rtmp://hypothetical-test-machine:1935/doms?ticket=" + ticket.getID();
-        String storageDir = new File(
-                getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-                .toString();
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<TicketProperty>());
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getID();
         IMediaStreamFileMapper defaultMapper = null;
-        ;
-        IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+
+
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
