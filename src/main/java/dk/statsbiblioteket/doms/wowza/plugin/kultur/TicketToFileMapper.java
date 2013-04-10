@@ -16,6 +16,9 @@ import dk.statsbiblioteket.medieplatform.contentresolver.model.Resource;
 import java.io.File;
 import java.util.List;
 
+/**
+ * This class is used to validate the ticket and let the user see the correct file
+ */
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
     private final WMSLogger logger;
@@ -64,6 +67,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
             logger.info("Ticket received: " + streamingTicket);
             if ((streamingTicket != null) && (isClientAllowedStreamingContent(stream, streamingTicket))) {
                 logger.info("Streaming allowed");
+                //TODO play the file the user requested, not the one in the ticket
                 streamingFile = getFileToStream(streamingTicket);
             } else {
                 logger.info("Client not allowed to get content streamed");
@@ -86,6 +90,12 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return new File(this.invalidTicketVideo);
     }
 
+    /**
+     * This method gets the ticketID from the querystring and resolves it through the ticket-system
+     * @param queryString
+     * @return an Unmarshalled ticket
+     * @throws IllegallyFormattedQueryStringException
+     */
     private Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
         logger.info("getTicket: Query: " + queryString);
         String ticketID = QueryUtil.extractTicketID(queryString);
@@ -97,6 +107,12 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamingTicket;
     }
 
+    /**
+     * This method checks if the ticket is given to the same IP address as the client
+     * @param stream the stream
+     * @param streamingTicket the ticket
+     * @return true if the ip is the same for the ticket and the user
+     */
     private boolean isClientAllowedStreamingContent(IMediaStream stream, Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
         boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUsername()));
@@ -107,6 +123,12 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return isAllowed;
     }
 
+    /**
+     * This method retrieves the filename from the ticket, by querying the content resolver to get the
+     * streaming resource
+     * @param streamingTicket the ticket
+     * @return the file to stream
+     */
     protected File getFileToStream(Ticket streamingTicket) {
         // Extract
         String programID = streamingTicket.getResource();

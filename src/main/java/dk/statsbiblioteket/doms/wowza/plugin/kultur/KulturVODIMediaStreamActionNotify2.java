@@ -8,6 +8,9 @@ import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
 import dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingEventLogger;
 
+/**
+ * This class handles logging of users actually playing the video
+ */
 public class KulturVODIMediaStreamActionNotify2 implements IMediaStreamActionNotify2 {
 
     public void onPlay(IMediaStream stream, String streamName, double playStart, double playLen, int playReset) {

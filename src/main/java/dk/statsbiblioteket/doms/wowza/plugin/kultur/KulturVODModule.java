@@ -88,11 +88,6 @@ public class KulturVODModule extends ModuleBase
         }
     }
 
-    @Override
-    public void onAppStop(IApplicationInstance appInstance) {
-        // Do nothing.
-    }
-
     /**
      * Called when a new video stream connection is started.
      *
@@ -110,21 +105,12 @@ public class KulturVODModule extends ModuleBase
         client.acceptConnection();
     }
 
-    @Override
-    public void onConnectAccept(IClient client) {
-        getLogger().info("onConnectAccept (client ID)     : " + client.getClientId());
-    }
 
-    @Override
-    public void onConnectReject(IClient client) {
-        getLogger().info("onConnectReject (client ID)     : " + client.getClientId());
-    }
-
-    @Override
-    public void onDisconnect(IClient client) {
-        getLogger().info("onDisconnect (client ID)     : " + client.getClientId());
-    }
-
+    /**
+     * Add the KulturVODIMediaStramActionNotify listener to the stream. This thing is used to track usage
+     * and have nothing to do with tickets
+     * @param stream
+     */
     @Override
     @SuppressWarnings("unchecked")
     public void onStreamCreate(IMediaStream stream) {
@@ -139,6 +125,10 @@ public class KulturVODModule extends ModuleBase
         StreamingEventLogger.getInstance().logUserEventStreamingStarted(stream);
     }
 
+    /**
+     * Disconnect the notifier when the stream is destroyed
+     * @param stream
+     */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
         getLogger().info("onStreamDestroy by: " + stream.getClientId());
@@ -154,12 +144,43 @@ public class KulturVODModule extends ModuleBase
         StreamingEventLogger.getInstance().logUserEventStreamingEnded(stream);
     }
 
+
+
+
+
+        /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onAppStop(IApplicationInstance appInstance) {
+        // Do nothing.
+    }
+
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onConnectAccept(IClient client) {
+        getLogger().info("onConnectAccept (client ID)     : " + client.getClientId());
+    }
+
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onConnectReject(IClient client) {
+        getLogger().info("onConnectReject (client ID)     : " + client.getClientId());
+    }
+
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onDisconnect(IClient client) {
+        getLogger().info("onDisconnect (client ID)     : " + client.getClientId());
+    }
+
+
+    /*Mainly here to remember that we can hook this method*/
     @Override
     public void onMediaStreamCreate(IMediaStream stream) {
         getLogger().info("onMediaStreamCreate (client ID)     : " + stream.getClient().getClientId());
         getLogger().info("onMediaStreamCreate (stream name)   : " + stream.getName());
     }
 
+    /*Mainly here to remember that we can hook this method*/
     @Override
     public void onMediaStreamDestroy(IMediaStream stream) {
         getLogger().info("onMediaStreamDestroy (client ID)     : " + stream.getClient().getClientId());
