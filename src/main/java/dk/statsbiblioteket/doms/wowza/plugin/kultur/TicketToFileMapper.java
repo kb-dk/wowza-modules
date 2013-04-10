@@ -46,6 +46,14 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamToFileForRead(stream, name, ext, query);
     }
 
+    /**
+     * This method is invoked when Wowza tries to figure out which file to play
+     * @param stream the stream requested
+     * @param name the name of the stream?
+     * @param ext ?
+     * @param streamQuery ?
+     * @return the file to play
+     */
     @Override
     public File streamToFileForRead(IMediaStream stream, String name, String ext, String streamQuery) {
         logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query)");
@@ -65,10 +73,16 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         try {
             Ticket streamingTicket = getTicket(clientQuery);
             logger.info("Ticket received: " + streamingTicket);
-            if ((streamingTicket != null) && (isClientAllowedStreamingContent(stream, streamingTicket))) {
+            if (
+                    streamingTicket != null &&
+                    isClientAllowedStreamingContent(stream, streamingTicket) &&
+                    doesTicketAllowThisStream(stream,streamingTicket)
+                    ) {
                 logger.info("Streaming allowed");
+
                 //TODO play the file the user requested, not the one in the ticket
                 streamingFile = getFileToStream(streamingTicket);
+
             } else {
                 logger.info("Client not allowed to get content streamed");
                 streamingFile = getErrorMediaFile();
@@ -79,11 +93,18 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
             streamingFile = getErrorMediaFile();
             stream.setName(streamingFile.getName());
             logger.warn("Illegally formatted query string [" + clientQuery + "]." +
-                                " Playing file: " + streamingFile.getAbsolutePath());
+                    " Playing file: " + streamingFile.getAbsolutePath());
         }
         logger.info("Resulting streaming file: " + streamingFile.getAbsolutePath());
         logger.info("Resulting streaming file exist: " + streamingFile.exists());
         return streamingFile;
+    }
+
+    private boolean doesTicketAllowThisStream(IMediaStream stream, Ticket streamingTicket) {
+        String ticketResource = streamingTicket.getResource();
+
+        //TODO implement this method
+        return true;  //To change body of created methods use File | Settings | File Templates.
     }
 
     private File getErrorMediaFile() {
