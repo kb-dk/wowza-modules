@@ -26,7 +26,7 @@ public class TicketToolMock implements TicketToolInterface {
 
         Map<String, List<String>> propertiesMap = convert(properties);
         dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticket = new dk.statsbiblioteket.medieplatform.ticketsystem.Ticket(
-                "Streame", username, Arrays.asList(resource), propertiesMap);
+                "Stream", username, Arrays.asList(resource), propertiesMap);
         ticketMap.put(ticket.getId(), ticket);
         return ticket;
     }

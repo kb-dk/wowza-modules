@@ -75,7 +75,7 @@ public class TicketToFileMapperTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Run test
         File result = ticketToFileMapper.streamToFileForRead(stream);
@@ -96,7 +96,7 @@ public class TicketToFileMapperTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Run test
         File result = ticketToFileMapper.streamToFileForRead(stream);
@@ -115,7 +115,7 @@ public class TicketToFileMapperTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Run test
         File result = ticketToFileMapper.streamToFileForRead(stream);
@@ -134,7 +134,7 @@ public class TicketToFileMapperTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
         File result = ticketToFileMapper.streamToFileForRead(stream);
@@ -155,7 +155,7 @@ public class TicketToFileMapperTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
                                                                             "%s\\.flv", "%s");
-        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
+        TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
 

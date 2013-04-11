@@ -56,22 +56,36 @@ public class KulturVODModule extends ModuleBase
         try {
             // Setup file mapper
             IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
+
+            //Initialise the config reader
             ConfigReader cr;
             cr = new ConfigReader(new File(vhostDir + "/conf/kultur/" + "doms-wowza-plugin.properties"));
+
+
+            //Read to initialise the ticket checker
             String ticketCheckerLocation = cr
                     .get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
             TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
+
+
+            //Find the invalid video
             String invalidTicketVideo = vhostDir + "/" + (cr
                     .get("ticketInvalidFile", "missing-invalid-file-in-property-file"));
+
+
             File baseDirectory = new File(appInstance.getStreamStorageDir()).getAbsoluteFile();
             int characterDirs = Integer.parseInt(cr.get("characterDirs", "4"));
             String filenameRegexPattern = cr
                     .get("filenameRegexPattern", "missing-filename-regex-pattern-in-property-file");
             String uriPattern = "file://" + baseDirectory + "/%s";
-            ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", baseDirectory,
+            String presentationType = cr.get("presentationType", "Stream");
+
+            ContentResolver contentResolver = new DirectoryBasedContentResolver(presentationType, baseDirectory,
                                                                                 characterDirs, filenameRegexPattern,
                                                                                 uriPattern);
-            TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketTool,
+
+
+            TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(presentationType, defaultMapper, ticketTool,
                                                                            invalidTicketVideo, contentResolver);
             // Set File mapper
             appInstance.setStreamFileMapper(ticketToFileMapper);

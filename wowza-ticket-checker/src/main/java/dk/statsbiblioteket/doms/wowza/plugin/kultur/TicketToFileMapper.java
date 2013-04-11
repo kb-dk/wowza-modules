@@ -10,6 +10,7 @@ import dk.statsbiblioteket.doms.wowza.plugin.utilities.IllegallyFormattedQuerySt
 import dk.statsbiblioteket.doms.wowza.plugin.utilities.QueryUtil;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.model.Resource;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 
 import java.io.File;
 import java.util.List;
@@ -20,14 +21,16 @@ import java.util.List;
 public class TicketToFileMapper implements IMediaStreamFileMapper {
 
     private final WMSLogger logger;
+    private String presentationType;
     private final IMediaStreamFileMapper defaultMapper;
     private final TicketToolInterface ticketTool;
     private final String invalidTicketVideo;
     private final ContentResolver contentResolver;
 
-    public TicketToFileMapper(IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool,
+    public TicketToFileMapper(String presentationType, IMediaStreamFileMapper defaultMapper, TicketToolInterface ticketTool,
                               String invalidTicketVideo, ContentResolver contentResolver) {
         super();
+        this.presentationType = presentationType;
         this.defaultMapper = defaultMapper;
         this.contentResolver = contentResolver;
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
@@ -73,7 +76,8 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
             logger.info("Ticket received: " + streamingTicket);
             if (
                     streamingTicket != null &&
-                    isClientAllowedStreamingContent(stream, streamingTicket) &&
+                    isClientAllowed(stream, streamingTicket) &&
+                            ticketForThisPresentationType(streamingTicket) &&
                     doesTicketAllowThisStream(name,streamingTicket)
                     ) {
                 logger.info("Streaming allowed");
@@ -96,6 +100,10 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamingFile;
     }
 
+    private boolean ticketForThisPresentationType(Ticket streamingTicket) {
+        return streamingTicket.getType().equals(presentationType);
+    }
+
     private boolean doesTicketAllowThisStream(String name, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         name = clean(name);
         boolean ticketForThis = false;
@@ -109,7 +117,6 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
     }
 
     private String clean(String name) {
-        //TODO test this
         if (name.contains(".")){
             name = name.substring(0,name.indexOf("."));
         }
@@ -147,7 +154,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      * @param streamingTicket the ticket
      * @return true if the ip is the same for the ticket and the user
      */
-    private boolean isClientAllowedStreamingContent(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    private boolean isClientAllowed(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
         //TODO test presentationType
 
