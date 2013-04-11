@@ -21,7 +21,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,7 +43,7 @@ public class TicketToFileMapperTest {
     String badIP = "127.0.0.2-Invalid-ip";
     String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
 
-    String name = "name_of_stream";
+    String name = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv";
 
 
     public TicketToFileMapperTest() {
@@ -71,7 +70,7 @@ public class TicketToFileMapperTest {
         IMediaStreamFileMapper defaultMapper = null;
 
 
-
+         //rtmp://iapetus.statsbiblioteket.dk:1937/kultur?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
@@ -138,7 +137,7 @@ public class TicketToFileMapperTest {
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
-        File result = ticketToFileMapper.getFileToStream(ticket);
+        File result = ticketToFileMapper.streamToFileForRead(stream);
         // Validate
         assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
                      result.getAbsolutePath());
@@ -159,8 +158,8 @@ public class TicketToFileMapperTest {
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper(defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
         // Test
-        String result = ticketToFileMapper
-                .getFileToStream(new Ticket("Streame", goodIP, Arrays.asList(programID),null))
+
+        String result = ticketToFileMapper.streamToFileForRead(stream)
                 .getPath();
         // Validate
         assertEquals("Expected equal result", "0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result);

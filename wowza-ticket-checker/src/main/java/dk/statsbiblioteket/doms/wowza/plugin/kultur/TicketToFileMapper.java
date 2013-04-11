@@ -47,14 +47,14 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
     /**
      * This method is invoked when Wowza tries to figure out which file to play
      * @param stream the stream requested
-     * @param name the name of the stream?
-     * @param ext ?
+     * @param name the name of the file to play
+     * @param ext the extension of the file
      * @param streamQuery ?
      * @return the file to play
      */
     @Override
     public File streamToFileForRead(IMediaStream stream, String name, String ext, String streamQuery) {
-        logger.info("streamToFileForRead(IMediaStream stream, String name, String ext, String query)");
+        logger.info("streamToFileForRead(IMediaStream stream="+stream+", String name="+name+", String ext="+ext+", String query="+streamQuery+")");
         IClient client = stream.getClient();
         if (client == null) {
             // This is the case when a live stream is generated.
@@ -64,7 +64,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
             return null;
         }
         logger.info(
-                "streamToFileForRead(IMediaStream stream, String name, String ext, String query) - stream.Client().getQueryStr()  :"
+                "streamToFileForRead(IMediaStream stream="+stream+", String name="+name+", String ext="+ext+", String query="+streamQuery+") - stream.Client().getQueryStr()  :"
                         + stream.getClient().getQueryStr());
         String clientQuery = stream.getClient().getQueryStr();
         File streamingFile;
@@ -74,12 +74,10 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
             if (
                     streamingTicket != null &&
                     isClientAllowedStreamingContent(stream, streamingTicket) &&
-                    doesTicketAllowThisStream(stream,streamingTicket)
+                    doesTicketAllowThisStream(name,streamingTicket)
                     ) {
                 logger.info("Streaming allowed");
-
-                //TODO play the file the user requested, not the one in the ticket
-                streamingFile = getFileToStream(streamingTicket);
+                streamingFile = getFileToStream(name);
 
             } else {
                 logger.info("Client not allowed to get content streamed");
@@ -98,11 +96,28 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamingFile;
     }
 
-    private boolean doesTicketAllowThisStream(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    private boolean doesTicketAllowThisStream(String name, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+        name = clean(name);
+        boolean ticketForThis = false;
+        for (String resource : streamingTicket.getResources()) {
+            if (resource.contains(name)){
+                ticketForThis = true;
+                break;
+            }
+        }
+        return ticketForThis;
+    }
 
+    private String clean(String name) {
+        //TODO test this
+        if (name.contains(".")){
+            name = name.substring(0,name.indexOf("."));
+        }
+        if (name.contains(":")) {
+            name = name.substring(name.lastIndexOf(':') + 1);
+        }
 
-        //TODO implement this method
-        return true;  //To change body of created methods use File | Settings | File Templates.
+        return name;  //To change body of created methods use File | Settings | File Templates.
     }
 
     private File getErrorMediaFile() {
@@ -134,6 +149,8 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      */
     private boolean isClientAllowedStreamingContent(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
+        //TODO test presentationType
+
         boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
         logger.info("isClientAllowedStreamingContent - ipOfClient: " + ipOfClient);
         logger.info(
@@ -145,19 +162,15 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
     /**
      * This method retrieves the filename from the ticket, by querying the content resolver to get the
      * streaming resource
-     * @param streamingTicket the ticket
+     * @param name the filename
      * @return the file to stream
      */
-    protected File getFileToStream(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    protected File getFileToStream(String name) {
         // Extract
-        //FIXME: this thing just takes the first entry in the list
-        String programID = streamingTicket.getResources().get(0);
-        if (programID.contains(":")) {
-            programID = programID.substring(programID.lastIndexOf(':') + 1);
-        }
+        name = clean(name);
         String filenameAndPath = getErrorMediaFile().getPath();
-        logger.info("Looking up '" + programID + "'");
-        List<Resource> resources = contentResolver.getContent(programID).getResources();
+        logger.info("Looking up '" + name + "'");
+        List<Resource> resources = contentResolver.getContent(name).getResources();
         if (resources != null) {
             for (Resource resource : resources) {
                 if (resource.getType().equals("streaming")) {
