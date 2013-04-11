@@ -122,7 +122,7 @@
             <Module>
                 <Name>doms-wowza-plugin</Name>
                 <Description>Statsbiblioteket Kultur-plugin</Description>
-                <Class>dk.statsbiblioteket.doms.wowza.plugin.kultur.KulturVODModule</Class>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.kultur.KulturVODModule</Class>
             </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
