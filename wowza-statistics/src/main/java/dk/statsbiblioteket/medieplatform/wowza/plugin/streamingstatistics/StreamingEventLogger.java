@@ -127,7 +127,8 @@ public class StreamingEventLogger {
      * @return Ticket extracted
      * @throws IllegallyFormattedQueryStringException If query string is illegally formatted
      */
-    protected dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
+    protected dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString)
+            throws IllegallyFormattedQueryStringException {
         dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = null;
         if (ticketTool != null) {
             // This check is a security precaution. TicketTool is created in onAppStart and not in constructor
