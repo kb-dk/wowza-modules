@@ -14,9 +14,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StreamingStatLogEntry {
-    // Format of log line is "Timestamp;Connection ID;Event;User ID;User Role;Organization ID;Channel ID;Program UUID;Program title;Program start"
+
+    // Format of log line is "Timestamp;Connection ID;Event;User ID;Organization ID;Channel ID;Program title;Program start"
+    // TODO add to this the Role of the user, the Doms uuid of the program, and check that the event is implemented ok
     private static Pattern logLinePattern = Pattern
-            .compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
+            .compile("([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^$]*)");
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
@@ -42,7 +44,6 @@ public class StreamingStatLogEntry {
 
     // Media information
     private String channelID;
-    private String programUUID;
     private String programTitle;
     private String programStart;
 
@@ -50,7 +51,6 @@ public class StreamingStatLogEntry {
     private static final String invalidSessionUserRole = "no role info";
     private static final String invalidSessionUserID = "no user info";
     private static final String invalidSessionChannelID = "SB rick roll video";
-    private static final String invalidSessionProgramUUID = "SB rick roll video";
     private static final String invalidSessionProgramTitle = "SB rick roll video";
     private static final String invalidSessionProgramStart = "SB rick roll video";
 
@@ -75,7 +75,6 @@ public class StreamingStatLogEntry {
             this.userID = null;
             this.userRole = null;
             this.channelID = null;
-            this.programUUID = null;
             this.programTitle = null;
             this.programStart = null;
         }
@@ -85,9 +84,8 @@ public class StreamingStatLogEntry {
      * Extract information for the log line from a streaming ticket
      * @param streamingTicket The ticket from which to extract information for the log line
      */
-    private void retrieveTicketInformation(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {  // TODO get programUUID too
+    private void retrieveTicketInformation(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         Map<String, List<String>> propertyMap = streamingTicket.getUserAttributes();
-
         if (propertyMap.get("eduPersonTargetedID") != null) {
 
             this.organisationID = getFirst(propertyMap, "schacHomeOrganization");
@@ -172,14 +170,6 @@ public class StreamingStatLogEntry {
         this.channelID = channelID;
     }
 
-    public String getProgramUUID() {
-        return transformNullValue(programUUID);
-    }
-
-    public void setProgramUUID(String programUUID) {
-        this.programUUID = programUUID;
-    }
-
     public String getProgramTitle() {
         return transformNullValue(programTitle);
     }
@@ -235,8 +225,6 @@ public class StreamingStatLogEntry {
             sb.append(";");
             sb.append(escapeLogString(getChannelID()));
             sb.append(";");
-            sb.append(escapeLogString(getProgramUUID()));
-            sb.append(";");
             sb.append(escapeLogString(getProgramTitle()));
             sb.append(";");
             sb.append(escapeLogString(getProgramStart()));
@@ -248,8 +236,6 @@ public class StreamingStatLogEntry {
             sb.append(invalidSessionOrganizationID);
             sb.append(";");
             sb.append(invalidSessionChannelID);
-            sb.append(";");
-            sb.append(invalidSessionProgramUUID);
             sb.append(";");
             sb.append(invalidSessionProgramTitle);
             sb.append(";");
@@ -278,8 +264,6 @@ public class StreamingStatLogEntry {
         sb.append(";");
         sb.append("Channel ID");
         sb.append(";");
-        sb.append("Program UUID");
-        sb.append(";");
         sb.append("Program title");
         sb.append(";");
         sb.append("Program start");
@@ -296,6 +280,7 @@ public class StreamingStatLogEntry {
             throw new InvalidLogLineParseException("Log line does not match the expected pattern. Was: " + logLine);
         }
         try {
+
             this.setTimestamp(sdf.parse(matcher.group(1)));
             this.connectionID = matcher.group(2);
             this.event = getEventFromString(matcher.group(3));
@@ -303,9 +288,8 @@ public class StreamingStatLogEntry {
             this.userRole = matcher.group(5);
             this.organisationID = matcher.group(6);
             this.channelID = matcher.group(7);
-            this.programUUID = matcher.group(8);
-            this.programTitle = matcher.group(9);
-            this.programStart = matcher.group(10);
+            this.programTitle = matcher.group(8);
+            this.programStart = matcher.group(9);
             this.wasTicketAttached = ((this.channelID != null) && (!this.channelID.equals(invalidSessionChannelID)));
         } catch (ParseException e) {
             if (getLogStringHeadline().equals(logLine)) {
@@ -350,7 +334,6 @@ public class StreamingStatLogEntry {
         result = prime * result + ((organisationID == null) ? 0 : organisationID.hashCode());
         result = prime * result + ((programStart == null) ? 0 : programStart.hashCode());
         result = prime * result + ((programTitle == null) ? 0 : programTitle.hashCode());
-        result = prime * result + ((programUUID == null) ? 0 : programUUID.hashCode());
         result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
         result = prime * result + ((userID == null) ? 0 : userID.hashCode());
         result = prime * result + ((userRole == null) ? 0 : userRole.hashCode());
@@ -392,13 +375,6 @@ public class StreamingStatLogEntry {
                 return false;
             }
         } else if (!organisationID.equals(other.organisationID)) {
-            return false;
-        }
-        if (programUUID == null) {
-            if (other.programUUID != null) {
-                return false;
-            }
-        } else if (!programUUID.equals(other.programUUID)) {
             return false;
         }
         if (programStart == null) {
@@ -446,8 +422,8 @@ public class StreamingStatLogEntry {
     public String toString() {
         return "StreamingStatLogEntry [timestamp=" + timestamp + ", connectionID=" + connectionID + ", event=" + event
                 + ", wasTicketAttached=" + wasTicketAttached + ", organisationID=" + organisationID + ", userRole="
-                + userRole + ", userID=" + userID + ", channelID=" + channelID + ", programUUID=" + programUUID
-                + ", programTitle=" + programTitle + ", programStart=" + programStart + "]";
+                + userRole + ", userID=" + userID + ", channelID=" + channelID + ", programTitle=" + programTitle
+                + ", programStart=" + programStart + "]";
     }
 
 
