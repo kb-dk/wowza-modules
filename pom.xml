@@ -43,6 +43,16 @@
 
     <developers>
         <developer>
+
+            <name>Asger Askov Blekinge</name>
+            <email>abr@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
             <name>Henning Böttger</name>
             <email>heb@statsbiblioteket.dk</email>
             <organization>The State and University Library, Denmark</organization>
@@ -63,9 +73,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk</connection>
-        <developerConnection>scm:svn:https://svn.statsbiblioteket.dk/svn/doms-wowza-streaming-server-plugin/trunk</developerConnection>
-        <url>https://svn.statsbiblioteket.dk/viewvc/doms-wowza-streaming-server-plugin</url>
+        <connection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</connection>
+        <developerConnection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</developerConnection>
+        <url>https://github.com/statsbiblioteket/wowza-ticket-checker</url>
     </scm>
 
     <repositories>
@@ -86,7 +96,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>1.4</version>
                 <configuration>
                     <generateBundle>true</generateBundle>
                     <failIfWarning>true</failIfWarning>
@@ -100,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.0</version>
                 <configuration>
                     <debug>true</debug>
                     <source>1.6</source>
@@ -110,12 +120,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.2.2</version>
+                <version>2.4</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>Install Wmsserver</id>
@@ -164,11 +174,111 @@
         </plugins>
     </build>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                       <groupId>dk.statsbiblioteket.doms</groupId>
+                       <artifactId>wowza-mock</artifactId>
+                       <version>2.0.12-SNAPSHOT</version>
+                       <scope>test</scope>
+                   </dependency>
+
+                   <dependency>
+                       <groupId>dk.statsbiblioteket.doms</groupId>
+                       <artifactId>wowza-common</artifactId>
+                       <version>2.0.12-SNAPSHOT</version>
+                   </dependency>
+                   <dependency>
+                       <groupId>dk.statsbiblioteket.medieplatform</groupId>
+                       <artifactId>content-resolver-lib</artifactId>
+                       <version>0.2</version>
+
+                   </dependency>
+
+                   <dependency>
+                       <groupId>com.sun.jersey</groupId>
+                       <artifactId>jersey-client</artifactId>
+                       <version>1.17.1</version>
+                   </dependency>
+
+                   <dependency>
+                       <groupId>com.sun.jersey</groupId>
+                       <artifactId>jersey-server</artifactId>
+                       <version>1.17.1</version>
+                   </dependency>
+
+                   <dependency>
+                       <groupId>com.sun.jersey</groupId>
+                       <artifactId>jersey-json</artifactId>
+                       <version>1.17.1</version>
+                   </dependency>
+
+
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.9</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-server</artifactId>
+                <version>${wms.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-core</artifactId>
+                <version>${wms.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-stream-publish</artifactId>
+                <version>${wms.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-ext-jdk15</artifactId>
+                <version>1.45</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.5</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.statsbiblioteket.medieplatform.ticketsystem</groupId>
+                <artifactId>ticket-system-common</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>content-resolver-lib</artifactId>
-            <version>0.2</version>
         </dependency>
 
 
@@ -176,56 +286,42 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-server</artifactId>
-            <version>${wms.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-core</artifactId>
-            <version>${wms.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-stream-publish</artifactId>
-            <version>${wms.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-ext-jdk15</artifactId>
-            <version>1.45</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform.ticketsystem</groupId>
             <artifactId>ticket-system-common</artifactId>
-            <version>0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
