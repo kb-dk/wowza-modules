@@ -3,7 +3,9 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class StreamingStatLogEntry {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private WMSLogger logger;
+    private ObjectMapper mapper;
 
     // LIVE_STREAMING_START is for streaming a live-recorded (or not recorded) signal, and not used by SB
     public enum Event {LIVE_STREAMING_START, STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END}
@@ -32,10 +35,12 @@ public class StreamingStatLogEntry {
 
     // Wowza related information
     private String connectionID;
+    private String streamingURL;
     private Event event;
 
     // Ticket information
     private boolean wasTicketAttached;
+    private String userAttributesAsJson;  // Contains user roles
 
     // User information
     private String organisationID;
@@ -54,30 +59,31 @@ public class StreamingStatLogEntry {
     private static final String invalidSessionProgramTitle = "SB rick roll video";
     private static final String invalidSessionProgramStart = "SB rick roll video";
 
-    public StreamingStatLogEntry(WMSLogger logger, String logLine)
-            throws InvalidLogLineParseException, HeadlineEncounteredException {
-        this.logger = logger;
-        extractLogEntry(logLine);
-    }
-
     public StreamingStatLogEntry(WMSLogger logger, IMediaStream stream, Event event,
                                  dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
         this.logger = logger;
         this.setTimestamp(new Date());
-        this.connectionID = stream.getUniqueStreamIdStr();
+        //this.connectionID = stream.getUniqueStreamIdStr();
+
+        //protocol host                         vhostport vhost-application    QueryStr            Ext   stream-name
+        //rtmp://  iapetus.statsbiblioteket.dk: 1937      /kultur           ?  ticket=[ticketId] / flv : 853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
+
+        // TODO the below needs testing to see if we got it right
+        this.streamingURL = "rtmp://" + stream.getClient().getVHost().getHostPortsList().get(0).getAddressStr()
+                + stream.getClient().getVHost().getHostPortsList().get(0).getPort()
+                + '/' + stream.getClient().getAppInstance().getName()
+                + '?' +  stream.getClient().getQueryStr()
+                +  stream.getExt() + ':' + stream.getName();
+
         this.event = event;
 
         this.wasTicketAttached = (streamingTicket != null);
         if (this.wasTicketAttached) {
             retrieveTicketInformation(streamingTicket);
         } else {
-            this.organisationID = null;
-            this.userID = null;
-            this.userRole = null;
-            this.channelID = null;
-            this.programTitle = null;
-            this.programStart = null;
+            this.userAttributesAsJson = null;
         }
+
     }
 
     /**
@@ -85,23 +91,12 @@ public class StreamingStatLogEntry {
      * @param streamingTicket The ticket from which to extract information for the log line
      */
     private void retrieveTicketInformation(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
-        Map<String, List<String>> propertyMap = streamingTicket.getUserAttributes();
-        if (propertyMap.get("eduPersonTargetedID") != null) {
-
-            this.organisationID = getFirst(propertyMap, "schacHomeOrganization");
-            this.userRole = getFirst(propertyMap,"eduPersonScopedAffiliation");
-            this.userID = getFirst(propertyMap,"eduPersonTargetedID");
-        } else {
-            // In this case, the user is not authenticated by WAYF
-            // The user is assumed located in SB. Logging IP-address
-            // SB users does have a role attached
-            this.organisationID = "statsbiblioteket.dk";
-            this.userRole = getFirst(propertyMap,"eduPersonScopedAffiliation");
-            this.userID = streamingTicket.getUserIdentifier();
+        this.mapper = new ObjectMapper();
+        try {
+            userAttributesAsJson = mapper.writeValueAsString(streamingTicket.getUserAttributes());
+        } catch (IOException e) {
+            userAttributesAsJson = null;
         }
-        this.channelID = getFirst(propertyMap,"metaChannelName");
-        this.programTitle = getFirst(propertyMap,"metaTitle");
-        this.programStart = getFirst(propertyMap,"metaDateTimeStart");
     }
 
     private String getFirst(Map<String, List<String>> propertyMap, String key) {
@@ -216,18 +211,12 @@ public class StreamingStatLogEntry {
         sb.append(";");
         sb.append(getEvent());
         sb.append(";");
+        sb.append(escapeLogString(streamingURL));                // TODO put into if
+        sb.append(escapeLogString(userAttributesAsJson));                // TODO put into if
         if (wasTicketAttached) {
-            sb.append(escapeLogString(getUserID()));
+            //sb.append(escapeLogString(streamingURL));
             sb.append(";");
-            sb.append(escapeLogString(getUserRole()));
-            sb.append(";");
-            sb.append(escapeLogString(getOrganisationID()));
-            sb.append(";");
-            sb.append(escapeLogString(getChannelID()));
-            sb.append(";");
-            sb.append(escapeLogString(getProgramTitle()));
-            sb.append(";");
-            sb.append(escapeLogString(getProgramStart()));
+            sb.append(escapeLogString(getProgramUUID()));
         } else {
             sb.append(invalidSessionUserID);
             sb.append(";");
