@@ -73,7 +73,7 @@ public class TicketToFileMapperTest {
          //rtmp://iapetus.statsbiblioteket.dk:1937/kultur?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
+        ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
@@ -94,7 +94,7 @@ public class TicketToFileMapperTest {
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
+        ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
@@ -113,7 +113,7 @@ public class TicketToFileMapperTest {
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
+        ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
@@ -132,7 +132,7 @@ public class TicketToFileMapperTest {
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
+        ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
@@ -153,7 +153,7 @@ public class TicketToFileMapperTest {
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        ContentResolver contentResolver = new DirectoryBasedContentResolver("streaming", new File(storageDir), 4,
+        ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "%s");
         TicketToFileMapper ticketToFileMapper = new TicketToFileMapper("Stream", defaultMapper, ticketToolMock,
                                                                        ticketInvalidErrorFile, contentResolver);
