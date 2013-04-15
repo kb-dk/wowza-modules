@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class QueryUtil {
 
     // Create a pattern to match a correct query string
-    private static Pattern queryPattern = Pattern.compile("ticket=([^&]*)");
+    private static Pattern queryPattern = Pattern.compile("ticket=([^/&]*)");
 
     public static String extractTicketID(String queryString) throws IllegallyFormattedQueryStringException {
         return extract(queryString, 1);
