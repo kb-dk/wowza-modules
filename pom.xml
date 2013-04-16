@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <wms.version>2.2.3</wms.version>
+        <wms.version>3.5.2</wms.version>
         <wms.basedir>/usr/local/WowzaMediaServer-${wms.version}</wms.basedir>
     </properties>
 
