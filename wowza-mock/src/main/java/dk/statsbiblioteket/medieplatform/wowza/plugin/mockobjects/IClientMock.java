@@ -12,6 +12,7 @@ import com.wowza.wms.client.ClientWriteListener;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.module.IModuleCallResult;
 import com.wowza.wms.module.IModulePingResult;
+import com.wowza.wms.protocol.wowz.WOWZSession;
 import com.wowza.wms.response.ResponseFunctions;
 import com.wowza.wms.rtp.model.RTPStream;
 import com.wowza.wms.stream.FastPlaySettings;
@@ -622,6 +623,17 @@ public class IClientMock implements IClient {
     }
 
     @Override
+    public String getLiveStreamTranscoderList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setLiveStreamTranscoderList(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void setObjectEncoding(int objectEncoding) {
         // TODO Auto-generated method stub
 
@@ -723,6 +735,22 @@ public class IClientMock implements IClient {
     public void setValidateFMLEConnections(boolean arg0) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void setThreadContext() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public WOWZSession getWowzSession() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setWowzSession(WOWZSession wowzSession) {
+        // TODO Auto-generated method stub
     }
 
 }

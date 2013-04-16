@@ -8,6 +8,8 @@ import com.wowza.wms.client.ConnectionCounter;
 import com.wowza.wms.client.ConnectionCounterSimple;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.client.IClientNotify;
+import com.wowza.wms.dvr.DvrApplicationContext;
+import com.wowza.wms.dvr.IDvrStreamManager;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerApplicationContext;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.mediacaster.IMediaCasterNotify;
@@ -20,6 +22,7 @@ import com.wowza.wms.module.ModuleList;
 import com.wowza.wms.rtp.model.RTPSession;
 import com.wowza.wms.sharedobject.ISharedObjectNotify;
 import com.wowza.wms.sharedobject.ISharedObjects;
+import com.wowza.wms.stream.IMediaListProvider;
 import com.wowza.wms.stream.IMediaReader;
 import com.wowza.wms.stream.IMediaReaderActionNotify;
 import com.wowza.wms.stream.IMediaStream;
@@ -28,9 +31,17 @@ import com.wowza.wms.stream.IMediaStreamNameAliasProvider;
 import com.wowza.wms.stream.IMediaStreamNotify;
 import com.wowza.wms.stream.IMediaWriterActionNotify;
 import com.wowza.wms.stream.MediaStreamMap;
+import com.wowza.wms.stream.livedvr.IDvrStreamManagerActionNotify;
+import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorder;
+import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorderActionNotify;
+import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorderControl;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizer;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizerActionNotify;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizerControl;
+import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoder;
+import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoderControl;
+import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoderNotify;
+import com.wowza.wms.stream.livetranscoder.LiveStreamTranscoderApplicationContext;
 import com.wowza.wms.stream.publish.Publisher;
 import com.wowza.wms.vhost.IVHost;
 import edu.emory.mathcs.backport.java.util.concurrent.locks.WMSReadWriteLock;
@@ -165,6 +176,31 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     public boolean containsLiveStreamPacketizer(String arg0) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public boolean containsDvrRecorder(String s) {
+        return false;
+    }
+
+    @Override
+    public String getVODTimedTextProviderList() {
+        return null;
+    }
+
+    @Override
+    public void setVODTimedTextProviderList(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public List<String> getVODTimedTextProviderSet() {
+        return null;
+    }
+
+    @Override
+    public WMSProperties getTimedTextProperties() {
+        return null;
     }
 
     @Override
@@ -368,6 +404,11 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     @Override
     public WMSProperties getLiveStreamPacketizerProperties() {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public WMSProperties getTranscoderProperties() {
         return null;
     }
 
@@ -1001,6 +1042,17 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     }
 
     @Override
+    public int getMaximumPendingReadBytes() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setMaximumPendingReadBytes(int i) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void setMaximumSetBufferTime(int arg0) {
         // TODO Auto-generated method stub
 
@@ -1187,9 +1239,203 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     }
 
     @Override
+    public void addLiveStreamTranscoderListener(ILiveStreamTranscoderNotify iLiveStreamTranscoderNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeLiveStreamTranscoderListener(ILiveStreamTranscoderNotify iLiveStreamTranscoderNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamTranscoderCreate(ILiveStreamTranscoder iLiveStreamTranscoder,
+                                                 IMediaStream iMediaStream) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamTranscoderDestroy(ILiveStreamTranscoder iLiveStreamTranscoder,
+                                                  IMediaStream iMediaStream) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamTranscoderInit(ILiveStreamTranscoder iLiveStreamTranscoder, IMediaStream iMediaStream) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean containsLiveStreamTranscoder(String s) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String getLiveStreamTranscoderList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setLiveStreamTranscoderList(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public ILiveStreamTranscoderControl getLiveStreamTranscoderControl() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setLiveStreamTranscoderControl(ILiveStreamTranscoderControl iLiveStreamTranscoderControl) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public LiveStreamTranscoderApplicationContext getTranscoderApplicationContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public WMSProperties getDvrProperties() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public DvrApplicationContext getDvrApplicationContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ILiveStreamDvrRecorderControl getLiveStreamDvrRecorderControl() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setLiveStreamDvrRecorderControl(ILiveStreamDvrRecorderControl iLiveStreamDvrRecorderControl) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public String getDvrRecorderList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDvrRecorderList(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addDvrRecorderListener(ILiveStreamDvrRecorderActionNotify iLiveStreamDvrRecorderActionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeDvrRecorderListener(ILiveStreamDvrRecorderActionNotify iLiveStreamDvrRecorderActionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamDvrRecorderCreate(ILiveStreamDvrRecorder iLiveStreamDvrRecorder, String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamDvrRecorderInit(ILiveStreamDvrRecorder iLiveStreamDvrRecorder, String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyLiveStreamDvrRecorderDestroy(ILiveStreamDvrRecorder iLiveStreamDvrRecorder) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addDvrStreamManagerListener(IDvrStreamManagerActionNotify iDvrStreamManagerActionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeDvrStreamManagerListener(IDvrStreamManagerActionNotify iDvrStreamManagerActionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyDvrStreamManagerCreate(IDvrStreamManager iDvrStreamManager) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyDvrStreamManagerInit(IDvrStreamManager iDvrStreamManager) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyDvrStreamManagerDestroy(IDvrStreamManager iDvrStreamManager) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getMediaReaderContentType(String s) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public IMediaListProvider getMediaListProvider() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setMediaListProvider(IMediaListProvider iMediaListProvider) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getMediacasterRTPRTSPRTPTransportMode() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setMediacasterRTPRTSPRTPTransportMode(int i) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean[] getProtocolUsage() {
+        // TODO Auto-generated method stub
+        return new boolean[0];
+    }
+
+    @Override
+    public void getProtocolUsage(boolean[] booleans) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean isDebugAppTimeout() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setDebugAppTimeout(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void setValidationFrequency(int arg0) {
         // TODO Auto-generated method stub
-
     }
 
     @Override

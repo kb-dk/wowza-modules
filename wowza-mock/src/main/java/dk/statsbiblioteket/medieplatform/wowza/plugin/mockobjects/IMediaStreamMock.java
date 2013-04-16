@@ -7,6 +7,9 @@ import com.wowza.wms.amf.AMFPacket;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
+import com.wowza.wms.media.h264.H264SEIMessages;
+import com.wowza.wms.media.model.MediaCodecInfoAudio;
+import com.wowza.wms.media.model.MediaCodecInfoVideo;
 import com.wowza.wms.netconnection.INetConnection;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.rtp.model.RTPStream;
@@ -14,16 +17,21 @@ import com.wowza.wms.stream.FastPlaySettings;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
+import com.wowza.wms.stream.IMediaStreamActionNotify3;
 import com.wowza.wms.stream.IMediaStreamCallback;
+import com.wowza.wms.stream.IMediaStreamH264SEINotify;
 import com.wowza.wms.stream.IMediaStreamMetaDataProvider;
 import com.wowza.wms.stream.IMediaStreamPlay;
 import com.wowza.wms.stream.MediaStreamMap;
+import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorder;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizer;
+import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoder;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 public class IMediaStreamMock implements IMediaStream {
 
@@ -65,6 +73,11 @@ public class IMediaStreamMock implements IMediaStream {
     public void addClientListener(IMediaStreamActionNotify2 actionListener) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void addClientListener(IMediaStreamActionNotify3 iMediaStreamActionNotify3) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -255,6 +268,21 @@ public class IMediaStreamMock implements IMediaStream {
     public ILiveStreamPacketizer getLiveStreamPacketizer(String name) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String getDvrRecorderList() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setDvrRecorderList(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ILiveStreamDvrRecorder getDvrRecorder(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -563,6 +591,16 @@ public class IMediaStreamMock implements IMediaStream {
     }
 
     @Override
+    public void notifyActionOnCodecInfoVideo(MediaCodecInfoVideo mediaCodecInfoVideo) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void notifyActionOnCodecInfoAudio(MediaCodecInfoAudio mediaCodecInfoAudio) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void notifyActionPause(boolean isPause, long location) {
         // TODO Auto-generated method stub
 
@@ -647,6 +685,11 @@ public class IMediaStreamMock implements IMediaStream {
     }
 
     @Override
+    public void removeClientListener(IMediaStreamActionNotify3 iMediaStreamActionNotify3) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void send(String handlerName) {
         // TODO Auto-generated method stub
 
@@ -656,6 +699,11 @@ public class IMediaStreamMock implements IMediaStream {
     public void send(String handlerName, Object... params) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void sendAMF3(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -671,9 +719,19 @@ public class IMediaStreamMock implements IMediaStream {
     }
 
     @Override
+    public void sendAMF3(String s, Object... objects) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void sendDirect(String handlerName, Object... params) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void sendDirectAMF3(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -942,6 +1000,16 @@ public class IMediaStreamMock implements IMediaStream {
     }
 
     @Override
+    public String getLiveStreamTranscoderList() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setLiveStreamTranscoderList(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void setLiveStreamRepeater(String liveStreamRepeater) {
         // TODO Auto-generated method stub
 
@@ -1071,7 +1139,11 @@ public class IMediaStreamMock implements IMediaStream {
     @Override
     public void setStreamType(String streamType) {
         // TODO Auto-generated method stub
+    }
 
+    @Override
+    public void sendDirectAMF3(String s, Object... objects) {
+        // TODO Auto-generated method stub
     }
 
     @Override
@@ -1206,6 +1278,89 @@ public class IMediaStreamMock implements IMediaStream {
     public void setMergeOnMetadata(boolean arg0) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public String getDvrRecorder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getDvrRepeater() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDvrRecorder(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public ILiveStreamDvrRecorder removeDvrRecorder(String s) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void putDvrRecorder(String s, ILiveStreamDvrRecorder iLiveStreamDvrRecorder) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public Map<String, ILiveStreamTranscoder> getLiveStreamTranscoders() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ILiveStreamTranscoder getLiveStreamTranscoder(String s) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ILiveStreamTranscoder removeLiveStreamTranscoder(String s) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void putLiveStreamTranscoder(String s, ILiveStreamTranscoder iLiveStreamTranscoder) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean isTranscodeResult() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setTranscodeResult(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addVideoH264SEIListener(IMediaStreamH264SEINotify iMediaStreamH264SEINotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeVideoH264SEIListener(IMediaStreamH264SEINotify iMediaStreamH264SEINotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean isVideoH264SEIListenerEmpty() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void notifyVideoH264Packet(AMFPacket amfPacket, H264SEIMessages h264SEIMessages) {
+        // TODO Auto-generated method stub
     }
 
 }
