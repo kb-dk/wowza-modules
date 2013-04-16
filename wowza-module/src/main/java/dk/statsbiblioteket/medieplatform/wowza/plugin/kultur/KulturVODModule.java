@@ -32,7 +32,7 @@ public class KulturVODModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
     private static String pluginName = "Kultur Wowza plugin";
-    private static String pluginVersion = "2.0.12-SNAPSHOT";
+    private static String pluginVersion = "${project.version}";
 
     public KulturVODModule() {
         super();
