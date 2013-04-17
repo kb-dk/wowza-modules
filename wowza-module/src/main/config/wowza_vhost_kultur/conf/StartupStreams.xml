@@ -1,46 +1,46 @@
 <Root>
-    <StartupStreams>
+	<StartupStreams>		
+		
+		<!-- Add a StartupStream entry for each stream that is to be started at virtual host startup -->
+		<!--   valid MediaCasterTypes are: rtp, rtp-record, shoutcast, shoutcast-record, liverepeater -->
+		
+		<!-- Here are several examples -->
 
-        <!-- Add a StartupStream entry for each stream that is to be started at virtual host startup -->
-        <!--   valid MediaCasterTypes are: rtp, rtp-record, shoutcast, shoutcast-record, liverepeater -->
+		<!-- RTSP/RTP example (RTSP URL is rtsp://192.168.1.7:554/mycoolstream.sdp) -->
+		<!--
+		<StartupStream>
+			<Application>live/_definst_</Application>
+			<MediaCasterType>rtp</MediaCasterType>
+			<StreamName>rtsp://192.168.1.7:554/mycoolstream.sdp</StreamName>
+		</StartupStream>
+		-->
+		
+		<!-- Native RTP example (SDP file is myStream.sdp) -->
+		<!--
+		<StartupStream>
+			<Application>live/_definst_</Application>
+			<MediaCasterType>rtp</MediaCasterType>
+			<StreamName>myStream.sdp</StreamName>
+		</StartupStream>
+		-->
 
-        <!-- Here are several examples -->
+		<!-- SHOUTcast example (SHOUTcast URL is http://mycompany.com/station1) -->
+		<!--
+		<StartupStream>
+			<Application>live/_definst_</Application>
+			<MediaCasterType>shoutcast</MediaCasterType>
+			<StreamName>http://mycompany.com/station1</StreamName>
+		</StartupStream>
+		-->
 
-        <!-- RTSP/RTP example (RTSP URL is rtsp://192.168.1.7:554/mycoolstream.sdp) -->
-        <!--
-          <StartupStream>
-              <Application>live/_definst_</Application>
-              <MediaCasterType>rtp</MediaCasterType>
-              <StreamName>rtsp://192.168.1.7:554/mycoolstream.sdp</StreamName>
-          </StartupStream>
-          -->
+		<!-- Using a .stream file to simplify MPEG-TS stream (myStream.stream is text file with contents udp://0.0.0.0:10000) -->
+		<!--
+		<StartupStream>
+			<Application>live/_definst_</Application>
+			<MediaCasterType>rtp</MediaCasterType>
+			<StreamName>myStream.stream</StreamName>
+		</StartupStream>
+		-->
 
-        <!-- Native RTP example (SDP file is myStream.sdp) -->
-        <!--
-          <StartupStream>
-              <Application>live/_definst_</Application>
-              <MediaCasterType>rtp</MediaCasterType>
-              <StreamName>myStream.sdp</StreamName>
-          </StartupStream>
-          -->
-
-        <!-- SHOUTcast example (SHOUTcast URL is http://mycompany.com/station1) -->
-        <!--
-          <StartupStream>
-              <Application>live/_definst_</Application>
-              <MediaCasterType>shoutcast</MediaCasterType>
-              <StreamName>http://mycompany.com/station1</StreamName>
-          </StartupStream>
-          -->
-
-        <!-- Using a .stream file to simplify MPEG-TS stream (myStream.stream is text file with contents udp://0.0.0.0:10000) -->
-        <!--
-          <StartupStream>
-              <Application>live/_definst_</Application>
-              <MediaCasterType>rtp</MediaCasterType>
-              <StreamName>myStream.stream</StreamName>
-          </StartupStream>
-          -->
-
-    </StartupStreams>
+	</StartupStreams>
 </Root>

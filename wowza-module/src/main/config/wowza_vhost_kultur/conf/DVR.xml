@@ -1,0 +1,22 @@
+<Root>
+	<DVRRecorders>
+		<DVRRecorder>
+			<Name>dvrrecorder</Name>
+			<Description>DVR Recorder</Description>
+			<BaseClass>com.wowza.wms.dvr.impl.LiveStreamDvrRecorder</BaseClass>
+			<Properties>
+			</Properties>
+		</DVRRecorder>
+	</DVRRecorders>
+
+	<DVRStores>
+		<DVRStore>
+			<Name>dvrfilestorage</Name>
+			<Description>DVR File Storage</Description>
+			<Properties>
+			</Properties>
+		</DVRStore>
+	</DVRStores>
+
+</Root>
+

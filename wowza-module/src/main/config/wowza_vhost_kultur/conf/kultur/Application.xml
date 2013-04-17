@@ -27,14 +27,67 @@
             <StreamType>default</StreamType>
             <StorageDir>${com.wowza.wms.context.VHostConfigHome}/streamingContent</StorageDir>
             <KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
-            <!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater -->
+			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
             <LiveStreamPacketizers></LiveStreamPacketizers>
             <!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
             <Properties>
             </Properties>
         </Streams>
-        <!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming -->
-        <HTTPStreamers>cupertinostreaming,smoothstreaming</HTTPStreamers>
+		<Transcoder>
+			<!-- To turn on transcoder set to: transcoder -->
+			<LiveStreamTranscoder></LiveStreamTranscoder>
+			<!-- [templatename].xml or ${SourceStreamName}.xml -->
+			<Templates>${SourceStreamName}.xml,transrate.xml</Templates>
+			<ProfileDir>${com.wowza.wms.context.VHostConfigHome}/transcoder/profiles</ProfileDir>
+			<TemplateDir>${com.wowza.wms.context.VHostConfigHome}/transcoder/templates</TemplateDir>
+			<Properties>
+			</Properties>
+		</Transcoder>
+
+		<DVR>
+			<!-- As a single server or as an origin, use dvrstreamingpacketizer in LiveStreamPacketizers above -->
+			<!-- Or, in an origin-edge configuration, edges use dvrstreamingrepeater in LiveStreamPacketizers above -->
+			<!-- As an origin, also add dvrchunkstreaming to HTTPStreamers below -->
+
+			<!-- To turn on DVR recording set Recorders to dvrrecorder.  This works with dvrstreamingpacketizer  -->
+			<Recorders></Recorders>
+
+			<!-- As a single server or as an origin, set the Store to dvrfilestorage-->
+			<!-- edges should have this empty -->
+			<Store></Store>
+
+			<!--  Window Duration is length of live DVR window in seconds.  0 means the window is never trimmed. -->
+			<WindowDuration>0</WindowDuration>
+
+			<!-- Storage Directory is top level location where dvr is stored.  e.g. c:/temp/dvr -->
+			<StorageDir>${com.wowza.wms.context.VHostConfigHome}/dvr</StorageDir>
+
+			<!-- valid ArchiveStrategy values are append, version, delete -->
+			<ArchiveStrategy>append</ArchiveStrategy>
+
+			<!-- If this is a dvrstreamingrepeater, -->
+			<!-- either define the general Application/Repeater/OriginURL below to point back to the origin -->
+			<!-- or define this one (which affects only DVR origin-edge).  e.g. http://localhost/dvrorigin -->
+			<Repeater>
+				<ChunkOriginURL></ChunkOriginURL>
+			</Repeater>
+
+			<!-- Properties for DVR -->
+			<Properties>
+			</Properties>
+		</DVR>
+
+		<TimedText>
+			<!-- VOD caption providers (separate with commas): vodcaptionprovidermp4_3gpp, vodcaptionproviderttml, vodcaptionprovidersrt, vodcaptionproviderscc -->
+			<VODTimedTextProviders>vodcaptionprovidermp4_3gpp</VODTimedTextProviders>
+			
+			<!-- Properties for TimedText -->
+			<Properties>
+			</Properties>		
+		</TimedText>
+		
+		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming, sanjosestreaming, dvrchunkstreaming -->
+		<HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming</HTTPStreamers>
         <SharedObjects>
             <StorageDir></StorageDir>
         </SharedObjects>
@@ -70,6 +123,12 @@
             </Properties>
         </RTP>
         <MediaCaster>
+			<RTP>
+				<RTSP>
+					<!-- udp, interleave -->
+					<RTPTransportMode>interleave</RTPTransportMode>
+				</RTSP>
+			</RTP>
             <!-- Properties defined here will override any properties defined in conf/MediaCasters.xml for any MediaCasters loaded by this applications -->
             <Properties>
             </Properties>
