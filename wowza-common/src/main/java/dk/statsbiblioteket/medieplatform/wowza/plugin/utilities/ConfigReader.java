@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/** TODO javadoc */
+//TODO javadoc
 public class ConfigReader {
 
     private Properties properties;
 
+    // TODO javadoc
     /**
-     * TODO javadoc
      *
      * @param path
      */
@@ -33,8 +33,8 @@ public class ConfigReader {
         properties.load(new FileInputStream(file));
     }
 
+    // TODO javadoc
     /**
-     * TODO javadoc
      *
      * @param key
      * @return object of key
