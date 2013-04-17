@@ -34,7 +34,7 @@ public class StreamingStatLogEntry {
 
         // TODO the below needs testing to see if we got it right
         this.streamingURL = stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt()
-                + ':' + stream.getName();
+                + ':' + stream.getName() + ':';
 
         this.event = event;
 
@@ -78,8 +78,8 @@ public class StreamingStatLogEntry {
         sb.append(";");
         sb.append(getEvent());
         sb.append(";");
-        sb.append(escapeLogString(streamingURL));                // TODO put into if
-        sb.append(escapeLogString(userAttributesAsJson));                // TODO put into if
+        sb.append(escapeLogString(streamingURL));
+        sb.append(escapeLogString(userAttributesAsJson));
         return sb.toString();
     }
 

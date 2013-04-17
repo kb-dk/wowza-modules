@@ -113,7 +113,7 @@ public class StreamingEventLogger {
         try {
             dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQueryString);
             String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
-            logger.info("Streaming statistics logging line: " + logString);
+            //logger.info("Streaming statistics logging line: " + logString);
             writeEventLog(logString);
         } catch (IllegallyFormattedQueryStringException e) {
             logger.warn("No logging was performed. Query string of client dos not match expected format." +
