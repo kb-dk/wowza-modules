@@ -78,6 +78,9 @@ public class StreamingEventLogger {
      * @throws IllegalStateException If the singleton is not initialized.
      */
     public static synchronized StreamingEventLogger getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Uninitialized event logger");
+        }
         return instance;
     }
 
