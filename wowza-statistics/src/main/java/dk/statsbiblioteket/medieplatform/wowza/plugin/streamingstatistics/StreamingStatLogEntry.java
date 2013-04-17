@@ -51,7 +51,7 @@ public class StreamingStatLogEntry {
      * Extract information for the log line from a streaming ticket
      * @param streamingTicket The ticket from which to extract information for the log line
      */
-    private void retrieveTicketInformation(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    private void retrieveTicketInformation(Ticket streamingTicket) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             userAttributesAsJson = mapper.writeValueAsString(streamingTicket.getUserAttributes());

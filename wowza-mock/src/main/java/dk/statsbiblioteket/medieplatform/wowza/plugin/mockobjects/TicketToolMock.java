@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 
 import java.util.ArrayList;
@@ -12,20 +13,20 @@ import java.util.Map;
 public class TicketToolMock implements TicketToolInterface {
 
     private int counter;
-    private HashMap<String, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket> ticketMap;
+    private HashMap<String, Ticket> ticketMap;
 
     public TicketToolMock() {
         super();
-        this.ticketMap = new HashMap<String, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket>();
+        this.ticketMap = new HashMap<String, Ticket>();
         this.counter = 0;
     }
 
-    public synchronized dk.statsbiblioteket.medieplatform.ticketsystem.Ticket issueTicket(
+    public synchronized Ticket issueTicket(
             String username,
             String resource, List<Property> properties) {
 
         Map<String, List<String>> propertiesMap = convert(properties);
-        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticket = new dk.statsbiblioteket.medieplatform.ticketsystem.Ticket(
+        Ticket ticket = new Ticket(
                 "Stream", username, Arrays.asList(resource), propertiesMap);
         ticketMap.put(ticket.getId(), ticket);
         return ticket;
@@ -45,8 +46,8 @@ public class TicketToolMock implements TicketToolInterface {
     }
 
     @Override
-    public synchronized dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID) {
-        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticket = ticketMap.get(ticketID);
+    public synchronized Ticket resolveTicket(String ticketID) {
+        Ticket ticket = ticketMap.get(ticketID);
         return ticket;
     }
 

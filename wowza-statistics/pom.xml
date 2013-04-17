@@ -15,12 +15,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>wowza-common</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>wowza-mock</artifactId>
             <scope>test</scope>
         </dependency>

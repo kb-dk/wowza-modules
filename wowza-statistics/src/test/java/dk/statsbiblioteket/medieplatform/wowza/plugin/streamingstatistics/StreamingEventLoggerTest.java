@@ -2,10 +2,9 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -16,20 +15,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class StreamingEventLoggerTest extends TestCase {
 
     private WMSLogger logger;
     private TicketToolMock ticketTool;
-
-    // Default test values
-    private String defaultStatLogDir = "/log/dir";
-    private String defaultUsername = "127.0.0.1";
-    private String defaultResource = "a0639529-124a-453f-b4ea-59f833b47333";
-    private String defaultEduPersonTargetedID = "0123456789abcd";
 
     public StreamingEventLoggerTest() {
         super();
@@ -45,19 +36,6 @@ public class StreamingEventLoggerTest extends TestCase {
     @After
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
-    }
-
-    @Test
-    public void testGetTicket() {
-        StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, defaultStatLogDir);
-        String ticketIDOrig = issueStandardTicket();
-        String ticketParam = "ticket=" + ticketIDOrig;
-        try {
-            Ticket ticket = eventLogger.getTicket(ticketParam);
-            assertEquals(ticketIDOrig, ticket.getId());
-        } catch (IllegallyFormattedQueryStringException e) {
-            fail();
-        }
     }
 
     @Test
@@ -127,15 +105,4 @@ public class StreamingEventLoggerTest extends TestCase {
         // The directory is now empty so delete it
         return dir.delete();
     }
-
-    private String issueStandardTicket() {
-        List<Property> props = new ArrayList<Property>();
-        Property prop = new Property();
-        prop.setName("eduPersonTargetedID");
-        prop.setValue(defaultEduPersonTargetedID);
-        props.add(prop);
-        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getId();
-        return ticketID;
-    }
-
 }

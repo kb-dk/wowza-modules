@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+
 public interface TicketToolInterface {
-    public abstract dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID);
+    public abstract Ticket resolveTicket(String ticketID);
 }

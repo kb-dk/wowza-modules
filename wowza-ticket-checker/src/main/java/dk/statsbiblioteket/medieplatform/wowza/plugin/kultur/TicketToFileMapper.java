@@ -57,8 +57,9 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      */
     @Override
     public File streamToFileForRead(IMediaStream stream, String name, String ext, String streamQuery) {
-        logger.trace("streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name
-                            + ", String ext=" + ext + ", String streamQuery=" + streamQuery + ")");
+        logger.trace(
+                "streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
+                        + ", String streamQuery=" + streamQuery + ")");
         IClient client = stream.getClient();
         if (client == null) {
             // This is the case when a live stream is generated.
@@ -70,31 +71,35 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         String clientQuery = stream.getClient().getQueryStr();
         File streamingFile;
         try {
-            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQuery);
-            logger.info("Ticket received: " + streamingTicket);
+            Ticket streamingTicket = QueryUtil.getTicket(clientQuery, ticketTool);
+            logger.debug("Ticket received: " + (streamingTicket != null ? streamingTicket.getId() : "null"));
             if (
                     streamingTicket != null &&
                     isClientAllowed(stream, streamingTicket) &&
                             ticketForThisPresentationType(streamingTicket) &&
                     doesTicketAllowThisStream(name,streamingTicket)
                     ) {
-                logger.info("Streaming allowed");
+                logger.debug("Streaming allowed for IMediaStream stream=" + stream + ", String name=" + name
+                                     + ", String ext=" + ext + ", String streamQuery=" + streamQuery + ")");
                 streamingFile = getFileToStream(name);
 
             } else {
-                logger.info("Client not allowed to get content streamed");
+                logger.debug("Client not allowed to get content streamed for IMediaStream stream=" + stream
+                                     + ", String name=" + name + ", String ext=" + ext + ", String streamQuery="
+                                     + streamQuery + ")");
                 streamingFile = getErrorMediaFile();
                 stream.setName(streamingFile.getName());
             }
         } catch (IllegallyFormattedQueryStringException e) {
-            logger.error("Exception received.");
             streamingFile = getErrorMediaFile();
             stream.setName(streamingFile.getName());
             logger.warn("Illegally formatted query string [" + clientQuery + "]." +
-                    " Playing file: " + streamingFile.getAbsolutePath());
+                    " Playing file: " + streamingFile.getAbsolutePath(), e);
         }
-        logger.info("Resulting streaming file: " + streamingFile.getAbsolutePath());
-        logger.info("Resulting streaming file exist: " + streamingFile.exists());
+        logger.debug("Resulting streaming file: " + streamingFile.getAbsolutePath());
+        logger.info(
+                "streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
+                        + ", String streamQuery=" + streamQuery + "). Resulting straming file: '" + streamingFile.getAbsolutePath() + "'");
         return streamingFile;
     }
 
@@ -102,7 +107,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return streamingTicket.getType().equals(presentationType);
     }
 
-    private boolean doesTicketAllowThisStream(String name, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    private boolean doesTicketAllowThisStream(String name, Ticket streamingTicket) {
         name = clean(name);
         boolean ticketForThis = false;
         for (String resource : streamingTicket.getResources()) {
@@ -130,37 +135,17 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
     }
 
     /**
-     * This method gets the ticketID from the querystring and resolves it through the ticket-system
-     * @param queryString
-     * @return an Unmarshalled ticket
-     * @throws IllegallyFormattedQueryStringException
-     */
-    private dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
-        logger.info("getTicket: Query: " + queryString);
-        String ticketID = QueryUtil.extractTicketID(queryString);
-        logger.info("getTicket: query: " + ticketID);
-        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = ticketTool.resolveTicket(ticketID);
-        logger.info("getTicket: streamingTicket: " + streamingTicket);
-        logger.info("queryString     : " + queryString);
-        logger.info("ticketID        : " + ticketID);
-        return streamingTicket;
-    }
-
-    /**
      * This method checks if the ticket is given to the same IP address as the client
      * @param stream the stream
      * @param streamingTicket the ticket
      * @return true if the ip is the same for the ticket and the user
      */
-    private boolean isClientAllowed(IMediaStream stream, dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket) {
+    private boolean isClientAllowed(IMediaStream stream, Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
         //TODO test presentationType
 
         boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
-        logger.info("isClientAllowedStreamingContent - ipOfClient: " + ipOfClient);
-        logger.info(
-                "isClientAllowedStreamingContent - streamingTicket.getUsername(): " + streamingTicket.getUserIdentifier());
-        logger.info("isClientAllowedStreamingContent - isAllowed: " + isAllowed);
+        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getUserIdentifier(): " + streamingTicket.getUserIdentifier() + ", isAllowed: " + isAllowed);
         return isAllowed;
     }
 
@@ -173,30 +158,30 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
     protected File getFileToStream(String name) {
         // Extract
         name = clean(name);
-        String filenameAndPath = getErrorMediaFile().getPath();
-        logger.info("Looking up '" + name + "'");
+        logger.debug("Looking up '" + name + "'");
         List<Resource> resources = contentResolver.getContent(name).getResources();
         if (resources != null) {
             for (Resource resource : resources) {
                 if (resource.getType().equals("Stream")) {
-                    filenameAndPath = resource.getUris().get(0).getPath();
+                    String pathname = resource.getUris().get(0).getPath();
+                    logger.debug("Found '" + pathname + "' for '" + name + "'");
+                    return new File(pathname);
                 }
             }
         }
-        File streamingFile = new File(filenameAndPath);
-        logger.info("filenameAndPath : " + filenameAndPath);
-        return streamingFile;
+        logger.debug("Content not found for: '" + name + "'");
+        return new File(getErrorMediaFile().getPath());
     }
 
     @Override
     public File streamToFileForWrite(IMediaStream stream) {
-        logger.info("streamToFileForWrite(IMediaStream stream):" + stream);
+        logger.trace("streamToFileForWrite(IMediaStream stream):" + stream);
         return defaultMapper.streamToFileForRead(stream);
     }
 
     @Override
     public File streamToFileForWrite(IMediaStream stream, String name, String ext, String query) {
-        logger.info("streamToFileForWrite(IMediaStream stream, String name, String ext, String query)" + stream);
+        logger.trace("streamToFileForWrite(IMediaStream stream, String name, String ext, String query)" + stream);
         return defaultMapper.streamToFileForRead(stream, name, ext, query);
     }
 

@@ -2,6 +2,8 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
+
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
@@ -99,7 +101,7 @@ public class StreamingEventLogger {
     private void logUserEvent(IMediaStream stream, Event event) {
         String clientQueryString = stream.getClient().getQueryStr();
         try {
-            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQueryString);
+            Ticket streamingTicket = QueryUtil.getTicket(clientQueryString, ticketTool);
             String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
             //logger.info("Streaming statistics logging line: " + logString);
             writeEventLog(logString);
@@ -107,23 +109,6 @@ public class StreamingEventLogger {
             logger.warn("No logging was performed. Query string of client dos not match expected format." +
                                 " Was " + clientQueryString);
         }
-    }
-
-    /**
-     * Get ticket extracted from the query string
-     * @param queryString Query string from which to extract the ticket
-     * @return Ticket extracted
-     * @throws IllegallyFormattedQueryStringException If query string is illegally formatted
-     */
-    protected dk.statsbiblioteket.medieplatform.ticketsystem.Ticket getTicket(String queryString) throws IllegallyFormattedQueryStringException {
-        dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = null;
-        if (ticketTool != null) {
-            // This check is a security precaution. TicketTool is created in onAppStart and not in constructor
-            String ticketID = QueryUtil.extractTicketID(queryString);
-            streamingTicket = ticketTool.resolveTicket(ticketID);
-            logger.debug("Statistics module found ticket: queryString: '" + queryString + "', ticketID: '" + ticketID + "'");
-        }
-        return streamingTicket;
     }
 
     protected synchronized void writeEventLog(String logString) {

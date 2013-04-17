@@ -9,6 +9,8 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.wowza.wms.logging.WMSLogger;
 
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+
 public class TicketTool implements TicketToolInterface {
 
     private WMSLogger logger;
@@ -27,9 +29,9 @@ public class TicketTool implements TicketToolInterface {
       * @see dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface#resolveTicket(java.lang.String)
       */
     @Override
-    public dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID) {
+    public Ticket resolveTicket(String ticketID) {
         try {
-            dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket.class);
+            Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(Ticket.class);
             logger.debug("resolveTicket: Ticket received: '" + ticketID + "'");
             return ticketXml;
 

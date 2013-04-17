@@ -1,15 +1,11 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.utilities;
 
-import com.wowza.wms.logging.WMSLoggerFactory;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class QueryUtilTest extends TestCase {
-
-    private Logger logger;
 
     private String param1 = "param1Key=param1Value";
     private String param2 = "param1Key=param2Value";
@@ -17,7 +13,6 @@ public class QueryUtilTest extends TestCase {
 
     public QueryUtilTest() {
         super();
-        this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
     @Before
@@ -81,5 +76,4 @@ public class QueryUtilTest extends TestCase {
             // Expected behavior
         }
     }
-
 }
