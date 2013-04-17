@@ -71,17 +71,10 @@ public class StreamingStatLogEntry {
         this.setTimestamp(new Date());
         //this.connectionID = stream.getUniqueStreamIdStr();
 
-        //protocol host                         vhostport vhost-application    QueryStr            Ext   stream-name
-        //rtmp://  iapetus.statsbiblioteket.dk: 1937      /kultur           ?  ticket=[ticketId] / flv : 853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
 
         // TODO the below needs testing to see if we got it right
-        this.streamingURL = stream.getClient().getUri()
-              //  + stream.getClient().getVHost().toString() //.getHostPortsList().get(0).getAddressStr()
-           //
-           //     + stream.getClient().getVHost().getHostPortsList().get(0).getPort()
-           //     + '/' + stream.getClient().getAppInstance().getName()
-           //     + '?' +  stream.getClient().getQueryStr()
-                +  stream.getExt() + ':' + stream.getName();
+        this.streamingURL = stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt()
+                + ':' + stream.getName();
 
         this.event = event;
 

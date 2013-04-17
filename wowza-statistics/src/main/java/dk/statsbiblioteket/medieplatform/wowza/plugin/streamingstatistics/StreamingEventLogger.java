@@ -71,11 +71,11 @@ public class StreamingEventLogger {
     }
 
     public void logUserEventLiveStreamingStarted(IMediaStream stream) {
-        logUserEvent(stream, Event.LIVE_STREAMING_START);
+        //logUserEvent(stream, Event.LIVE_STREAMING_START);
     }
 
     public void logUserEventStreamingStarted(IMediaStream stream) {
-        logUserEvent(stream, Event.STREAMING_START);
+        //logUserEvent(stream, Event.STREAMING_START);
     }
 
     public void logUserEventStreamingEnded(IMediaStream stream) {
@@ -85,22 +85,22 @@ public class StreamingEventLogger {
 
     public void logUserEventPlay(IMediaStream stream) {
         // Interested in only certain events
-        //logUserEvent(stream, Event.PLAY);
+        logUserEvent(stream, Event.PLAY);
     }
 
     public void logUserEventStop(IMediaStream stream) {
         // Interested in only certain events
-        //logUserEvent(stream, Event.STOP);
+        logUserEvent(stream, Event.STOP);
     }
 
     public void logUserEventPause(IMediaStream stream) {
         // Interested in only certain events
-        //logUserEvent(stream, Event.PAUSE);
+        logUserEvent(stream, Event.PAUSE);
     }
 
     public void logUserEventSeek(IMediaStream stream) {
         // Interested in only certain events
-        //logUserEvent(stream, Event.SEEK);
+        logUserEvent(stream, Event.SEEK);
     }
 
     /**
