@@ -120,7 +120,7 @@
                 <Class>com.wowza.wms.module.ModuleFLVPlayback</Class>
             </Module>
             <Module>
-                <Name>doms-wowza-plugin</Name>
+                <Name>wowza-ticket-checker</Name>
                 <Description>Statsbiblioteket Kultur-plugin</Description>
                 <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.kultur.KulturVODModule</Class>
             </Module>

@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>dk.statsbiblioteket.doms</groupId>
-        <artifactId>doms-wowza-streaming-server-plugin</artifactId>
+        <groupId>dk.statsbiblioteket.medieplatform</groupId>
+        <artifactId>wowza-ticket-checker-parent</artifactId>
         <version>2.0.12-SNAPSHOT</version>
     </parent>
 
@@ -15,23 +15,61 @@
 
     <dependencies>
         <dependency>
-            <groupId>dk.statsbiblioteket.doms</groupId>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-common</artifactId>
-            <version>2.0.12-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>dk.statsbiblioteket.doms</groupId>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-mock</artifactId>
-            <version>2.0.12-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
         	<groupId>org.codehaus.jackson</groupId>
         	<artifactId>jackson-mapper-asl</artifactId>
-        	<version>1.9.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-stream-publish</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-ext-jdk15on</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

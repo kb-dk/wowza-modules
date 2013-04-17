@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TicketToFileMapperTest {
 
-    public static final String RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET = "rtmp://hypothetical-test-machine:1935/doms?ticket=";
+    public static final String RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET = "rtmp://hypothetical-test-machine:1935/tickets?ticket=";
     private Logger logger;
 
     String ticketInvalidErrorFile = "/VHost/data/rickrollfilename.flv";
@@ -66,7 +66,7 @@ public class TicketToFileMapperTest {
     public void testStdCase() throws IOException {
         // Setup environment
         Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -88,7 +88,7 @@ public class TicketToFileMapperTest {
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
         Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -107,7 +107,7 @@ public class TicketToFileMapperTest {
     @Test
     public void testNonExistingTicket() {
         // Setup environment
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + "InvalidID";
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + "InvalidID";
         IMediaStreamFileMapper defaultMapper = null;
 
 
@@ -127,7 +127,7 @@ public class TicketToFileMapperTest {
     public void testGetFileToStreamSucces() {
         // Setup
         Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
@@ -147,7 +147,7 @@ public class TicketToFileMapperTest {
     public void testRetrieveMediaFileRelativePath() {
         // Setup
         Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_DOMS_TICKET + ticket.getId();
+        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
         IMediaStreamFileMapper defaultMapper = null;
 
 

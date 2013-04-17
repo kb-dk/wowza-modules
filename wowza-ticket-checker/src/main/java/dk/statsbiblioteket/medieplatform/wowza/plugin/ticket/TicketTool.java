@@ -24,7 +24,7 @@ public class TicketTool implements TicketToolInterface {
     }
 
     /* (non-Javadoc)
-      * @see dk.statsbiblioteket.doms.wowza.plugin.utilities.TicketToolInterface#resolveTicket(java.lang.String)
+      * @see dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface#resolveTicket(java.lang.String)
       */
     @Override
     public dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID) {

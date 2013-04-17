@@ -59,7 +59,7 @@ public class KulturVODModule extends ModuleBase
 
             //Initialise the config reader
             ConfigReader cr;
-            cr = new ConfigReader(new File(vhostDir + "/conf/kultur/" + "doms-wowza-plugin.properties"));
+            cr = new ConfigReader(new File(vhostDir + "/conf/kultur/" + "wowza-ticket-checker.properties"));
 
 
             //Read to initialise the ticket checker
