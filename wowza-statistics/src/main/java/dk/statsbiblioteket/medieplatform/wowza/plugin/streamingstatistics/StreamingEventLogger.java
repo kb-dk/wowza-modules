@@ -46,12 +46,12 @@ public class StreamingEventLogger {
     }
 
     /**
-     * Creates the singleton objects. Is robust for multiple concurrent requests for create.
+     * Creates the singleton object. Is robust for multiple concurrent requests for create.
      * Only the first request for create, actually creates the object.
      *
-     * @param ticketTool         must not be null
-     * @param logger             must not be null
-     * @param statLogFileHomeDir must not be null
+     * @param ticketTool         The ticket tool used for resolving tickets. Must not be null.
+     * @param logger             The Wowza logger to log events with. Must not be null.
+     * @param statLogFileHomeDir The directory to write logs to. Must not be null.
      */
     public static synchronized void createInstance(TicketToolInterface ticketTool, WMSLogger logger,
                                                    String statLogFileHomeDir) {
@@ -69,6 +69,14 @@ public class StreamingEventLogger {
         }
     }
 
+    /**
+     * Get the singleton instance. Must ONLY be called after {@link #createInstance} has been called to initialize the
+     * interface.
+     *
+     * @return The singleton instance
+     *
+     * @throws IllegalStateException If the singleton is not initialized.
+     */
     public static synchronized StreamingEventLogger getInstance() {
         return instance;
     }

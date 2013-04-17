@@ -62,9 +62,6 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
                         + ", String streamQuery=" + streamQuery + ")");
         IClient client = stream.getClient();
         if (client == null) {
-            // This is the case when a live stream is generated.
-            // Two streams are created, and one streams from VLC to Wowza and has no client.
-            // If omitted, no live stream is played.
             logger.debug("No client, returning ", stream);
             return null;
         }
@@ -119,21 +116,6 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         return ticketForThis;
     }
 
-    private String clean(String name) {
-        if (name.contains(".")){
-            name = name.substring(0,name.indexOf("."));
-        }
-        if (name.contains(":")) {
-            name = name.substring(name.lastIndexOf(':') + 1);
-        }
-
-        return name;  //To change body of created methods use File | Settings | File Templates.
-    }
-
-    private File getErrorMediaFile() {
-        return new File(this.invalidTicketVideo);
-    }
-
     /**
      * This method checks if the ticket is given to the same IP address as the client
      * @param stream the stream
@@ -142,11 +124,25 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      */
     private boolean isClientAllowed(IMediaStream stream, Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
-        //TODO test presentationType
 
         boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
         logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getUserIdentifier(): " + streamingTicket.getUserIdentifier() + ", isAllowed: " + isAllowed);
         return isAllowed;
+    }
+
+    private String clean(String name) {
+        if (name.contains(".")){
+            name = name.substring(0,name.indexOf("."));
+        }
+        if (name.contains(":")) {
+            name = name.substring(name.lastIndexOf(':') + 1);
+        }
+
+        return name;
+    }
+
+    private File getErrorMediaFile() {
+        return new File(this.invalidTicketVideo);
     }
 
     /**
