@@ -31,7 +31,7 @@ public class TicketTool implements TicketToolInterface {
     @Override
     public Ticket resolveTicket(String ticketID) {
         try {
-            Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(Ticket.class);
+            Ticket ticketXml = restApi.path("/resolveTicket/").path(ticketID).get(Ticket.class);
             logger.debug("resolveTicket: Ticket received: '" + ticketID + "'");
             return ticketXml;
 
