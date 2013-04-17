@@ -158,7 +158,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
         List<Resource> resources = contentResolver.getContent(name).getResources();
         if (resources != null) {
             for (Resource resource : resources) {
-                if (resource.getType().equals("Stream")) {
+                if (resource.getType().equals(presentationType)) {
                     String pathname = resource.getUris().get(0).getPath();
                     logger.debug("Found '" + pathname + "' for '" + name + "'");
                     return new File(pathname);
