@@ -13,5 +13,5 @@ WMSAPP_HOME=/home/wowza/wowza
 echo Location of Wowza Media Server: $WMSAPP_HOME
 echo Starting extractor...
 
-java -cp ../applications/lib/*:${WMSAPP_HOME}/lib/*  dk.statsbiblioteket.doms.wowza.plugin.streamingstatistics.StreamingStatExtractor $*
+java -cp ../applications/lib/*:${WMSAPP_HOME}/lib/*  dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatExtractor $*
 
