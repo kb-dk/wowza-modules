@@ -37,7 +37,8 @@ public class StreamingEventLogger {
         this.ticketTool = ticketTool;
         this.statLogFileHomeDir = statLogFileHomeDir;
         this.statLogWriter = null;
-        logger.info("Statistics logger " + this.getClass().getName() + " has been created.");
+        logger.info("Statistics logger " + this.getClass().getName() + " has been created, logging files to '"
+                            + statLogFileHomeDir + "'.");
         this.dateForNewLogFile = new Date();
         this.newlineString = System.getProperty("line.separator");
     }
@@ -68,19 +69,6 @@ public class StreamingEventLogger {
 
     public static synchronized StreamingEventLogger getInstance() {
         return instance;
-    }
-
-    public void logUserEventLiveStreamingStarted(IMediaStream stream) {
-        //logUserEvent(stream, Event.LIVE_STREAMING_START);
-    }
-
-    public void logUserEventStreamingStarted(IMediaStream stream) {
-        //logUserEvent(stream, Event.STREAMING_START);
-    }
-
-    public void logUserEventStreamingEnded(IMediaStream stream) {
-        // Interested in only certain events
-        //logUserEvent(stream, Event.STREAMING_END);
     }
 
     public void logUserEventPlay(IMediaStream stream) {
@@ -133,8 +121,7 @@ public class StreamingEventLogger {
             // This check is a security precaution. TicketTool is created in onAppStart and not in constructor
             String ticketID = QueryUtil.extractTicketID(queryString);
             streamingTicket = ticketTool.resolveTicket(ticketID);
-            logger.info("queryString     : " + queryString);
-            logger.info("ticketID        : " + ticketID);
+            logger.debug("Statistics module found ticket: queryString: '" + queryString + "', ticketID: '" + ticketID + "'");
         }
         return streamingTicket;
     }

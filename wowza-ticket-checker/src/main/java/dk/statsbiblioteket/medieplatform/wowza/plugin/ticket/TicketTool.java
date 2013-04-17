@@ -30,14 +30,14 @@ public class TicketTool implements TicketToolInterface {
     public dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolveTicket(String ticketID) {
         try {
             dk.statsbiblioteket.medieplatform.ticketsystem.Ticket ticketXml = restApi.path("/resolveTicket").queryParam("ID", ticketID).get(dk.statsbiblioteket.medieplatform.ticketsystem.Ticket.class);
-            logger.info("resolveTicket: Ticket received.");
+            logger.debug("resolveTicket: Ticket received: '" + ticketID + "'");
             return ticketXml;
 
         } catch (UniformInterfaceException e) {
             // If the ticket does not exist, i.e. the session has timed out.
             Status responseStatus = e.getResponse().getClientResponseStatus();
-            logger.info("The session might have timed out. Ticket service response status: " + responseStatus
-                    .getStatusCode());
+            logger.debug("The session might have timed out for ticket '"
+                                 + ticketID + "'. Ticket service response status: " + responseStatus.getStatusCode());
             return null;
         }
     }

@@ -46,20 +46,19 @@ public class KulturVODModule extends ModuleBase
      */
     @Override
     public void onAppStart(IApplicationInstance appInstance) {
-        String fullname = appInstance.getApplication().getName() + "/" + appInstance.getName();
+        String appName = appInstance.getApplication().getName();
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
-        getLogger().info("***Entered onAppStart: " + fullname);
-        getLogger().info("onAppStart: " + pluginName + " version " + pluginVersion);
-        getLogger().info("onAppStart: VHost home path: " + vhostDir);
-        getLogger().info("onAppStart: VHost storaga dir: " + storageDir);
+        getLogger().info("***Entered onAppStart: " + appName
+                                 + "\n  Plugin: " + pluginName + " version " + pluginVersion
+                                 + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
             // Setup file mapper
             IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
 
             //Initialise the config reader
             ConfigReader cr;
-            cr = new ConfigReader(new File(vhostDir + "/conf/kultur/" + "wowza-ticket-checker.properties"));
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-ticket-checker.properties"));
 
 
             //Read to initialise the ticket checker
@@ -93,8 +92,6 @@ public class KulturVODModule extends ModuleBase
             String statLogFileHomeDir = cr
                     .get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur");
             StreamingEventLogger.createInstance(ticketTool, getLogger(), statLogFileHomeDir);
-            getLogger().info("onAppStart: StreamFileMapper: \"" + appInstance.getStreamFileMapper().getClass().getName()
-                                     + "\".");
         } catch (IOException e) {
             getLogger().error("An IO error occured.", e);
             throw new RuntimeException("An IO error occured.", e);
@@ -111,8 +108,7 @@ public class KulturVODModule extends ModuleBase
      * @param params
      */
     public void onConnect(IClient client, RequestFunction function, AMFDataList params) {
-        getLogger().info("onConnect (client ID)     : " + client.getClientId());
-        getLogger().info("onConnect (query string)  : " + client.getQueryStr());
+        getLogger().debug("onConnect, clientID='" + client.getClientId() + "', queryString='" + client.getQueryStr() + "'");
         // Auto-accept is false in Application.xml. Therefore it is 
         // necessary to accept the connection explicitly here.
         client.acceptConnection();
@@ -125,17 +121,14 @@ public class KulturVODModule extends ModuleBase
      * @param stream
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void onStreamCreate(IMediaStream stream) {
-        getLogger().info("onStreamCreate by: " + stream.getClientId());
+        getLogger().debug("onStreamCreate, clientID='" + stream.getClientId() + "'");
         IMediaStreamActionNotify streamActionNotify = new KulturVODIMediaStreamActionNotify2();
         WMSProperties props = stream.getProperties();
         synchronized (props) {
             props.put("streamActionNotifier", streamActionNotify);
         }
         stream.addClientListener(streamActionNotify);
-        getLogger().info("onStreamCreate: Ready to log Streaming event for stream: " + stream);
-        StreamingEventLogger.getInstance().logUserEventStreamingStarted(stream);
     }
 
     /**
@@ -144,24 +137,22 @@ public class KulturVODModule extends ModuleBase
      */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
-        getLogger().info("onStreamDestroy by: " + stream.getClientId());
-        IMediaStreamActionNotify actionNotify = null;
+        getLogger().debug("onStreamDestroy, clientID='" + stream.getClientId() + "'");
+        IMediaStreamActionNotify actionNotify;
         WMSProperties props = stream.getProperties();
         synchronized (props) {
             actionNotify = (IMediaStreamActionNotify) stream.getProperties().get("streamActionNotifier");
         }
         if (actionNotify != null) {
             stream.removeClientListener(actionNotify);
-            getLogger().info("removeClientListener: " + stream.getSrc());
         }
-        StreamingEventLogger.getInstance().logUserEventStreamingEnded(stream);
     }
 
 
 
 
 
-        /*Mainly here to remember that we can hook this method*/
+    /*Mainly here to remember that we can hook this method*/
     @Override
     public void onAppStop(IApplicationInstance appInstance) {
         // Do nothing.
@@ -170,34 +161,32 @@ public class KulturVODModule extends ModuleBase
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onConnectAccept(IClient client) {
-        getLogger().info("onConnectAccept (client ID)     : " + client.getClientId());
+        // Do nothing.
     }
 
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onConnectReject(IClient client) {
-        getLogger().info("onConnectReject (client ID)     : " + client.getClientId());
+        // Do nothing.
     }
 
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onDisconnect(IClient client) {
-        getLogger().info("onDisconnect (client ID)     : " + client.getClientId());
+        // Do nothing.
     }
 
 
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onMediaStreamCreate(IMediaStream stream) {
-        getLogger().info("onMediaStreamCreate (client ID)     : " + stream.getClient().getClientId());
-        getLogger().info("onMediaStreamCreate (stream name)   : " + stream.getName());
+        // Do nothing.
     }
 
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onMediaStreamDestroy(IMediaStream stream) {
-        getLogger().info("onMediaStreamDestroy (client ID)     : " + stream.getClient().getClientId());
-        getLogger().info("onMediaStreamDestroy (stream name)   : " + stream.getName());
+        // Do nothing.
     }
 
 }

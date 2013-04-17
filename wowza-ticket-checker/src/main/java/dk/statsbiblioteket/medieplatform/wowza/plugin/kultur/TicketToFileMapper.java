@@ -40,7 +40,7 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
 
     @Override
     public File streamToFileForRead(IMediaStream stream) {
-        logger.info("streamToFileForRead(IMediaStream stream)");
+        logger.trace("streamToFileForRead(IMediaStream stream=" + stream + ")");
         String name = stream.getName();
         String ext = stream.getExt();
         String query = stream.getQueryStr();
@@ -57,18 +57,16 @@ public class TicketToFileMapper implements IMediaStreamFileMapper {
      */
     @Override
     public File streamToFileForRead(IMediaStream stream, String name, String ext, String streamQuery) {
-        logger.info("streamToFileForRead(IMediaStream stream="+stream+", String name="+name+", String ext="+ext+", String query="+streamQuery+")");
+        logger.trace("streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name
+                            + ", String ext=" + ext + ", String streamQuery=" + streamQuery + ")");
         IClient client = stream.getClient();
         if (client == null) {
             // This is the case when a live stream is generated.
             // Two streams are created, and one streams from VLC to Wowza and has no client.
             // If omitted, no live stream is played.
-            logger.info("No client, returning ", stream);
+            logger.debug("No client, returning ", stream);
             return null;
         }
-        logger.info(
-                "streamToFileForRead(IMediaStream stream="+stream+", String name="+name+", String ext="+ext+", String query="+streamQuery+") - stream.Client().getQueryStr()  :"
-                        + stream.getClient().getQueryStr());
         String clientQuery = stream.getClient().getQueryStr();
         File streamingFile;
         try {
