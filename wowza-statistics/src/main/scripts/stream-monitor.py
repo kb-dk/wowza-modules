@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # vim: set fileencoding=utf-8 :
 # the above line is also used by Python
+# TODO Must be updated to new log file
 
 import datetime
 import os.path

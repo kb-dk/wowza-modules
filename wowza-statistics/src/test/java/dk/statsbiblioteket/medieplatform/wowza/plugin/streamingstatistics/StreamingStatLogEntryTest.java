@@ -14,16 +14,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class StreamingStatLogEntryTest extends TestCase {
 
-    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private WMSLogger logger;
     private TicketToolMock ticketTool;
 
@@ -32,7 +27,6 @@ public class StreamingStatLogEntryTest extends TestCase {
     private static final String defaulStreamName = "default-stream-name";
     private static final String defaultUsername = "127.0.0.1";
     private static final String defaultResource = "a0639529-124a-453f-b4ea-59f833b47333";
-    private static final String defaultEduPersonTargetedID = "0123456789abcd";
     private static final String defaulStorageDir = "/vhost/storage/dir";
     private IMediaStreamMock defaultStream;
     private IClientMock defaultIClient;
@@ -57,7 +51,6 @@ public class StreamingStatLogEntryTest extends TestCase {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
 
-    /*
     @Test
     public void testConstructorValueMappingWithWAYF() {
         // Setup environment
@@ -65,187 +58,27 @@ public class StreamingStatLogEntryTest extends TestCase {
         // Setup user info
         properties.add(new Property("schacHomeOrganization", "au.dk"));
         properties.add(new Property("eduPersonTargetedID", "1x1"));
-        // Setup program info
-        properties.add(new Property("metaChannelName", "tv2news"));
-        properties.add(new Property("metaTitle", "Nyheder"));
-        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        // Setup ticket
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
         // Validate
         assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
-        assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
-        assertEquals("StreamingStatLogEntry value", "au.dk", logEntry.getOrganisationID());
-        assertEquals("StreamingStatLogEntry value", "1x1", logEntry.getUserID());
-        assertEquals("StreamingStatLogEntry value", "tv2news", logEntry.getChannelID());
-        assertEquals("StreamingStatLogEntry value", "Nyheder", logEntry.getProgramTitle());
-        assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", logEntry.getProgramStart());
+        //TODO: Check WAYF values from ticket
     }
-    */
 
-    /*
     @Test
     public void testConstructorValueMappingWithoutWAYF() {
         // Setup environment
         List<Property> properties = new ArrayList<Property>();
-        // Setup program info
-        properties.add(new Property("metaChannelName", "tv2news"));
-        properties.add(new Property("metaTitle", "Nyheder"));
-        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
+        // Setup ticket
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.STREAMING_START;
         // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
         // Validate
         assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
-        assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(), logEntry.getConnectionID());
-        assertEquals("StreamingStatLogEntry value", "statsbiblioteket.dk", logEntry.getOrganisationID());
-        assertEquals("StreamingStatLogEntry value", defaultUsername, logEntry.getUserID());
-        assertEquals("StreamingStatLogEntry value", "tv2news", logEntry.getChannelID());
-        assertEquals("StreamingStatLogEntry value", "Nyheder", logEntry.getProgramTitle());
-        assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", logEntry.getProgramStart());
-    }
-    */
-
-    /*
-    @Test
-    public void testGetLogString() throws ParseException {
-        // Setup environment
-        List<Property> properties = new ArrayList<Property>();
-        // Setup user info
-        properties.add(new Property("schacHomeOrganization", "au.dk"));
-        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
-        properties.add(new Property("eduPersonTargetedID", "1x1"));
-        // Setup program info
-        properties.add(new Property("metaChannelName", "tv2news"));
-        properties.add(new Property("metaTitle", "Nyheder"));
-        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        Event logEvent = Event.STREAMING_START;
-        String timestamp = "2010-11-15 17:31:05.749";
-        // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
-        logEntry.setTimestamp(sdf.parse(timestamp));
-        // Validate
-        String expectedLogString
-                = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;some role;au.dk;tv2news;Nyheder;2007-03-04T00:00:00+0100";
-        assertEquals("Log entry", expectedLogString, logEntry.getLogString());
-    }
-    */
-
-    /*
-    @Test
-    public void testGetLogStringWithEscapeCharacters() throws ParseException {
-        // Setup environment
-        List<Property> properties = new ArrayList<Property>();
-        // Setup user info
-        properties.add(new Property("schacHomeOrganization", "au.dk"));
-        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
-        properties.add(new Property("eduPersonTargetedID", "1x1"));
-        // Setup program info
-        properties.add(new Property("metaChannelName", null));
-        properties.add(new Property("metaTitle", "Nyheder;"));
-        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        Event logEvent = Event.STREAMING_START;
-        String timestamp = "2010-11-15 17:31:05.749";
-        // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
-        logEntry.setTimestamp(sdf.parse(timestamp));
-        // Validate
-        String expectedLogString
-                = "2010-11-15 17:31:05.749;uniqueStreamIdStr;STREAMING_START;1x1;some role;au.dk;-;Nyheder[semicolon];2007-03-04T00:00:00+0100";
-        assertEquals("Log entry", expectedLogString, logEntry.getLogString());
-    }
-    */
-
-    @Test
-    public void testCreateMap() {
-        List<Property> properties = new ArrayList<Property>();
-        String name = "schacHomeOrganization";
-        String value = "au.dk";
-        properties.add(new Property(name, value));
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, defaultStream, Event.STREAMING_START,
-                                                                   ticket);
-        Map<String, String> map = logEntry.createMap(properties);
-        assertEquals(value, map.get(name));
-    }
-
-    /*
-    @Test
-    public void testExtractLogEntry() throws InvalidLogLineParseException, HeadlineEncounteredException {
-        List<Property> properties = new ArrayList<Property>();
-        // Setup user info
-        properties.add(new Property("schacHomeOrganization", "au.dk"));
-        properties.add(new Property("eduPersonScopedAffiliation", "some role"));
-        properties.add(new Property("eduPersonTargetedID", "1x1"));
-        // Setup program info
-        properties.add(new Property("metaChannelName", "tv2news"));
-        properties.add(new Property("metaTitle", "Nyheder"));
-        properties.add(new Property("metaDateTimeStart", "2007-03-04T00:00:00+0100"));
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        Event logEvent = Event.STREAMING_START;
-        // Test
-        StreamingStatLogEntry originalLogEntry = new StreamingStatLogEntry(logger, defaultStream, logEvent, ticket);
-        String logEntryString = originalLogEntry.getLogString();
-        logger.info("Logline as string is: " + logEntryString);
-        StreamingStatLogEntry resultingLogEntry = new StreamingStatLogEntry(logger, logEntryString);
-        // Validate
-        assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, resultingLogEntry.getEvent());
-        assertEquals("StreamingStatLogEntry value", defaultStream.getUniqueStreamIdStr(),
-                     resultingLogEntry.getConnectionID());
-        assertEquals("StreamingStatLogEntry value", "au.dk", resultingLogEntry.getOrganisationID());
-        assertEquals("StreamingStatLogEntry value", "1x1", resultingLogEntry.getUserID());
-        assertEquals("StreamingStatLogEntry value", "some role", resultingLogEntry.getUserRole());
-        assertEquals("StreamingStatLogEntry value", "tv2news", resultingLogEntry.getChannelID());
-        assertEquals("StreamingStatLogEntry value", "Nyheder", resultingLogEntry.getProgramTitle());
-        assertEquals("StreamingStatLogEntry value", "2007-03-04T00:00:00+0100", resultingLogEntry.getProgramStart());
-        assertEquals("StreamingStatLogEntry objects", originalLogEntry, resultingLogEntry);
-    }
-    */
-
-    /*
-    @Test
-    public void testExtractLogEntryThrowingHeadlineEncounteredException() throws InvalidLogLineParseException {
-        // Test
-        String logEntryString = StreamingStatLogEntry.getLogStringHeadline();
-        logger.info("Logline as string is: " + logEntryString);
-        StreamingStatLogEntry logEntry;
-        try {
-            logEntry = new StreamingStatLogEntry(logger, logEntryString);
-            fail();
-        } catch (HeadlineEncounteredException e) {
-            //Expected behavior
-        }
-    }
-    */
-
-    /*
-    @Test
-    public void testExtractLogEntryThrowingInvalidLogLineParseException() throws HeadlineEncounteredException {
-        // Test
-        String logEntryString = "Some unparseable text";
-        logger.info("Logline as string is: " + logEntryString);
-        StreamingStatLogEntry logEntry;
-        try {
-            logEntry = new StreamingStatLogEntry(logger, logEntryString);
-            fail();
-        } catch (InvalidLogLineParseException e) {
-            //Expected behavior
-        }
-    }
-    */
-
-    private String issueStandardTicket() {
-        List<Property> props = new ArrayList<Property>();
-        Property prop = new Property();
-        prop.setName("eduPersonTargetedID");
-        prop.setValue(defaultEduPersonTargetedID);
-        props.add(prop);
-        String ticketID = ticketTool.issueTicket(defaultUsername, defaultResource, props).getId();
-        return ticketID;
     }
 
     @Override

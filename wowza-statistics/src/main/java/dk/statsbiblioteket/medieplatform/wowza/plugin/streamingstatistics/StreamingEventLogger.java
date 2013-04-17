@@ -112,7 +112,7 @@ public class StreamingEventLogger {
         String clientQueryString = stream.getClient().getQueryStr();
         try {
             dk.statsbiblioteket.medieplatform.ticketsystem.Ticket streamingTicket = getTicket(clientQueryString);
-            String logString = new StreamingStatLogEntry(logger, stream, event, streamingTicket).getLogString();
+            String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
             logger.info("Streaming statistics logging line: " + logString);
             writeEventLog(logString);
         } catch (IllegallyFormattedQueryStringException e) {
