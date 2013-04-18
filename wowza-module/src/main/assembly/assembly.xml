@@ -17,7 +17,7 @@
     <fileSets>
         <fileSet>
             <outputDirectory>applications/kultur</outputDirectory>
-            <directory>src/main/data</directory>
+            <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
                 <!-- Create empty directory -->
@@ -36,7 +36,7 @@
         </fileSet-->
         <fileSet>
             <outputDirectory>streamingContent</outputDirectory>
-            <directory>src/main/data</directory>
+            <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
                 <!-- Create empty directory -->
@@ -64,18 +64,10 @@
             <directoryMode>0775</directoryMode>
         </fileSet>
         <fileSet>
-            <outputDirectory>data</outputDirectory>
-            <directory>src/main/data</directory>
-            <directoryMode>0775</directoryMode>
-        </fileSet>
-        <fileSet>
             <outputDirectory>bin</outputDirectory>
             <directory>src/main/scripts</directory>
             <directoryMode>0775</directoryMode>
             <fileMode>0755</fileMode>
-            <excludes>
-                <exclude>deploy*.sh</exclude>
-            </excludes>
         </fileSet>
     </fileSets>
 </assembly>

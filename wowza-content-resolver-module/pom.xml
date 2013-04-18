@@ -10,7 +10,7 @@
         <version>2.0.12-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wowza-module</artifactId>
+    <artifactId>wowza-content-resolver-module</artifactId>
 
     <build>
         <!-- Configure the source files as resources to be filtered
@@ -31,46 +31,23 @@
         <!-- Overrule the default pom source directory to match
               our generated sources so the compiler will pick them up -->
         <sourceDirectory>target/filtered-sources/java</sourceDirectory>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.2</version>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <!-- this is used for inheritance merges -->
-                        <phase>package</phase>
-                        <!-- append to the packaging phase. -->
-                        <goals>
-                            <goal>single</goal>
-                            <!-- goals == mojos -->
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-statistics-module</artifactId>
+            <artifactId>wowza-mock</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-ticket-checker-module</artifactId>
+            <artifactId>wowza-common</artifactId>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-content-resolver-module</artifactId>
+            <artifactId>content-resolver-lib</artifactId>
         </dependency>
 
         <dependency>
@@ -86,16 +63,41 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wms</groupId>
-            <artifactId>wms-stream-publish</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <scope>provided</scope>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-ext-jdk15on</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

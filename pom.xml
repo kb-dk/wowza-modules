@@ -27,8 +27,9 @@
     </organization>
 
     <modules>
-        <module>wowza-ticket-checker</module>
-        <module>wowza-statistics</module>
+        <module>wowza-ticket-checker-module</module>
+        <module>wowza-content-resolver-module</module>
+        <module>wowza-statistics-module</module>
         <module>wowza-common</module>
         <module>wowza-mock</module>
         <module>wowza-module</module>
@@ -193,13 +194,19 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wowza-ticket-checker</artifactId>
+                <artifactId>wowza-ticket-checker-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wowza-statistics</artifactId>
+                <artifactId>wowza-content-resolver-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-statistics-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
