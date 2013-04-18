@@ -30,10 +30,7 @@ public class TicketCheckerTest {
 
     TicketToolMock ticketToolMock;
 
-    String storageDir = new File(
-            getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
-            .toString();
-    IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
+    IApplicationInstance iAppInstance = new IApplicationInstanceMock();
 
 
 

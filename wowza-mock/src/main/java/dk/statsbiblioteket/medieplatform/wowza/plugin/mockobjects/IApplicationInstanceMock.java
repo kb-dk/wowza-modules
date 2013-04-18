@@ -58,6 +58,10 @@ public class IApplicationInstanceMock implements IApplicationInstance {
         this.storageDir = storageDir;
     }
 
+    public IApplicationInstanceMock() {
+        this.storageDir = ".";
+    }
+
     @Override
     public void addClientListener(IClientNotify arg0) {
         // TODO Auto-generated method stub
