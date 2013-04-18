@@ -1,8 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
 
 import com.wowza.wms.amf.AMFPacket;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingEventLogger;
@@ -43,9 +41,4 @@ public class KulturVODIMediaStreamActionNotify2 implements IMediaStreamActionNot
     public void onPause(IMediaStream stream, boolean isPause, double location) {
         StreamingEventLogger.getInstance().logUserEventPause(stream);
     }
-
-    protected WMSLogger getLogger() {
-        return WMSLoggerFactory.getLogger(this.getClass());
-    }
-
 }

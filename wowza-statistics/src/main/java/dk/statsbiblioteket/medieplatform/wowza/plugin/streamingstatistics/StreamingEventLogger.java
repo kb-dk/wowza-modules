@@ -2,12 +2,11 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
-
-import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.QueryUtil;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,12 +17,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class StreamingEventLogger {
-
     private static final String DATE_PATTERN = "yyyy-MM-dd";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     public static final String filenamePrefix = "StreamingStat-";
     private String statLogFileHomeDir;
-    private File currentStatLogFile;
     private FileWriter statLogWriter;
     private Date dateForNewLogFile;
 
@@ -53,19 +49,18 @@ public class StreamingEventLogger {
      * @param logger             The Wowza logger to log events with. Must not be null.
      * @param statLogFileHomeDir The directory to write logs to. Must not be null.
      */
-    public static synchronized void createInstance(TicketToolInterface ticketTool, WMSLogger logger,
-                                                   String statLogFileHomeDir) {
+    public static synchronized void createInstance(TicketToolInterface ticketTool, WMSLogger logger, String statLogFileHomeDir) {
         if ((ticketTool == null) || (logger == null) || (statLogFileHomeDir == null)) {
-            throw new IllegalArgumentException("A parameter is null. " +
-                                                       "ticketTool=" + ticketTool + " " +
-                                                       "logger=" + logger + " " +
-                                                       "statLogFileHomeDir=" + statLogFileHomeDir);
+            throw new IllegalArgumentException("A parameter is null. "
+                    + "ticketTool=" + ticketTool + " "
+                    + "logger=" + logger + " "
+                    + "statLogFileHomeDir=" + statLogFileHomeDir);
         }
         if (instance == null) {
             instance = new StreamingEventLogger(ticketTool, logger, statLogFileHomeDir);
         } else if (!instance.statLogFileHomeDir.equals(statLogFileHomeDir)) {
-            logger.warn("Modules don't agree on location of streaming statistics log files. " +
-                                instance.statLogFileHomeDir + " vs. " + statLogFileHomeDir);
+            logger.warn("Modules don't agree on location of streaming statistics log files. " + instance.statLogFileHomeDir
+                    + " vs. " + statLogFileHomeDir);
         }
     }
 
@@ -114,11 +109,10 @@ public class StreamingEventLogger {
         try {
             Ticket streamingTicket = QueryUtil.getTicket(clientQueryString, ticketTool);
             String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
-            //logger.info("Streaming statistics logging line: " + logString);
             writeEventLog(logString);
         } catch (IllegallyFormattedQueryStringException e) {
-            logger.warn("No logging was performed. Query string of client dos not match expected format." +
-                                " Was " + clientQueryString);
+            logger.warn("No logging was performed. Query string of client dos not match expected format. Was "
+                    + clientQueryString);
         }
     }
 
@@ -134,13 +128,14 @@ public class StreamingEventLogger {
     }
 
     protected Writer getStatLogWriter() throws IOException {
+        File currentStatLogFile;
         Date now = new Date();
         if ((statLogWriter == null) || (this.dateForNewLogFile.before(now))) {
             if (statLogWriter != null) {
                 statLogWriter.close();
             }
             String filenameWithCorrectDate = getFilename(now);
-            this.currentStatLogFile = new File(this.statLogFileHomeDir, filenameWithCorrectDate);
+            currentStatLogFile = new File(this.statLogFileHomeDir, filenameWithCorrectDate);
             this.logger.info("Creating log file: " + currentStatLogFile.getAbsolutePath());
             this.dateForNewLogFile = getFollowingMidnight(now);
             this.statLogWriter = new FileWriter(currentStatLogFile, true);
@@ -167,6 +162,7 @@ public class StreamingEventLogger {
     }
 
     public static String getFilename(Date time) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
         return filenamePrefix + sdf.format(time) + ".log";
     }
 }

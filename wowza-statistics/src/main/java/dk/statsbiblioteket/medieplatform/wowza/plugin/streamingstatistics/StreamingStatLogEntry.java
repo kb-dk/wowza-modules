@@ -10,11 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StreamingStatLogEntry {
-
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 
-    // LIVE_STREAMING_START is for streaming a live-recorded (or not recorded) signal, and not used by SB
+    // LIVE_STREAMING_START is for streaming a live-recorded (or, not recorded) signal, and not used by SB
     public enum Event {LIVE_STREAMING_START, STREAMING_START, PLAY, PAUSE, STOP, SEEK, STREAMING_END}
 
     // Log information
@@ -24,27 +22,22 @@ public class StreamingStatLogEntry {
     private Event event;
 
     // Ticket information
-    private boolean wasTicketAttached;
+    private boolean ticketWasAttached;
     private String userAttributesAsJson;  // Contains user roles
 
-    public StreamingStatLogEntry(IMediaStream stream, Event event,
-                                 Ticket streamingTicket) {
+    public StreamingStatLogEntry(IMediaStream stream, Event event, Ticket streamingTicket) {
         this.setTimestamp(new Date());
 
-
-        // TODO the below needs testing to see if we got it right
-        this.streamingURL = stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt()
-                + ':' + stream.getName() + ':';
-
+        this.streamingURL = stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt() + ':'
+                + stream.getName() + ':';
         this.event = event;
 
-        this.wasTicketAttached = (streamingTicket != null);
-        if (this.wasTicketAttached) {
+        this.ticketWasAttached = (streamingTicket != null);
+        if (this.ticketWasAttached) {
             retrieveTicketInformation(streamingTicket);
         } else {
             this.userAttributesAsJson = null;
         }
-
     }
 
     /**
@@ -73,6 +66,7 @@ public class StreamingStatLogEntry {
      * @return The log line
      */
     public String getLogString() {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
         StringBuilder sb = new StringBuilder();
         sb.append(sdf.format(timestamp));
         sb.append(";");
@@ -91,23 +85,11 @@ public class StreamingStatLogEntry {
         StringBuilder sb = new StringBuilder();
         sb.append("Timestamp");
         sb.append(";");
-        sb.append("Connection ID");
-        sb.append(";");
         sb.append("Event");
         sb.append(";");
-        sb.append("User ID");
+        sb.append("Streaming URL");
         sb.append(";");
-        sb.append("User Role");
-        sb.append(";");
-        sb.append("Organization ID");
-        sb.append(";");
-        sb.append("Channel ID");
-        sb.append(";");
-        sb.append("Program UUID");
-        sb.append(";");
-        sb.append("Program title");
-        sb.append(";");
-        sb.append("Program start");
+        sb.append("User attributes");
         return sb.toString();
     }
 
@@ -121,7 +103,7 @@ public class StreamingStatLogEntry {
         int result = 1;
         result = prime * result + ((event == null) ? 0 : event.hashCode());
         result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
-        result = prime * result + (wasTicketAttached ? 1231 : 1237);
+        result = prime * result + (ticketWasAttached ? 1231 : 1237);
         return result;
     }
 
@@ -147,7 +129,7 @@ public class StreamingStatLogEntry {
         } else if (!timestamp.equals(other.timestamp)) {
             return false;
         }
-        if (wasTicketAttached != other.wasTicketAttached) {
+        if (ticketWasAttached != other.ticketWasAttached) {
             return false;
         }
         return true;
@@ -155,9 +137,7 @@ public class StreamingStatLogEntry {
 
     @Override
     public String toString() {
-        return "StreamingStatLogEntry [timestamp=" + timestamp + ", event=" + event + ", wasTicketAttached="
-                + wasTicketAttached + "]";
+        return "StreamingStatLogEntry [timestamp=" + timestamp + ", event=" + event + ", ticketWasAttached=" + ticketWasAttached
+                + "]";
     }
-
-
 }
