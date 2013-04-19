@@ -10,9 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,6 +38,7 @@ public class StreamingEventLoggerTest extends TestCase {
 
     @Test
     public void testWriteEventLogAppendToExisting() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
         deleteDir(logFolder);
         createDir(logFolder);
@@ -53,6 +52,46 @@ public class StreamingEventLoggerTest extends TestCase {
             eventLogger.writeEventLog("Second eventlog number: " + i);
         }
         // Check that the file has been created and contains log entries.
+        File logDir = new File(logFolder);
+        if (logDir.isDirectory()) {
+            // Check that there is just one file
+            String[] children = logDir.list();
+            assertTrue(children.length != 3);  // Including dirs . and ..
+
+            // Check that the right date is in the filename
+            File file = new File(logDir, children[0]);
+            String filename = file.getName();
+            Date now = new Date();
+            assertTrue(filename.contains(sdf.format(now)));
+
+            // Check that the file contains the right amount of entries
+            assertTrue(getAmountOfLinesInFile(file) == 702);
+        }
+    }
+
+    private int getAmountOfLinesInFile(File file) {
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (Exception e) {
+            return 0;
+        }
+
+        int numberOfEntries = 0;
+        try {
+            while (br.readLine() != null) {
+                numberOfEntries++;
+            }
+        } catch(Exception e) {
+            return 0;
+        } finally {
+            try {
+                br.close();
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+        return numberOfEntries;
     }
 
     @Test

@@ -138,6 +138,6 @@ public class StreamingStatLogEntry {
     @Override
     public String toString() {
         return "StreamingStatLogEntry [timestamp=" + timestamp + ", event=" + event + ", ticketWasAttached=" + ticketWasAttached
-                + "]";
+                + ", streamingURL=" + streamingURL + ", userAttributesAsJson=" + userAttributesAsJson + "]";
     }
 }

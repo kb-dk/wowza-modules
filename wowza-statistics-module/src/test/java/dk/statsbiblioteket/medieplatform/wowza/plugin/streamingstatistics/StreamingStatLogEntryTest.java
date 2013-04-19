@@ -52,7 +52,7 @@ public class StreamingStatLogEntryTest extends TestCase {
     }
 
     @Test
-    public void testConstructorValueMappingWithWAYF() {
+    public void testConstructorValueMapping() {
         // Setup environment
         List<Property> properties = new ArrayList<Property>();
         // Setup user info
@@ -65,27 +65,13 @@ public class StreamingStatLogEntryTest extends TestCase {
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
         // Validate
         assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
-        //TODO: Check WAYF values from ticket
-    }
-
-    @Test
-    public void testConstructorValueMappingWithoutWAYF() {
-        // Setup environment
-        List<Property> properties = new ArrayList<Property>();
-        // Setup ticket
-        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        Event logEvent = Event.STREAMING_START;
-        // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
-        // Validate
-        assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
+        assertTrue(logEntry.toString().contains("\"schacHomeOrganization\":[\"au.dk\"]"));
+        assertTrue(logEntry.toString().contains("\"eduPersonTargetedID\":[\"1x1\"]"));
     }
 
     @Override
     public String toString() {
-        return "StreamingStatLogEntryTest [logger=" + logger + ", ticketTool=" + ticketTool + ", defaultStream="
-                + defaultStream + ", defaultIClient=" + defaultIClient + ", defaultIAppInstance=" + defaultIAppInstance
-                + "]";
+        return "StreamingStatLogEntryTest [logger=" + logger + ", ticketTool=" + ticketTool + ", defaultStream=" + defaultStream
+                + ", defaultIClient=" + defaultIClient + ", defaultIAppInstance=" + defaultIAppInstance + "]";
     }
-
 }
