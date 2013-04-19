@@ -82,8 +82,10 @@ public class TicketCheckerModule extends ModuleBase
     @Override
     public void onStreamCreate(IMediaStream stream) {
         if (!ticketChecker.checkTicket(stream)) {
-            sendStreamOnStatusError(stream, "NetConnection.Connect.Rejected", "Streaming not allowed");
+            sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
+            sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
             stream.getClient().setShutdownClient(true);
+            stream.getClient().shutdownClient();
         }
     }
 
