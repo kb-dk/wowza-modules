@@ -28,8 +28,8 @@ import java.io.IOException;
 public class ContentResolverModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-    private static String pluginName = "Wowza Content Resolver Plugin";
-    private static String pluginVersion = "${project.version}";
+    private static final String PLUGIN_NAME = "Wowza Content Resolver Plugin";
+    private static final String PLUGIN_VERSION = "${project.version}";
 
     public ContentResolverModule() {
         super();
@@ -47,7 +47,7 @@ public class ContentResolverModule extends ModuleBase
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
         getLogger().info("***Entered onAppStart: " + appName
-                                 + "\n  Plugin: " + pluginName + " version " + pluginVersion
+                                 + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
                                  + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
             // Setup file mapper
@@ -55,7 +55,7 @@ public class ContentResolverModule extends ModuleBase
 
             //Initialise the config reader
             ConfigReader cr;
-            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-ticket-checker.properties"));
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"));
 
 
             //Read to initialise the content resolver
@@ -89,9 +89,10 @@ public class ContentResolverModule extends ModuleBase
     }
 
 
-    /** Check ticket to see if streaming is allowed. Otherwise report failure. */
+    /*Mainly here to remember that we can hook this method*/
     @Override
     public void onStreamCreate(IMediaStream stream) {
+        // Do nothing.
     }
 
     /*Mainly here to remember that we can hook this method*/

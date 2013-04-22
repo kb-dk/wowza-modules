@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class ContentResolverMapper extends MediaStreamFileMapperBase implements IMediaStreamFileMapper {
 
+    private static final File FILE_NOT_FOUND_NON_EXISTENT_FILE = new File("file_not_found");
     private final WMSLogger logger;
     private String presentationType;
     private final IMediaStreamFileMapper defaultMapper;
@@ -74,7 +75,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
 
     private String clean(String name) {
         if (name.contains(".")){
-            name = name.substring(0,name.indexOf("."));
+            name = name.substring(0, name.indexOf("."));
         }
         if (name.contains(":")) {
             name = name.substring(name.lastIndexOf(':') + 1);
@@ -104,7 +105,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
             }
         }
         logger.info("Content not found for: '" + name + "'");
-        return new File("file_not_found");
+        return FILE_NOT_FOUND_NON_EXISTENT_FILE;
     }
 
     @Override

@@ -10,8 +10,14 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.Stream
  */
 public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStreamActionNotify2 {
 
+    private final StreamingEventLogger streamingEventLogger;
+
+    public StreamingStatisticsIMediaStreamActionNotify2(StreamingEventLogger streamingEventLogger) {
+        this.streamingEventLogger = streamingEventLogger;
+    }
+
     public void onPlay(IMediaStream stream, String streamName, double playStart, double playLen, int playReset) {
-        StreamingEventLogger.getInstance().logUserEventPlay(stream);
+        streamingEventLogger.logUserEventPlay(stream);
     }
 
     public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
@@ -19,15 +25,15 @@ public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStrea
     }
 
     public void onPauseRaw(IMediaStream stream, boolean isPause, double location) {
-        StreamingEventLogger.getInstance().logUserEventPause(stream);
+        streamingEventLogger.logUserEventPause(stream);
     }
 
     public void onSeek(IMediaStream stream, double location) {
-        StreamingEventLogger.getInstance().logUserEventSeek(stream);
+        streamingEventLogger.logUserEventSeek(stream);
     }
 
     public void onStop(IMediaStream stream) {
-        StreamingEventLogger.getInstance().logUserEventStop(stream);
+        streamingEventLogger.logUserEventStop(stream);
     }
 
     public void onUnPublish(IMediaStream stream, String streamName, boolean isRecord, boolean isAppend) {
@@ -39,6 +45,6 @@ public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStrea
     }
 
     public void onPause(IMediaStream stream, boolean isPause, double location) {
-        StreamingEventLogger.getInstance().logUserEventPause(stream);
+        streamingEventLogger.logUserEventPause(stream);
     }
 }

@@ -60,13 +60,30 @@ public class StreamingStatLogEntryTest extends TestCase {
         properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup ticket
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
-        Event logEvent = Event.STREAMING_START;
+        Event logEvent = Event.PLAY;
         // Test
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
         // Validate
-        assertEquals("StreamingStatLogEntry value", Event.STREAMING_START, logEntry.getEvent());
-        assertTrue(logEntry.toString().contains("\"schacHomeOrganization\":[\"au.dk\"]"));
-        assertTrue(logEntry.toString().contains("\"eduPersonTargetedID\":[\"1x1\"]"));
+        assertEquals("StreamingStatLogEntry value", Event.PLAY, logEntry.getEvent());
+        assertTrue(logEntry.getLogString().contains("\"schacHomeOrganization\":[\"au.dk\"]"));
+        assertTrue(logEntry.getLogString().contains("\"eduPersonTargetedID\":[\"1x1\"]"));
+    }
+
+    @Test
+    public void testGetLogStringHeadline() {
+        // Setup environment
+        List<Property> properties = new ArrayList<Property>();
+        // Setup user info
+        properties.add(new Property("schacHomeOrganization", "au.dk"));
+        properties.add(new Property("eduPersonTargetedID", "1x1"));
+        // Setup ticket
+        Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
+        Event logEvent = Event.PLAY;
+        // Test
+        String logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket).getLogString();
+        String logHeader = StreamingStatLogEntry.getLogStringHeadline();
+        assertEquals("Expected same amount of entries in header and logline", logEntry.split(";").length,
+                logHeader.split(";").length);
     }
 
     @Override

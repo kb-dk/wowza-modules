@@ -9,11 +9,8 @@ import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
-import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
 
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
@@ -29,8 +26,8 @@ import java.io.IOException;
 public class TicketCheckerModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-    private static String pluginName = "Wowza Ticket Checker Plugin";
-    private static String pluginVersion = "${project.version}";
+    private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
+    private static final String PLUGIN_VERSION = "${project.version}";
     private TicketChecker ticketChecker;
 
     public TicketCheckerModule() {
@@ -49,12 +46,12 @@ public class TicketCheckerModule extends ModuleBase
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
         getLogger().info("***Entered onAppStart: " + appName
-                                 + "\n  Plugin: " + pluginName + " version " + pluginVersion
+                                 + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
                                  + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
             //Initialise the config reader
             ConfigReader cr;
-            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-ticket-checker.properties"));
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"));
 
             //Read to initialise the ticket checker
             String ticketCheckerLocation = cr

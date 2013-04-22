@@ -6,6 +6,7 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
 
 import junit.framework.TestCase;
+import org.apache.log4j.BasicConfigurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +29,12 @@ public class StreamingEventLoggerTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        org.apache.log4j.BasicConfigurator.configure();
+        BasicConfigurator.configure();
     }
 
     @After
     public void tearDown() throws Exception {
-        org.apache.log4j.BasicConfigurator.resetConfiguration();
+        BasicConfigurator.resetConfiguration();
     }
 
     @Test
@@ -65,7 +66,7 @@ public class StreamingEventLoggerTest extends TestCase {
             assertTrue(filename.contains(sdf.format(now)));
 
             // Check that the file contains the right amount of entries
-            assertTrue(getAmountOfLinesInFile(file) == 702);
+            assertTrue(getAmountOfLinesInFile(file) == 701);
         }
     }
 

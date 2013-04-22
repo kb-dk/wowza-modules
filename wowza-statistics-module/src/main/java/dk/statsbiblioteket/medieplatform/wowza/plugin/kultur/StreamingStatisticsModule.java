@@ -28,8 +28,9 @@ import java.io.IOException;
 public class StreamingStatisticsModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-    private static String pluginName = "Wowza statistics logger plugin";
-    private static String pluginVersion = "${project.version}";
+    private static final String PLUGIN_NAME = "Wowza statistics logger plugin";
+    private static final String PLUGIN_VERSION = "${project.version}";
+    private StreamingEventLogger streamingEventLogger;
 
     public StreamingStatisticsModule() {
         super();
@@ -37,7 +38,6 @@ public class StreamingStatisticsModule extends ModuleBase
 
     /**
      * Called when Wowza is started.
-     * We use this to set up the TicketToFileMapper.
      *
      * @param appInstance The application running.
      */
@@ -47,13 +47,12 @@ public class StreamingStatisticsModule extends ModuleBase
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
         getLogger().info("***Entered onAppStart: " + appName
-                                 + "\n  Plugin: " + pluginName + " version " + pluginVersion
-                                 + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
+                + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
+                + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
             //Initialise the config reader
             ConfigReader cr;
-            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-ticket-checker.properties"));
-
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"));
 
             //Read to initialise the ticket checker
             String ticketCheckerLocation = cr
@@ -63,7 +62,7 @@ public class StreamingStatisticsModule extends ModuleBase
             // Setup streaming statistics logger
             String statLogFileHomeDir = cr
                     .get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder-in-kultur");
-            StreamingEventLogger.createInstance(ticketTool, getLogger(), statLogFileHomeDir);
+            streamingEventLogger = new StreamingEventLogger(ticketTool, getLogger(), statLogFileHomeDir);
         } catch (IOException e) {
             getLogger().error("An IO error occured.", e);
             throw new RuntimeException("An IO error occured.", e);
@@ -87,7 +86,6 @@ public class StreamingStatisticsModule extends ModuleBase
         client.acceptConnection();
     }
 
-
     /**
      * Add the KulturVODIMediaStramActionNotify listener to the stream. This thing is used to track usage
      * and have nothing to do with tickets
@@ -96,7 +94,7 @@ public class StreamingStatisticsModule extends ModuleBase
     @Override
     public void onStreamCreate(IMediaStream stream) {
         getLogger().debug("onStreamCreate, clientID='" + stream.getClientId() + "'");
-        IMediaStreamActionNotify streamActionNotify = new StreamingStatisticsIMediaStreamActionNotify2();
+        IMediaStreamActionNotify streamActionNotify = new StreamingStatisticsIMediaStreamActionNotify2(streamingEventLogger);
         WMSProperties props = stream.getProperties();
         synchronized (props) {
             props.put("streamActionNotifier", streamActionNotify);
@@ -121,10 +119,6 @@ public class StreamingStatisticsModule extends ModuleBase
         }
     }
 
-
-
-
-
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onAppStop(IApplicationInstance appInstance) {
@@ -148,7 +142,6 @@ public class StreamingStatisticsModule extends ModuleBase
     public void onDisconnect(IClient client) {
         // Do nothing.
     }
-
 
     /*Mainly here to remember that we can hook this method*/
     @Override

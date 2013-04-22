@@ -38,33 +38,31 @@ public class TicketChecker {
      */
     public boolean checkTicket(IMediaStream stream) {
         String name = stream.getName();
-        String ext = stream.getExt();
-        String query = stream.getQueryStr();
-        logger.trace(
-                "checkTicket(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
-                        + ", String streamQuery=" + query + ")");
         IClient client = stream.getClient();
         if (client == null) {
             logger.debug("No client, returning ", stream);
             return false;
         }
         String clientQuery = stream.getClient().getQueryStr();
+        logger.trace(
+                "checkTicket(IMediaStream stream=" + stream + ", String name=" + name
+                        + ", String clientQuery=" + clientQuery + ")");
         try {
             Ticket streamingTicket = QueryUtil.getTicket(clientQuery, ticketTool);
             logger.debug("Ticket received: " + (streamingTicket != null ? streamingTicket.getId() : "null"));
             if (
                     streamingTicket != null &&
-                    isClientAllowed(stream, streamingTicket) &&
+                            isClientAllowed(stream, streamingTicket) &&
                             ticketForThisPresentationType(streamingTicket) &&
-                    doesTicketAllowThisStream(name,streamingTicket)
+                            doesTicketAllowThisStream(name, streamingTicket)
                     ) {
                 logger.info(
-                        "checkTicket(IMediaStream stream=" + stream + ", String name=" + name + ", String ext="
-                                + ext + ", String streamQuery=" + query + ") successful.");
+                        "checkTicket(IMediaStream stream=" + stream + ", String name=" + name
+                                + ", String clientQuery=" + clientQuery + ") successful.");
                 return true;
             } else {
                 logger.info("Client not allowed to get content streamed for IMediaStream stream=" + stream
-                                     + ", String name=" + name + ", String ext=" + ext + ", String streamQuery=" + query
+                                     + ", String name=" + name + ", String clientQuery=" + clientQuery
                                      + ")");
                 return false;
             }
@@ -80,14 +78,12 @@ public class TicketChecker {
 
     private boolean doesTicketAllowThisStream(String name, Ticket streamingTicket) {
         name = clean(name);
-        boolean ticketForThis = false;
         for (String resource : streamingTicket.getResources()) {
             if (resource.contains(name)){
-                ticketForThis = true;
-                break;
+                return true;
             }
         }
-        return ticketForThis;
+        return false;
     }
 
     /**
@@ -100,13 +96,14 @@ public class TicketChecker {
         String ipOfClient = stream.getClient().getIp();
 
         boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
-        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getUserIdentifier(): " + streamingTicket.getUserIdentifier() + ", isAllowed: " + isAllowed);
+        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getUserIdentifier(): "
+                + streamingTicket.getUserIdentifier() + ", isAllowed: " + isAllowed);
         return isAllowed;
     }
 
     private String clean(String name) {
         if (name.contains(".")){
-            name = name.substring(0,name.indexOf("."));
+            name = name.substring(0, name.indexOf("."));
         }
         if (name.contains(":")) {
             name = name.substring(name.lastIndexOf(':') + 1);

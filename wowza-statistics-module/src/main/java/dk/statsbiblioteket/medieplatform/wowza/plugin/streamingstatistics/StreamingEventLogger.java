@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class StreamingEventLogger {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
-    public static final String filenamePrefix = "StreamingStat-";
+    public static final String FILENAME_PREFIX = "StreamingStat-";
     private String statLogFileHomeDir;
     private FileWriter statLogWriter;
     private Date dateForNewLogFile;
@@ -27,9 +27,7 @@ public class StreamingEventLogger {
     private TicketToolInterface ticketTool;
     private String newlineString;
 
-    private static StreamingEventLogger instance = null;
-
-    protected StreamingEventLogger(TicketToolInterface ticketTool, WMSLogger logger, String statLogFileHomeDir) {
+    public StreamingEventLogger(TicketToolInterface ticketTool, WMSLogger logger, String statLogFileHomeDir) {
         super();
         this.logger = logger;
         this.ticketTool = ticketTool;
@@ -41,61 +39,19 @@ public class StreamingEventLogger {
         this.newlineString = System.getProperty("line.separator");
     }
 
-    /**
-     * Creates the singleton object. Is robust for multiple concurrent requests for create.
-     * Only the first request for create, actually creates the object.
-     *
-     * @param ticketTool         The ticket tool used for resolving tickets. Must not be null.
-     * @param logger             The Wowza logger to log events with. Must not be null.
-     * @param statLogFileHomeDir The directory to write logs to. Must not be null.
-     */
-    public static synchronized void createInstance(TicketToolInterface ticketTool, WMSLogger logger, String statLogFileHomeDir) {
-        if ((ticketTool == null) || (logger == null) || (statLogFileHomeDir == null)) {
-            throw new IllegalArgumentException("A parameter is null. "
-                    + "ticketTool=" + ticketTool + " "
-                    + "logger=" + logger + " "
-                    + "statLogFileHomeDir=" + statLogFileHomeDir);
-        }
-        if (instance == null) {
-            instance = new StreamingEventLogger(ticketTool, logger, statLogFileHomeDir);
-        } else if (!instance.statLogFileHomeDir.equals(statLogFileHomeDir)) {
-            logger.warn("Modules don't agree on location of streaming statistics log files. " + instance.statLogFileHomeDir
-                    + " vs. " + statLogFileHomeDir);
-        }
-    }
-
-    /**
-     * Get the singleton instance. Must ONLY be called after {@link #createInstance} has been called to initialize the
-     * interface.
-     *
-     * @return The singleton instance
-     *
-     * @throws IllegalStateException If the singleton is not initialized.
-     */
-    public static synchronized StreamingEventLogger getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("Uninitialized event logger");
-        }
-        return instance;
-    }
-
     public void logUserEventPlay(IMediaStream stream) {
-        // Interested in only certain events
         logUserEvent(stream, Event.PLAY);
     }
 
     public void logUserEventStop(IMediaStream stream) {
-        // Interested in only certain events
         logUserEvent(stream, Event.STOP);
     }
 
     public void logUserEventPause(IMediaStream stream) {
-        // Interested in only certain events
         logUserEvent(stream, Event.PAUSE);
     }
 
     public void logUserEventSeek(IMediaStream stream) {
-        // Interested in only certain events
         logUserEvent(stream, Event.SEEK);
     }
 
@@ -121,7 +77,7 @@ public class StreamingEventLogger {
             Writer statLogWriter = getStatLogWriter();
             statLogWriter.write(logString);
             statLogWriter.write(this.newlineString);
-            this.statLogWriter.flush();
+            statLogWriter.flush();
         } catch (IOException e) {
             logger.error("An IO-error occured when writing statistics log.", e);
         }
@@ -138,10 +94,13 @@ public class StreamingEventLogger {
             currentStatLogFile = new File(this.statLogFileHomeDir, filenameWithCorrectDate);
             this.logger.info("Creating log file: " + currentStatLogFile.getAbsolutePath());
             this.dateForNewLogFile = getFollowingMidnight(now);
+            boolean newLogFile = !currentStatLogFile.exists();
             this.statLogWriter = new FileWriter(currentStatLogFile, true);
-            this.statLogWriter.write(StreamingStatLogEntry.getLogStringHeadline());
-            this.statLogWriter.write(this.newlineString);
-            this.statLogWriter.flush();
+            if (newLogFile) {
+                this.statLogWriter.write(StreamingStatLogEntry.getLogStringHeadline());
+                this.statLogWriter.write(this.newlineString);
+                this.statLogWriter.flush();
+            }
         }
         return statLogWriter;
     }
@@ -163,6 +122,6 @@ public class StreamingEventLogger {
 
     public static String getFilename(Date time) {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-        return filenamePrefix + sdf.format(time) + ".log";
+        return FILENAME_PREFIX + sdf.format(time) + ".log";
     }
 }
