@@ -16,7 +16,7 @@
 
     <fileSets>
         <fileSet>
-            <outputDirectory>applications/kultur</outputDirectory>
+            <outputDirectory>applications/mediestream</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -26,7 +26,7 @@
         </fileSet>
         <!-- Te reenable previews, remove this commenting -->
         <!--fileSet>
-            <outputDirectory>applications/kultur_preview</outputDirectory>
+            <outputDirectory>applications/mediestream_preview</outputDirectory>
             <directory>src/main/data</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -55,11 +55,11 @@
         </fileSet-->
         <fileSet>
             <outputDirectory>conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_kultur/conf</directory>
+            <directory>src/main/config/wowza_vhost_mediestream/conf</directory>
             <!-- To re-enable previews, remove this exclude -->
             <excludes>
-                <exclude>kultur_preview</exclude>
-                <exclude>kultur_preview/*</exclude>
+                <exclude>mediestream_preview</exclude>
+                <exclude>mediestream_preview/*</exclude>
             </excludes>
             <directoryMode>0775</directoryMode>
         </fileSet>

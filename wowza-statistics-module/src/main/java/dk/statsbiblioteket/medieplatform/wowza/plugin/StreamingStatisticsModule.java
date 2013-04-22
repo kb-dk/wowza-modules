@@ -1,7 +1,8 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
+import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
@@ -9,8 +10,9 @@ import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
+import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamNotify;
-
+import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingEventLogger;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
@@ -23,20 +25,19 @@ import java.io.IOException;
  *
  * @author heb + jrg + abr + kfc
  */
-public class TicketCheckerModule extends ModuleBase
+public class StreamingStatisticsModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-    private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
+    private static final String PLUGIN_NAME = "Wowza statistics logger plugin";
     private static final String PLUGIN_VERSION = "${project.version}";
-    private TicketChecker ticketChecker;
+    private StreamingEventLogger streamingEventLogger;
 
-    public TicketCheckerModule() {
+    public StreamingStatisticsModule() {
         super();
     }
 
     /**
      * Called when Wowza is started.
-     * We use this to intialise the ticket checker.
      *
      * @param appInstance The application running.
      */
@@ -46,8 +47,8 @@ public class TicketCheckerModule extends ModuleBase
         String vhostDir = appInstance.getVHost().getHomePath();
         String storageDir = appInstance.getStreamStorageDir();
         getLogger().info("***Entered onAppStart: " + appName
-                                 + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
-                                 + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
+                + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
+                + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
             //Initialise the config reader
             ConfigReader cr;
@@ -57,39 +58,64 @@ public class TicketCheckerModule extends ModuleBase
             String ticketCheckerLocation = cr
                     .get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
             TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
-            String presentationType = cr.get("presentationType", "Stream");
 
-            ticketChecker = new TicketChecker(presentationType, ticketTool);
+            // Setup streaming statistics logger
+            String statLogFileHomeDir = cr
+                    .get("streamingStatisticsLogFolder", "missing-streamingStatisticsLogFolder");
+            streamingEventLogger = new StreamingEventLogger(ticketTool, getLogger(), statLogFileHomeDir);
         } catch (IOException e) {
             getLogger().error("An IO error occured.", e);
             throw new RuntimeException("An IO error occured.", e);
         }
     }
 
-    /*Mainly here to remember that we can hook this method*/
+    /**
+     * Called when a new video stream connection is started.
+     *
+     * The method accepts a connection.
+     *
+     * @param client
+     * @param function
+     * @param params
+     */
     @Override
     public void onConnect(IClient client, RequestFunction function, AMFDataList params) {
-        // Auto-accept is false in Application.xml. Therefore it is
+        getLogger().debug("onConnect, clientID='" + client.getClientId() + "', queryString='" + client.getQueryStr() + "'");
+        // Auto-accept is false in Application.xml. Therefore it is 
         // necessary to accept the connection explicitly here.
         client.acceptConnection();
     }
 
-
-    /** Check ticket to see if streaming is allowed. Otherwise report failure. */
+    /**
+     * Add the StreamingStatisticsIMediaStreamActionNotify2 listener to the stream.
+     * @param stream
+     */
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        if (!ticketChecker.checkTicket(stream)) {
-            sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
-            sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
-            stream.getClient().setShutdownClient(true);
-            stream.getClient().shutdownClient();
+        getLogger().debug("onStreamCreate, clientID='" + stream.getClientId() + "'");
+        IMediaStreamActionNotify streamActionNotify = new StreamingStatisticsIMediaStreamActionNotify2(streamingEventLogger);
+        WMSProperties props = stream.getProperties();
+        synchronized (props) {
+            props.put("streamActionNotifier", streamActionNotify);
         }
+        stream.addClientListener(streamActionNotify);
     }
 
-    /*Mainly here to remember that we can hook this method*/
+    /**
+     * Disconnect the notifier when the stream is destroyed
+     * @param stream
+     */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
-        // Do nothing.
+        getLogger().debug("onStreamDestroy, clientID='" + stream.getClientId() + "'");
+        IMediaStreamActionNotify actionNotify;
+        WMSProperties props = stream.getProperties();
+        synchronized (props) {
+            actionNotify = (IMediaStreamActionNotify) stream.getProperties().get("streamActionNotifier");
+        }
+        if (actionNotify != null) {
+            stream.removeClientListener(actionNotify);
+        }
     }
 
     /*Mainly here to remember that we can hook this method*/
@@ -115,7 +141,6 @@ public class TicketCheckerModule extends ModuleBase
     public void onDisconnect(IClient client) {
         // Do nothing.
     }
-
 
     /*Mainly here to remember that we can hook this method*/
     @Override

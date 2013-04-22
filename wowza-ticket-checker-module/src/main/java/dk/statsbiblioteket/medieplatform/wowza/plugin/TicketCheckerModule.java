@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
@@ -9,11 +9,9 @@ import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
-import com.wowza.wms.stream.IMediaStreamFileMapper;
 import com.wowza.wms.stream.IMediaStreamNotify;
 
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
 import java.io.File;
@@ -25,19 +23,20 @@ import java.io.IOException;
  *
  * @author heb + jrg + abr + kfc
  */
-public class ContentResolverModule extends ModuleBase
+public class TicketCheckerModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
 
-    private static final String PLUGIN_NAME = "Wowza Content Resolver Plugin";
+    private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
     private static final String PLUGIN_VERSION = "${project.version}";
+    private TicketChecker ticketChecker;
 
-    public ContentResolverModule() {
+    public TicketCheckerModule() {
         super();
     }
 
     /**
      * Called when Wowza is started.
-     * We use this to set up the ContentResolverMapper.
+     * We use this to intialise the ticket checker.
      *
      * @param appInstance The application running.
      */
@@ -50,30 +49,17 @@ public class ContentResolverModule extends ModuleBase
                                  + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
                                  + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
         try {
-            // Setup file mapper
-            IMediaStreamFileMapper defaultMapper = appInstance.getStreamFileMapper();
-
             //Initialise the config reader
             ConfigReader cr;
             cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"));
 
-
-            //Read to initialise the content resolver
-            File baseDirectory = new File(appInstance.getStreamStorageDir()).getAbsoluteFile();
-            int characterDirs = Integer.parseInt(cr.get("characterDirs", "4"));
-            String filenameRegexPattern = cr
-                    .get("filenameRegexPattern", "missing-filename-regex-pattern-in-property-file");
-            String uriPattern = "file://" + baseDirectory + "/%s";
+            //Read to initialise the ticket checker
+            String ticketCheckerLocation = cr
+                    .get("ticketCheckerLocation", "missing-ticket-checker-location-in-property-file");
+            TicketTool ticketTool = new TicketTool(ticketCheckerLocation, getLogger());
             String presentationType = cr.get("presentationType", "Stream");
 
-            ContentResolver contentResolver = new DirectoryBasedContentResolver(presentationType, baseDirectory,
-                                                                                characterDirs, filenameRegexPattern,
-                                                                                uriPattern);
-
-
-            ContentResolverMapper contentResolverMapper = new ContentResolverMapper(presentationType, defaultMapper, contentResolver);
-            // Set File mapper
-            appInstance.setStreamFileMapper(contentResolverMapper);
+            ticketChecker = new TicketChecker(presentationType, ticketTool);
         } catch (IOException e) {
             getLogger().error("An IO error occured.", e);
             throw new RuntimeException("An IO error occured.", e);
@@ -89,10 +75,15 @@ public class ContentResolverModule extends ModuleBase
     }
 
 
-    /*Mainly here to remember that we can hook this method*/
+    /** Check ticket to see if streaming is allowed. Otherwise report failure. */
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        // Do nothing.
+        if (!ticketChecker.checkTicket(stream)) {
+            sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
+            sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
+            stream.getClient().setShutdownClient(true);
+            stream.getClient().shutdownClient();
+        }
     }
 
     /*Mainly here to remember that we can hook this method*/

@@ -14,11 +14,11 @@
     </parent>
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
-    <artifactId>wowza-ticket-checker-parent</artifactId>
+    <artifactId>wowza-modules</artifactId>
     <version>2.0.12-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <description>Wowza plugins for checking tickets</description>
+    <description>Wowza plugins for Statsbiblioteket media platform</description>
     <inceptionYear>2011</inceptionYear>
 
     <organization>
@@ -32,7 +32,7 @@
         <module>wowza-statistics-module</module>
         <module>wowza-common</module>
         <module>wowza-mock</module>
-        <module>wowza-module</module>
+        <module>wowza-mediestream-vhost</module>
     </modules>
 
     <licenses>

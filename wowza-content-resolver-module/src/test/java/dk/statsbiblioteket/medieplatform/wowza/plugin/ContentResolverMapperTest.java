@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
@@ -7,12 +7,11 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.ContentResolverMapper;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -20,13 +19,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
 public class ContentResolverMapperTest {
 
-    public static final String RTMP_HYPOTHETICAL_URL = "rtmp://hypothetical-test-machine:1935/kultur";
+    public static final String RTMP_HYPOTHETICAL_URL = "rtmp://hypothetical-test-machine:1935/mediestream";
     private Logger logger;
 
     String storageDir = new File(
@@ -62,7 +60,7 @@ public class ContentResolverMapperTest {
         IMediaStreamFileMapper defaultMapper = null;
 
 
-         //rtmp://iapetus.statsbiblioteket.dk:1937/kultur?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
+         //rtmp://iapetus.statsbiblioteket.dk:1937/mediestream?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,

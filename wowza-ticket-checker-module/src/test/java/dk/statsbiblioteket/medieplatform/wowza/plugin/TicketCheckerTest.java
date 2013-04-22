@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
@@ -6,6 +6,7 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.TicketChecker;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
@@ -15,8 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;

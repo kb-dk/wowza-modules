@@ -1,20 +1,14 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
-import com.wowza.wms.stream.IMediaStreamFileMapper;
 
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
-import dk.statsbiblioteket.medieplatform.contentresolver.model.Resource;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.QueryUtil;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * This class is used to validate the ticket

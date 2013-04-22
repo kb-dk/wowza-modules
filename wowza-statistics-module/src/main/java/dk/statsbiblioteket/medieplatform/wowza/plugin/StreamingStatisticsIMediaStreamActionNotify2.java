@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.kultur;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.amf.AMFPacket;
 import com.wowza.wms.stream.IMediaStream;

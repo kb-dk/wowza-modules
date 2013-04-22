@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>dk.statsbiblioteket.medieplatform</groupId>
-        <artifactId>wowza-ticket-checker-parent</artifactId>
+        <artifactId>wowza-modules</artifactId>
         <version>2.0.12-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wowza-module</artifactId>
+    <artifactId>wowza-mediestream-vhost</artifactId>
 
     <build>
         <!-- Configure the source files as resources to be filtered

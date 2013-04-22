@@ -181,17 +181,17 @@
             <Module>
                 <Name>wowza-ticket-checker</Name>
                 <Description>Statsbiblioteket Ticket Checker plugin</Description>
-                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.kultur.TicketCheckerModule</Class>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.TicketCheckerModule</Class>
             </Module>
             <Module>
                 <Name>wowza-content-resolver</Name>
                 <Description>Statsbiblioteket Content Resolver plugin</Description>
-                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.kultur.ContentResolverModule</Class>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.ContentResolverModule</Class>
             </Module>
             <Module>
                 <Name>wowza-statistics-logger</Name>
                 <Description>Statsbiblioteket Statistics Logger plugin</Description>
-                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.kultur.StreamingStatisticsModule</Class>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.StreamingStatisticsModule</Class>
             </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
