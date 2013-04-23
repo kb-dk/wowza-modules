@@ -34,6 +34,9 @@
         <module>wowza-mock</module>
         <module>wowza-mediestream-vhost</module>
         <module>wowza-mcm-authorization-module</module>
+        <module>wowza-mcm2-authorization-module</module>
+        <module>wowza-mcm-statistics-module</module>
+        <module>wowza-db-statistics-module</module>
     </modules>
 
     <licenses>
@@ -213,7 +216,31 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wowza-module</artifactId>
+                <artifactId>wowza-mcm-authorization-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-mcm2-authorization-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-mcm-statistics-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-db-statistics-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-mediestream-vhost</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

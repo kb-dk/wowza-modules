@@ -42,6 +42,15 @@ public class IClientMock implements IClient {
         logger.info("Created \"" + this.getClass() + "\" with query string: " + this.queryString);
     }
 
+    public IClientMock(String queryString) {
+        super();
+        this.logger = Logger.getLogger(getClass());
+        this.queryString = queryString;
+        this.shutdownClient = false;
+        this.hasSetShutdownClientBeenCalled = false;
+        logger.info("Created \"" + this.getClass() + "\" with query string: " + this.queryString);
+    }
+
     @Override
     public void acceptConnection() {
         // TODO Auto-generated method stub

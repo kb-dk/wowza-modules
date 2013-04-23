@@ -51,6 +51,15 @@ public class IMediaStreamMock implements IMediaStream {
         logger.info("Created \"" + this.getClass() + "\" with name: " + this.name);
     }
 
+    public IMediaStreamMock(String name, IClient iClient) {
+        super();
+        this.logger = Logger.getLogger(getClass());
+        this.name = name;
+        this.iClient = iClient;
+        this.uniqueStreamIdStr = "uniqueStreamIdStr";
+        logger.info("Created \"" + this.getClass() + "\" with name: " + this.name);
+    }
+
     @Override
     public void addAudioCodecConfigPacket(long timecode, AMFPacket packet) {
         // TODO Auto-generated method stub

@@ -14,19 +14,18 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
-import dk.statsbiblioteket.chaos.wowza.plugin.authentication.model.MCMSessionAndFilenameValidater;
+import dk.statsbiblioteket.chaos.wowza.plugin.authentication.MCM2SessionAndFilenameValidater;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-
-public class WowzaSessionAuthenticationModuleBase extends ModuleBase 
+public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall {
 
-	private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Authentication";
-	private static final String PLUGIN_VERSION = "${project.version}";
-	
-	public WowzaSessionAuthenticationModuleBase() {
+	private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM2 Authentication";
+   	private static final String PLUGIN_VERSION = "${project.version}";
+
+    public WowzaSessionAuthenticationMCM2ModuleBase() {
 		super();
 	}
 
@@ -105,7 +104,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
 		IMediaStreamActionNotify2 streamAuthenticater;
 		try {
 			streamAuthenticater = new StreamAuthenticater(getLogger(), 
-					new MCMSessionAndFilenameValidater(getLogger(), appInstance));
+					new MCM2SessionAndFilenameValidater(getLogger(), appInstance));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not initialize stream authenticater.", e); 
 		} catch (IOException e) {

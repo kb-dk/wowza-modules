@@ -14,10 +14,9 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 
-import dk.statsbiblioteket.chaos.wowza.plugin.authentication.StreamAuthenticater;
-import dk.statsbiblioteket.chaos.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.chaos.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.chaos.wowza.plugin.mockobjects.SessionAndFilenameValidaterMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 
 public class StreamAuthenticaterTest {
 
@@ -82,7 +81,7 @@ public class StreamAuthenticaterTest {
 	public void testOnPlayValidInput() {
 		String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
 		IClientMock iClientM = new IClientMock(queryString);
-		IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+		IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM);
 		streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
 		assertEquals("Unexpected return value.", false, iClientM.getHasSetShutdownClientBeenCalled());
 	}

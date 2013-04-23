@@ -10,7 +10,7 @@
         <version>2.0.12-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wowza-mcm-authorization-module</artifactId>
+    <artifactId>wowza-mcm2-authorization-module</artifactId>
 
     <build>
         <!-- Configure the source files as resources to be filtered
@@ -46,6 +46,16 @@
         </dependency>
 
         <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <artifactId>wowza-mcm-authorization-module</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <artifactId>content-resolver-lib</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-server</artifactId>
             <scope>provided</scope>
@@ -72,7 +82,6 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
