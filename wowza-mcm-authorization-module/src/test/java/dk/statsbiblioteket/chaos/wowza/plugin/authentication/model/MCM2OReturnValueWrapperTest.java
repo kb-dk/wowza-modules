@@ -16,12 +16,12 @@ import static org.junit.Assert.assertTrue;
 
 public class MCM2OReturnValueWrapperTest {
 
-	private static String filenameOfvalidMCMOutputFull =
-		"src/test/resources/test_data_MCM2_output_full.xml";
-	private static String filenameOfvalidMCMOutputInvalidSession =
-		"src/test/resources/test_data_MCM_output_invalid_session.xml";
-	private static String filenameOfInvalidMCMOutput =
-		"src/test/resources/test_data_invalid_output.xml";
+	private String filenameOfvalidMCMOutputFull = getClass().getClassLoader().getResource(
+		"test_data_MCM2_output_full.xml").getPath();
+	private String filenameOfvalidMCMOutputInvalidSession = getClass().getClassLoader().getResource(
+		"test_data_MCM_output_invalid_session.xml").getPath();
+	private String filenameOfInvalidMCMOutput = getClass().getClassLoader().getResource(
+		"test_data_invalid_output.xml").getPath();
 
 	private Logger logger;
 

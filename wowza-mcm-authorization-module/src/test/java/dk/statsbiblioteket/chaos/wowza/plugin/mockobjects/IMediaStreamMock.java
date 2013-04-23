@@ -3,6 +3,7 @@ package dk.statsbiblioteket.chaos.wowza.plugin.mockobjects;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.wowza.util.ElapsedTimer;
 import com.wowza.util.IOPerformanceCounter;
@@ -11,6 +12,9 @@ import com.wowza.wms.amf.AMFPacket;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
+import com.wowza.wms.media.h264.H264SEIMessages;
+import com.wowza.wms.media.model.MediaCodecInfoAudio;
+import com.wowza.wms.media.model.MediaCodecInfoVideo;
 import com.wowza.wms.netconnection.INetConnection;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.rtp.model.RTPStream;
@@ -18,11 +22,15 @@ import com.wowza.wms.stream.FastPlaySettings;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
+import com.wowza.wms.stream.IMediaStreamActionNotify3;
 import com.wowza.wms.stream.IMediaStreamCallback;
+import com.wowza.wms.stream.IMediaStreamH264SEINotify;
 import com.wowza.wms.stream.IMediaStreamMetaDataProvider;
 import com.wowza.wms.stream.IMediaStreamPlay;
 import com.wowza.wms.stream.MediaStreamMap;
+import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorder;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizer;
+import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoder;
 
 public class IMediaStreamMock implements IMediaStream {
 
@@ -59,7 +67,12 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void addClientListener(IMediaStreamActionNotify3 iMediaStreamActionNotify3) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void addDataData(byte[] data, int offset, int size) {
 		// TODO Auto-generated method stub
 
@@ -250,7 +263,22 @@ public class IMediaStreamMock implements IMediaStream {
 		return null;
 	}
 
-	@Override
+    @Override
+    public String getDvrRecorderList() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setDvrRecorderList(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ILiveStreamDvrRecorder getDvrRecorder(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public String getLiveStreamPacketizerList() {
 		// TODO Auto-generated method stub
 		return null;
@@ -556,7 +584,17 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void notifyActionOnCodecInfoVideo(MediaCodecInfoVideo mediaCodecInfoVideo) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void notifyActionOnCodecInfoAudio(MediaCodecInfoAudio mediaCodecInfoAudio) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void notifyActionPause(boolean isPause, long location) {
 		// TODO Auto-generated method stub
 
@@ -644,7 +682,12 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void removeClientListener(IMediaStreamActionNotify3 iMediaStreamActionNotify3) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void send(String handlerName) {
 		// TODO Auto-generated method stub
 
@@ -656,7 +699,12 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void sendAMF3(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public int sendControlBytes(int controlType, OutputStream out) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -668,13 +716,23 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void sendAMF3(String s, Object... objects) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void sendDirect(String handlerName, Object... params) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+    @Override
+    public void sendDirectAMF3(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public int sendLivePlaySeek(OutputStream out, String name, long timecode) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -948,7 +1006,17 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public String getLiveStreamTranscoderList() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setLiveStreamTranscoderList(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void setLiveStreamRepeater(String liveStreamRepeater) {
 		// TODO Auto-generated method stub
 
@@ -1083,7 +1151,12 @@ public class IMediaStreamMock implements IMediaStream {
 
 	}
 
-	@Override
+    @Override
+    public void sendDirectAMF3(String s, Object... objects) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void setVideoSize(int videoSize) {
 		// TODO Auto-generated method stub
 
@@ -1218,5 +1291,80 @@ public class IMediaStreamMock implements IMediaStream {
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    public String getDvrRecorder() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getDvrRepeater() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setDvrRecorder(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ILiveStreamDvrRecorder removeDvrRecorder(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void putDvrRecorder(String s, ILiveStreamDvrRecorder iLiveStreamDvrRecorder) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, ILiveStreamTranscoder> getLiveStreamTranscoders() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ILiveStreamTranscoder getLiveStreamTranscoder(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ILiveStreamTranscoder removeLiveStreamTranscoder(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void putLiveStreamTranscoder(String s, ILiveStreamTranscoder iLiveStreamTranscoder) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isTranscodeResult() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setTranscodeResult(boolean b) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void addVideoH264SEIListener(IMediaStreamH264SEINotify iMediaStreamH264SEINotify) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeVideoH264SEIListener(IMediaStreamH264SEINotify iMediaStreamH264SEINotify) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isVideoH264SEIListenerEmpty() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void notifyVideoH264Packet(AMFPacket amfPacket, H264SEIMessages h264SEIMessages) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 }

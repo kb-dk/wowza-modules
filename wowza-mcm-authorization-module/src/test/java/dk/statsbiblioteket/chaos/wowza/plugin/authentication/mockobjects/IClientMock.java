@@ -15,6 +15,7 @@ import com.wowza.wms.client.ClientWriteListener;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.module.IModuleCallResult;
 import com.wowza.wms.module.IModulePingResult;
+import com.wowza.wms.protocol.wowz.WOWZSession;
 import com.wowza.wms.response.ResponseFunctions;
 import com.wowza.wms.rtp.model.RTPStream;
 import com.wowza.wms.stream.FastPlaySettings;
@@ -621,7 +622,17 @@ public class IClientMock implements IClient {
 
 	}
 
-	@Override
+    @Override
+    public String getLiveStreamTranscoderList() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setLiveStreamTranscoderList(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public void setObjectEncoding(int objectEncoding) {
 		// TODO Auto-generated method stub
 
@@ -724,5 +735,20 @@ public class IClientMock implements IClient {
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    public void setThreadContext() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public WOWZSession getWowzSession() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setWowzSession(WOWZSession wowzSession) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 }

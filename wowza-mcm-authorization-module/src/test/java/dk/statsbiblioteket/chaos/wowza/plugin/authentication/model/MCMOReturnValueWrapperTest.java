@@ -18,14 +18,14 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 
 public class MCMOReturnValueWrapperTest {
 
-	private static String filenameOfvalidMCMOutputFull =  
-		"src/test/resources/test_data_MCM_output_full.xml";
-	private static String filenameOfvalidMCMOutputMultipleFiles =  
-		"src/test/resources/test_data_MCM_output_multiple_files.xml";
-	private static String filenameOfvalidMCMOutputInvalidSession =  
-		"src/test/resources/test_data_MCM_output_invalid_session.xml";
-	private static String filenameOfInvalidMCMOutput =
-		"src/test/resources/test_data_invalid_output.xml";
+	private String filenameOfvalidMCMOutputFull = getClass().getClassLoader().getResource(
+		"test_data_MCM_output_full.xml").getPath();
+	private String filenameOfvalidMCMOutputMultipleFiles = getClass().getClassLoader().getResource(
+		"test_data_MCM_output_multiple_files.xml").getPath();
+	private String filenameOfvalidMCMOutputInvalidSession = getClass().getClassLoader().getResource(
+		"test_data_MCM_output_invalid_session.xml").getPath();
+	private String filenameOfInvalidMCMOutput = getClass().getClassLoader().getResource(
+		"test_data_invalid_output.xml").getPath();
 
 	private Logger logger;
 
