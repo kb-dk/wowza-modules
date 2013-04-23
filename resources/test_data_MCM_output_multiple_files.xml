@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ICollection MinimumSucceedingObjectCount="0" TotalObjectCount="1">
+	<MCM.Data.DTO.ExtendedObjectInfo>
+		<FileInfos>
+			<MCM.Data.DTO.FileInfo>
+				<ObjectID>662670</ObjectID>
+				<Format>MP3 128 kbit CBR</Format>
+				<MimeType>audio/mpeg</MimeType>
+				<MediaTypeID>15225</MediaTypeID>
+				<RelativeFilePath>Kulturarv_MP3\Batch02\Disc05\mp3_128kbps\P2_1800_2000_890121_001.mp3</RelativeFilePath>
+				<AccessProviders>
+					<MCM.Data.DTO.AccessProvider>
+						<Name>RTMP</Name>
+						<DestinationID>7763</DestinationID>
+						<Uri>rtmp://streaming.chaos.larm-archive.org/chaos?sessionID=&amp;objectID=&amp;includeFiles=true/mp3:Kulturarv_MP3/Batch02/Disc05/mp3_128kbps/P2_1800_2000_890121_001.mp3</Uri>
+					</MCM.Data.DTO.AccessProvider>
+				</AccessProviders>
+				<ID>400923</ID>
+				<Filename>P2_1800_2000_890121_001.mp3</Filename>
+				<OriginalFilename>P2_1800_2000_890121_001.mp3</OriginalFilename>
+				<FolderPath>Kulturarv_MP3\Batch02\Disc05\mp3_128kbps\</FolderPath>
+				<DateCreated>2010-09-19T21:27:32Z</DateCreated>
+				<FileTypeID>2</FileTypeID>
+				<FormatID>7426</FormatID>
+				<ByteSize>0</ByteSize>
+				<DestinationID>7763</DestinationID>
+			</MCM.Data.DTO.FileInfo>
+			<MCM.Data.DTO.FileInfo>
+				<ObjectID>662670</ObjectID>
+				<Format>MP3 128 kbit CBR</Format>
+				<MimeType>audio/mpeg</MimeType>
+				<MediaTypeID>15225</MediaTypeID>
+				<RelativeFilePath>Kulturarv_MP3\Batch02\Disc05\mp3_128kbps\P2_2000_2200_890121_001.mp3</RelativeFilePath>
+				<AccessProviders>
+					<MCM.Data.DTO.AccessProvider>
+						<Name>RTMP</Name>
+						<DestinationID>7763</DestinationID>
+						<Uri>rtmp://streaming.chaos.larm-archive.org/chaos?sessionID=&amp;objectID=&amp;includeFiles=true/mp3:Kulturarv_MP3/Batch02/Disc05/mp3_128kbps/P2_2000_2200_890121_001.mp3</Uri>
+					</MCM.Data.DTO.AccessProvider>
+				</AccessProviders>
+				<ID>400924</ID>
+				<Filename>P2_2000_2200_890121_001.mp3</Filename>
+				<OriginalFilename>P2_2000_2200_890121_001.mp3</OriginalFilename>
+				<FolderPath>Kulturarv_MP3\Batch02\Disc05\mp3_128kbps\</FolderPath>
+				<DateCreated>2010-09-19T21:27:32Z</DateCreated>
+				<FileTypeID>2</FileTypeID>
+				<FormatID>7426</FormatID>
+				<ByteSize>0</ByteSize>
+				<DestinationID>7763</DestinationID>
+			</MCM.Data.DTO.FileInfo>
+		</FileInfos>
+		<MetadataModifiedDate>2011-02-08T15:53:57Z</MetadataModifiedDate>
+		<ObjectTypeName>Larm.Program</ObjectTypeName>
+		<OwnerUserIdentifier>aa50b1c9-7bba-4408-b8d1-8b336126772c</OwnerUserIdentifier>
+		<ID>662670</ID>
+		<DateCreated>2010-09-19T21:28:00Z</DateCreated>
+		<OwnerUserID>37</OwnerUserID>
+		<ObjectTypeID>8</ObjectTypeID>
+	</MCM.Data.DTO.ExtendedObjectInfo>
+</ICollection>
