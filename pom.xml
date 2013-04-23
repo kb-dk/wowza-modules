@@ -33,6 +33,7 @@
         <module>wowza-common</module>
         <module>wowza-mock</module>
         <module>wowza-mediestream-vhost</module>
+        <module>wowza-mcm-authorization-module</module>
     </modules>
 
     <licenses>
