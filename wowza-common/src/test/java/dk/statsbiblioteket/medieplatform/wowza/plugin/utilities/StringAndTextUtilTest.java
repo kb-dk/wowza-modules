@@ -15,46 +15,46 @@ public class StringAndTextUtilTest {
     private String param2 = "param1Key=param2Value";
     private String param3 = "param1Key=param3Value";
 
-	private WMSLogger logger;
+    private WMSLogger logger;
 
-	private String validSessionID;
-	private String validObjectID;
+    private String validSessionID;
+    private String validObjectID;
 
-	public StringAndTextUtilTest() throws FileNotFoundException, IOException {
-		super();
-		this.logger = WMSLoggerFactory.getLogger(this.getClass());
-		this.validSessionID = "5F95E509-FD84-4570-9382-FEC5481E342F";
-		this.validObjectID = "976";
-		logger.info("Ready for test.");
-	}
+    public StringAndTextUtilTest() throws FileNotFoundException, IOException {
+        super();
+        this.logger = WMSLoggerFactory.getLogger(this.getClass());
+        this.validSessionID = "5F95E509-FD84-4570-9382-FEC5481E342F";
+        this.validObjectID = "976";
+        logger.info("Ready for test.");
+    }
 
-	@Test
-	public void testExtractValueFromQueryStringAndKeyNonExistingKey() {
-		String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
-		String key = "nonexistingKey";
+    @Test
+    public void testExtractValueFromQueryStringAndKeyNonExistingKey() {
+        String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
+        String key = "nonexistingKey";
         try {
             StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
             fail("This statement should not be reached");
         } catch (IllegallyFormattedQueryStringException e) {
             // Expected
         }
-	}
+    }
 
-	@Test
-	public void testExtractValueFromQueryStringAndKeyObjectID() throws IllegallyFormattedQueryStringException {
-		String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
-		String key = "ObjectID";
-		String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
-		assertEquals("Unexpected return value.", validObjectID, value);
-	}
+    @Test
+    public void testExtractValueFromQueryStringAndKeyObjectID() throws IllegallyFormattedQueryStringException {
+        String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
+        String key = "ObjectID";
+        String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
+        assertEquals("Unexpected return value.", validObjectID, value);
+    }
 
-	@Test
-	public void testExtractValueFromQueryStringAndKeySessionID() throws IllegallyFormattedQueryStringException {
-		String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
-		String key = "SessionID";
-		String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
-		assertEquals("Unexpected return value.", validSessionID, value);
-	}
+    @Test
+    public void testExtractValueFromQueryStringAndKeySessionID() throws IllegallyFormattedQueryStringException {
+        String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
+        String key = "SessionID";
+        String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
+        assertEquals("Unexpected return value.", validSessionID, value);
+    }
 
     @Test
     public void testTicketFirstInQuery() throws IllegallyFormattedQueryStringException {

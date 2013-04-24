@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics SB";
-   	private static final String PLUGIN_VERSION = "${project.version}";
+       private static final String PLUGIN_VERSION = "${project.version}";
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);

@@ -30,29 +30,29 @@ import java.util.Date;
 import java.util.List;
 
 public class StatisticLoggingStreamListenerTest extends TestCase {
-	
+    
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 
     private WMSLogger logger;
-	private Connection connection;
-	private StatisticLoggingStreamListener statLogSBMediaStreamActionNotify;
+    private Connection connection;
+    private StatisticLoggingStreamListener statLogSBMediaStreamActionNotify;
     private StatisticLoggingStreamListener statLogMCMMediaStreamActionNotify;
-	private StreamingEventLoggerIF streamingMCMEventLogger;
+    private StreamingEventLoggerIF streamingMCMEventLogger;
     private StreamingEventLoggerIF streamingDatabaseEventLogger;
     private MCMPortalInterfaceStatisticsMock mcmPortalInterfaceStatisticsMock;
 
     public StatisticLoggingStreamListenerTest() throws FileNotFoundException, IOException, SQLException {
-		super();
-		this.logger = WMSLoggerFactory.getLogger(this.getClass());
-		try {
-	        Class.forName("org.hsqldb.jdbcDriver" );
-	    } catch (Exception e) {
-	        System.out.println("ERROR: failed to load HSQLDB JDBC driver.");
-	        e.printStackTrace();
-	        return;
-	    }
-		this.connection = DriverManager.getConnection("jdbc:hsqldb:mem:streamingstats");
+        super();
+        this.logger = WMSLoggerFactory.getLogger(this.getClass());
+        try {
+            Class.forName("org.hsqldb.jdbcDriver" );
+        } catch (Exception e) {
+            System.out.println("ERROR: failed to load HSQLDB JDBC driver.");
+            e.printStackTrace();
+            return;
+        }
+        this.connection = DriverManager.getConnection("jdbc:hsqldb:mem:streamingstats");
         StreamingDatabaseEventLogger.createInstanceForTestPurpose(logger, connection);
         this.streamingDatabaseEventLogger = StreamingDatabaseEventLogger.getInstance();
 
@@ -60,116 +60,116 @@ public class StatisticLoggingStreamListenerTest extends TestCase {
             StreamingMCMEventLogger.createInstance(logger);
         }
         this.streamingMCMEventLogger = StreamingMCMEventLogger.getInstance();
-	}
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		org.apache.log4j.BasicConfigurator.configure();
-		logger.info("setUp()");
+    @Before
+    public void setUp() throws Exception {
+        org.apache.log4j.BasicConfigurator.configure();
+        logger.info("setUp()");
         mcmPortalInterfaceStatisticsMock = new MCMPortalInterfaceStatisticsMock(logger);
         MCMPortalInterfaceStatisticsImpl.createInstanceForTestPurpose(mcmPortalInterfaceStatisticsMock);
-		IClient client = new IClientMock("sessionID=sample.mp4&objectID=643703&includeFiles=true");
-		IMediaStreamMock mediaStream = new IMediaStreamMock("sample2.mp4", client);
+        IClient client = new IClientMock("sessionID=sample.mp4&objectID=643703&includeFiles=true");
+        IMediaStreamMock mediaStream = new IMediaStreamMock("sample2.mp4", client);
 
         StreamingDatabaseEventLoggerTest.createDBEventTable(logger, connection);
 
         statLogMCMMediaStreamActionNotify = new StatisticLoggingStreamListener(logger, mediaStream,
                                                                               streamingMCMEventLogger);
-		statLogSBMediaStreamActionNotify = new StatisticLoggingStreamListener(logger, mediaStream,
+        statLogSBMediaStreamActionNotify = new StatisticLoggingStreamListener(logger, mediaStream,
                                                                               streamingDatabaseEventLogger);
-	}
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		StreamingDatabaseEventLoggerTest.dropDBTable(logger, connection);
-		org.apache.log4j.BasicConfigurator.resetConfiguration();
-	}
+    @After
+    public void tearDown() throws Exception {
+        StreamingDatabaseEventLoggerTest.dropDBTable(logger, connection);
+        org.apache.log4j.BasicConfigurator.resetConfiguration();
+    }
 
-	@Test
-	public void testStatisticLoggingSBMediaStreamActionNotify2TestOnPause() throws SQLException {
-		// Establish connection
-		Date dateBeforeConnection = new Date();
-		IClient client = new IClientMock("queryString");
-		IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
-		statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
-		statLogSBMediaStreamActionNotify.onPause(mediaStream, true, 0.0);
+    @Test
+    public void testStatisticLoggingSBMediaStreamActionNotify2TestOnPause() throws SQLException {
+        // Establish connection
+        Date dateBeforeConnection = new Date();
+        IClient client = new IClientMock("queryString");
+        IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
+        statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
+        statLogSBMediaStreamActionNotify.onPause(mediaStream, true, 0.0);
         statLogMCMMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
         statLogMCMMediaStreamActionNotify.onPause(mediaStream, true, 0.0);
-		dumpDB2Log(10);
-		// Fetch data
-		StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
-		logger.debug("Found log entry : " + logEntry.toString());
+        dumpDB2Log(10);
+        // Fetch data
+        StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
+        logger.debug("Found log entry : " + logEntry.toString());
 
-		Assert.assertEquals("Result is:", 2, logEntry.getEventID());
-		Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
-		Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
-		Assert.assertEquals("Result is:", Event.PAUSE, logEntry.getEvent());
+        Assert.assertEquals("Result is:", 2, logEntry.getEventID());
+        Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
+        Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
+        Assert.assertEquals("Result is:", Event.PAUSE, logEntry.getEvent());
 
         Assert.assertEquals("Result is:", "0", mcmPortalInterfaceStatisticsMock.lastSessionID);
         Assert.assertEquals("Result is:", "0-0", mcmPortalInterfaceStatisticsMock.lastObjectSessionID);
         Assert.assertEquals("Result is:", 0, mcmPortalInterfaceStatisticsMock.lastStartedAt);
         Assert.assertTrue("Result is:", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 1);
-	}
+    }
 
-	@Test
-	public void testStatisticLoggingSBMediaStreamActionNotify2TestOnStop() throws SQLException, InterruptedException {
-		// Establish connection
-		Date dateBeforeConnection = new Date();
-		IClient client = new IClientMock("queryString");
-		IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
-		statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
-		statLogSBMediaStreamActionNotify.onStop(mediaStream);
+    @Test
+    public void testStatisticLoggingSBMediaStreamActionNotify2TestOnStop() throws SQLException, InterruptedException {
+        // Establish connection
+        Date dateBeforeConnection = new Date();
+        IClient client = new IClientMock("queryString");
+        IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
+        statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
+        statLogSBMediaStreamActionNotify.onStop(mediaStream);
         statLogMCMMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
         statLogMCMMediaStreamActionNotify.onStop(mediaStream);
-		// Fetch data
-		StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
-		logger.debug("Found log entry: " + logEntry.toString());
+        // Fetch data
+        StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
+        logger.debug("Found log entry: " + logEntry.toString());
 
-		Assert.assertEquals("Result is:", 2, logEntry.getEventID());
-		Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
-		Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
-		Assert.assertEquals("Result is:", Event.STOP, logEntry.getEvent());
+        Assert.assertEquals("Result is:", 2, logEntry.getEventID());
+        Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
+        Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
+        Assert.assertEquals("Result is:", Event.STOP, logEntry.getEvent());
 
         Assert.assertEquals("Result is:", "0", mcmPortalInterfaceStatisticsMock.lastSessionID);
         Assert.assertEquals("Result is:", "0-0", mcmPortalInterfaceStatisticsMock.lastObjectSessionID);
         Assert.assertEquals("Result is:", 0, mcmPortalInterfaceStatisticsMock.lastStartedAt);
         Assert.assertTrue("Unit test should not take more than two seconds", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 2);
-	}
+    }
 
-	@Test
-	public void testStatisticLoggingSBMediaStreamActionNotify2TestOnRewind() throws SQLException {
-		// Establish connection
-		Date dateBeforeConnection = new Date();
-		IClient client = new IClientMock("queryString");
-		IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
-		statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
-		statLogSBMediaStreamActionNotify.onSeek(mediaStream, 0.0);
+    @Test
+    public void testStatisticLoggingSBMediaStreamActionNotify2TestOnRewind() throws SQLException {
+        // Establish connection
+        Date dateBeforeConnection = new Date();
+        IClient client = new IClientMock("queryString");
+        IMediaStreamMock mediaStream = new IMediaStreamMock("sample.mp4", client);
+        statLogSBMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
+        statLogSBMediaStreamActionNotify.onSeek(mediaStream, 0.0);
         statLogMCMMediaStreamActionNotify.onPlay(mediaStream, mediaStream.getName(), 0.0, 0.0, 0);
         statLogMCMMediaStreamActionNotify.onSeek(mediaStream, 0.0);
-		dumpDB2Log(10);
-		// Fetch data
-		StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
-		logger.debug("Found log entry: " + logEntry.toString());
+        dumpDB2Log(10);
+        // Fetch data
+        StreamingStatLogEntry logEntry = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest();
+        logger.debug("Found log entry: " + logEntry.toString());
 
-		Assert.assertEquals("Result is:", 2, logEntry.getEventID());
-		Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
-		Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
-		Assert.assertEquals("Result is:", Event.REWIND, logEntry.getEvent());
+        Assert.assertEquals("Result is:", 2, logEntry.getEventID());
+        Assert.assertEquals("Result is:", mediaStream.getClientId(), logEntry.getUserID());
+        Assert.assertTrue(dateBeforeConnection.getTime() <= logEntry.getTimestamp().getTime());
+        Assert.assertEquals("Result is:", Event.REWIND, logEntry.getEvent());
 
         Assert.assertEquals("Result is:", "0", mcmPortalInterfaceStatisticsMock.lastSessionID);
         Assert.assertEquals("Result is:", "0-0", mcmPortalInterfaceStatisticsMock.lastObjectSessionID);
         Assert.assertEquals("Result is:", 0, mcmPortalInterfaceStatisticsMock.lastStartedAt);
         Assert.assertTrue("Unit test should not take more than two seconds", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 2);
-	}
+    }
 
-	private void dumpDB2Log(int numberOfEntries) {
-		List<StreamingStatLogEntry> logEntries = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest(
+    private void dumpDB2Log(int numberOfEntries) {
+        List<StreamingStatLogEntry> logEntries = StreamingDatabaseEventLogger.getInstance().getLogEntryLatest(
                 numberOfEntries);
-		int i=0;
-		logger.debug("Dumping " + logEntries.size() + "/" + numberOfEntries + " entries to the log");
-		for (StreamingStatLogEntry logEntry: logEntries) {
-			logger.debug("Log entry [" + i + "] : " + logEntry.toString());
-			i++;
-		}
-	}
+        int i=0;
+        logger.debug("Dumping " + logEntries.size() + "/" + numberOfEntries + " entries to the log");
+        for (StreamingStatLogEntry logEntry: logEntries) {
+            logger.debug("Log entry [" + i + "] : " + logEntry.toString());
+            i++;
+        }
+    }
 }
