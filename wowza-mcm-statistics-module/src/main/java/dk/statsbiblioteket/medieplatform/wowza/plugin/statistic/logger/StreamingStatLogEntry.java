@@ -1,9 +1,9 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger;
 
+import com.wowza.wms.logging.WMSLogger;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.wowza.wms.logging.WMSLogger;
 
 public class StreamingStatLogEntry {
 

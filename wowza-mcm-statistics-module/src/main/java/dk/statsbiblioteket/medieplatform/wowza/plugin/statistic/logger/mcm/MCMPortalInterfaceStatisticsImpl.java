@@ -1,13 +1,13 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm;
 
+import com.wowza.wms.logging.WMSLogger;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import com.wowza.wms.logging.WMSLogger;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStatistics {
 

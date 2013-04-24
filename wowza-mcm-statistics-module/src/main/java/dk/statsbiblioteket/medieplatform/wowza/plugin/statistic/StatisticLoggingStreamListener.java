@@ -1,8 +1,5 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.wowza.wms.amf.AMFPacket;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
@@ -14,6 +11,9 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.Streaming
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2 {
 

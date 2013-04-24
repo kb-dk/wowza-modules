@@ -1,22 +1,18 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.wowza.wms.logging.WMSLoggerFactory;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOReturnValueWrapper;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MCMOReturnValueWrapperTest {
 

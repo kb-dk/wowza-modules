@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM2OReturnValueWrapper;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

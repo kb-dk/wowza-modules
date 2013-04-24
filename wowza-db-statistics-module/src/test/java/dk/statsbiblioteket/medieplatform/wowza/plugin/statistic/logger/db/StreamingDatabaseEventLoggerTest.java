@@ -1,5 +1,22 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db;
 
+import com.wowza.wms.client.IClient;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,25 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.wowza.wms.client.IClient;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 
 public class StreamingDatabaseEventLoggerTest {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";

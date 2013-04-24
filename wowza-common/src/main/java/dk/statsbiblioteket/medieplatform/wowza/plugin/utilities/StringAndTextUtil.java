@@ -11,8 +11,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StringAndTextUtil {
     public static String extractValueFromQueryStringAndKey(String key,

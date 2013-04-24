@@ -1,15 +1,14 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.utilities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.junit.Test;
-
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class StringAndTextUtilTest {
     private String param1 = "param1Key=param1Value";

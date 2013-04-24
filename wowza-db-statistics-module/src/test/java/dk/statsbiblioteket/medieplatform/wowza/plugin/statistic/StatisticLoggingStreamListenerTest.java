@@ -1,5 +1,25 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
+import com.wowza.wms.client.IClient;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLogger;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLoggerTest;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.StreamingMCMEventLogger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,28 +28,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.wowza.wms.client.IClient;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLogger;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLoggerTest;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.StreamingMCMEventLogger;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class StatisticLoggingStreamListenerTest extends TestCase {
 	

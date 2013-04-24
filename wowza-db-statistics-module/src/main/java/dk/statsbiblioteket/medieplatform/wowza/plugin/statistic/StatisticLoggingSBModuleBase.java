@@ -1,9 +1,5 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.module.IModuleOnApp;
@@ -13,9 +9,13 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLogger;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
 

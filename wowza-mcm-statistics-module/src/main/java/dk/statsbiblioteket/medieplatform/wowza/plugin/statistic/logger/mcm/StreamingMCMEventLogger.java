@@ -1,13 +1,13 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm;
 
-import java.util.List;
-
 import com.wowza.wms.logging.WMSLogger;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.SessionIDPair;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
+
+import java.util.List;
 
 public class StreamingMCMEventLogger implements StreamingEventLoggerIF {
 

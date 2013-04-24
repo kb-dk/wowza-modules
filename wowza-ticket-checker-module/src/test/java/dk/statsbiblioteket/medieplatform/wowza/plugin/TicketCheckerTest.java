@@ -4,20 +4,20 @@ import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

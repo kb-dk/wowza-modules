@@ -1,9 +1,5 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
 import com.wowza.wms.amf.AMFPacket;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
@@ -13,6 +9,10 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOu
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.SessionAndFilenameValidaterIF;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 class StreamAuthenticater  implements IMediaStreamActionNotify2 {
 	

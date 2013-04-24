@@ -2,10 +2,11 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.stream.IMediaStream;
+
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 import java.io.File;

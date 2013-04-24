@@ -8,12 +8,13 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;

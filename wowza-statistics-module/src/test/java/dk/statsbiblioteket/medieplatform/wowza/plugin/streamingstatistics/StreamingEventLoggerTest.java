@@ -2,16 +2,19 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
-
 import junit.framework.TestCase;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

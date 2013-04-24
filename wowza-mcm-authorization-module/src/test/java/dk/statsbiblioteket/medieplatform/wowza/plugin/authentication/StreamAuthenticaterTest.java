@@ -1,22 +1,21 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication;
 
-import static org.junit.Assert.assertEquals;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.stream.IMediaStream;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.SessionAndFilenameValidaterMock;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-import com.wowza.wms.stream.IMediaStream;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.SessionAndFilenameValidaterMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
+import static org.junit.Assert.assertEquals;
 
 public class StreamAuthenticaterTest {
 

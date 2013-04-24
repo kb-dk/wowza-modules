@@ -1,14 +1,14 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model;
 
+import com.wowza.wms.logging.WMSLogger;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-
-import com.wowza.wms.logging.WMSLogger;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidaterIF {
     protected WMSLogger logger;

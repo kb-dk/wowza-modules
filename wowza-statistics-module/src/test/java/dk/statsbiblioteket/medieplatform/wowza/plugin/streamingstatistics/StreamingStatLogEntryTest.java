@@ -2,6 +2,11 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
@@ -9,10 +14,6 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;

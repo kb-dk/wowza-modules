@@ -1,10 +1,10 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects;
 
+import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.SessionAndFilenameValidaterIF;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.SessionAndFilenameValidaterIF;
 
 public class SessionAndFilenameValidaterMock implements
 		SessionAndFilenameValidaterIF {

@@ -10,9 +10,9 @@ import com.wowza.wms.stream.IMediaStreamActionNotify;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.StreamingMCMEventLogger;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
 import java.io.File;
 import java.io.IOException;

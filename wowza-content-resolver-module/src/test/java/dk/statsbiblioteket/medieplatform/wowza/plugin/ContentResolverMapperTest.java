@@ -5,17 +5,16 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
-import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.ContentResolverMapper;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
+import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 
 import java.io.File;
 import java.io.IOException;
