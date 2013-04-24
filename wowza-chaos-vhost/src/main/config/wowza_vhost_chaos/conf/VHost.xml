@@ -104,7 +104,7 @@
 			<HostPort>
 				<ProcessorCount>1</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>8088</Port>
+				<Port>8087</Port>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
 					<ReceiveBufferSize>16000</ReceiveBufferSize>
