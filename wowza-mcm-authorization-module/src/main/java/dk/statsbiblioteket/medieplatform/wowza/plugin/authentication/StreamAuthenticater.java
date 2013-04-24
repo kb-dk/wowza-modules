@@ -11,7 +11,8 @@ import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.SessionAndFilenameValidaterIF;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 class StreamAuthenticater  implements IMediaStreamActionNotify2 {
 	
@@ -28,8 +29,16 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
 	public void onPlay(IMediaStream stream, String streamName, double playStart,
 			double playLen, int playReset) {
 		String queryString = String.valueOf(stream.getClient().getQueryStr());
-		String sessionID = StringAndTextUtil.extractValueFromQueryStringAndKey("SessionID", queryString);
-		String objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        String sessionID;
+        String objectID;
+        try {
+            sessionID = StringAndTextUtil.extractValueFromQueryStringAndKey("SessionID", queryString);
+            objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            wmsLogger.warn("User not allowed to get content streamed, because SessionID or ObjectID was not sent", e);
+            stream.getClient().setShutdownClient(true);
+            return;
+        }
 		String filename = stream.getName(); // getStreamFileForRead().getAbsolutePath();
 		wmsLogger.info("Object ID (onPlay)   : MCM authenticating: " +
 				"Session ID [" + sessionID + "] " +

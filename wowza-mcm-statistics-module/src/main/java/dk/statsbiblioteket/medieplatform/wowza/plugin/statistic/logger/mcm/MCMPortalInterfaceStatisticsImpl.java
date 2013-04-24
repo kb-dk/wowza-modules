@@ -7,8 +7,7 @@ import java.net.URL;
 
 import com.wowza.wms.logging.WMSLogger;
 
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.PropertiesUtil;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStatistics {
 
@@ -28,28 +27,40 @@ public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStati
 	private String objectCollectionID;
 	private String mcmStatisticsMethodCreateDurationSession;
 
-	private MCMPortalInterfaceStatisticsImpl(WMSLogger logger, String vHostHomeDirPath) {
+	private MCMPortalInterfaceStatisticsImpl(WMSLogger logger, String mcmConnectionURLString,
+                                             String mcmStatisticsMethodCreateStatSession, String clientSettingID,
+                                             String repositoryID, String mcmStatisticsMethodCreateStatObjectSession,
+                                             String objectTypeID, String channelTypeID, String channelIdentifier,
+                                             String objectTitle, String eventTypeID, String objectCollectionID,
+                                             String mcmStatisticsMethodCreateDurationSession) {
 		super();
 		this.logger = logger;
-		this.mcmConnectionURLString = PropertiesUtil.getProperty("GeneralMCMServerURL");
-		this.mcmStatisticsMethodCreateStatSession = PropertiesUtil.getProperty("StatisticsLoggingMCMStatisticsMethodCreateStatSession");
-		this.clientSettingID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueClientSettingID");
-		this.repositoryID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueRepositoryID");
-		this.mcmStatisticsMethodCreateStatObjectSession = PropertiesUtil.getProperty("StatisticsLoggingMCMStatisticsMethodCreateStatObjectSession");
-		this.objectTypeID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueObjectTypeID");
-		this.channelTypeID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueChannelTypeID");
-		this.channelIdentifier = PropertiesUtil.getProperty("StatisticsLoggingMCMValueChannelIdentifier");
-		this.objectTitle = PropertiesUtil.getProperty("StatisticsLoggingMCMValueObjectTitle");
-		this.eventTypeID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueEventTypeID");
-		this.objectCollectionID = PropertiesUtil.getProperty("StatisticsLoggingMCMValueObjectCollectionID");
-		this.mcmStatisticsMethodCreateDurationSession = PropertiesUtil.getProperty("StatisticsLoggingMCMStatisticsMethodCreateDurationSession");
-	}
+        this.mcmConnectionURLString = mcmConnectionURLString;
+        this.mcmStatisticsMethodCreateStatSession = mcmStatisticsMethodCreateStatSession;
+        this.clientSettingID = clientSettingID;
+        this.repositoryID = repositoryID;
+        this.mcmStatisticsMethodCreateStatObjectSession = mcmStatisticsMethodCreateStatObjectSession;
+        this.objectTypeID = objectTypeID;
+        this.channelTypeID = channelTypeID;
+        this.channelIdentifier = channelIdentifier;
+        this.objectTitle = objectTitle;
+        this.eventTypeID = eventTypeID;
+        this.objectCollectionID = objectCollectionID;
+        this.mcmStatisticsMethodCreateDurationSession = mcmStatisticsMethodCreateDurationSession;
+    }
 
 	/**
 	 * Creates the singleton objects. Is robust for multiple concurrent requests for create.
 	 * Only the first request for create, actually creates the object.
 	 */
-	public static synchronized void createInstance(WMSLogger logger, String vHostHomeDirPath) throws FileNotFoundException, IOException {
+	public static synchronized void createInstance(WMSLogger logger, String vHostHomeDirPath,
+                                                   String mcmConnectionURLString,
+                                                   String mcmStatisticsMethodCreateStatSession, String clientSettingID,
+                                                   String repositoryID,
+                                                   String mcmStatisticsMethodCreateStatObjectSession,
+                                                   String objectTypeID, String channelTypeID, String channelIdentifier,
+                                                   String objectTitle, String eventTypeID, String objectCollectionID,
+                                                   String mcmStatisticsMethodCreateDurationSession) throws FileNotFoundException, IOException {
 		if ((logger == null) || (vHostHomeDirPath == null)) {
 			throw new IllegalArgumentException("A parameter is null. " +
 					"logger=" + logger + " " +
@@ -57,7 +68,12 @@ public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStati
 		}
 		if (instance == null) {
 			logger.debug("Creating MCMPortalInterfaceStatistics");
-			instance = new MCMPortalInterfaceStatisticsImpl(logger, vHostHomeDirPath);
+			instance = new MCMPortalInterfaceStatisticsImpl(logger, mcmConnectionURLString,
+                                                            mcmStatisticsMethodCreateStatSession, clientSettingID,
+                                                            repositoryID, mcmStatisticsMethodCreateStatObjectSession,
+                                                            objectTypeID, channelTypeID, channelIdentifier, objectTitle,
+                                                            eventTypeID, objectCollectionID,
+                                                            mcmStatisticsMethodCreateDurationSession);
 		}
 	}
 

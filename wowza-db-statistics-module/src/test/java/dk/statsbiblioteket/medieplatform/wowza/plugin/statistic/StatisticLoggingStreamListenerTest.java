@@ -135,7 +135,7 @@ public class StatisticLoggingStreamListenerTest extends TestCase {
         Assert.assertEquals("Result is:", "0", mcmPortalInterfaceStatisticsMock.lastSessionID);
         Assert.assertEquals("Result is:", "0-0", mcmPortalInterfaceStatisticsMock.lastObjectSessionID);
         Assert.assertEquals("Result is:", 0, mcmPortalInterfaceStatisticsMock.lastStartedAt);
-        Assert.assertTrue("Result is:", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 1);
+        Assert.assertTrue("Unit test should not take more than two seconds", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 2);
 	}
 
 	@Test
@@ -161,7 +161,7 @@ public class StatisticLoggingStreamListenerTest extends TestCase {
         Assert.assertEquals("Result is:", "0", mcmPortalInterfaceStatisticsMock.lastSessionID);
         Assert.assertEquals("Result is:", "0-0", mcmPortalInterfaceStatisticsMock.lastObjectSessionID);
         Assert.assertEquals("Result is:", 0, mcmPortalInterfaceStatisticsMock.lastStartedAt);
-        Assert.assertTrue("Result is:", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 1);
+        Assert.assertTrue("Unit test should not take more than two seconds", mcmPortalInterfaceStatisticsMock.lastEndedAt <= 2);
 	}
 
 	private void dumpDB2Log(int numberOfEntries) {

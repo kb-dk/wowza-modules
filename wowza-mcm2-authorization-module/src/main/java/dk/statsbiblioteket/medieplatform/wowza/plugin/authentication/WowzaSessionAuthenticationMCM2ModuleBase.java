@@ -14,9 +14,9 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamActionNotify2;
 
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.StreamAuthenticater;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 
 public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
@@ -24,15 +24,40 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
 
 	private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM2 Authentication";
    	private static final String PLUGIN_VERSION = "${project.version}";
+    private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
+    private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
+    private IMediaStreamActionNotify2 streamAuthenticater;
 
     public WowzaSessionAuthenticationMCM2ModuleBase() {
 		super();
-	}
+    }
 
 	public void onAppStart(IApplicationInstance appInstance) {
-		getLogger().info("onAppStart: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
-		getLogger().info("onAppStart: VHost home path: " + appInstance.getVHost().getHomePath());
-	}
+        String appName = appInstance.getApplication().getName();
+        String vhostDir = appInstance.getVHost().getHomePath();
+        String storageDir = appInstance.getStreamStorageDir();
+        getLogger()
+                .info("***Entered onAppStart: " + appName + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
+                              + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
+        try {
+            //Initialise the config reader
+            ConfigReader cr;
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"),
+                                  PROPERTY_MCM2_SERVER_URL_KEY,
+                                  PROPERTY_MCM2_VALIDATION_METHOD);
+
+            //Read parameters
+            String validationMethodAtServer = cr.get(PROPERTY_MCM2_VALIDATION_METHOD);
+            String connectionUrlString = cr.get(PROPERTY_MCM2_SERVER_URL_KEY);
+
+            //Initialise stream authenticator
+            streamAuthenticater = new StreamAuthenticater(getLogger(),
+                                                          new MCM2SessionAndFilenameValidater(getLogger(), appInstance,
+                                                                                              connectionUrlString, validationMethodAtServer));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);
+        }
+    }
 
 	public void onConnect(IClient client, RequestFunction function,
 			AMFDataList params) {
@@ -56,8 +81,7 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
 	@SuppressWarnings("unchecked")
 	public void onStreamCreate(IMediaStream stream) {
 		getLogger().info("onStreamCreate by: " + stream.getClientId());
-		IMediaStreamActionNotify streamActionNotify  = getStreamAuthenticater(
-				stream.getClient().getAppInstance());
+        IMediaStreamActionNotify streamActionNotify  = streamAuthenticater;
 		WMSProperties props = stream.getProperties();
 		synchronized(props) {
 			props.put("streamActionNotifier", streamActionNotify);
@@ -100,16 +124,4 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
 		getLogger().info("onCall, unimplemented method was called: " + handlerName);
 	}
 
-	private IMediaStreamActionNotify2 getStreamAuthenticater(IApplicationInstance appInstance) {
-		IMediaStreamActionNotify2 streamAuthenticater;
-		try {
-			streamAuthenticater = new StreamAuthenticater(getLogger(),
-					new MCM2SessionAndFilenameValidater(getLogger(), appInstance));
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not initialize stream authenticater.", e); 
-		} catch (IOException e) {
-			throw new RuntimeException("Could not initialize stream authenticater.", e); 
-		}
-		return streamAuthenticater;
-	}
 }

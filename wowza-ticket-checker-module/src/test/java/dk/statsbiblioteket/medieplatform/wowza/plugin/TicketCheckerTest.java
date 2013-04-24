@@ -6,7 +6,6 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.TicketChecker;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
@@ -24,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TicketCheckerTest {
 
-    public static final String RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET = "rtmp://hypothetical-test-machine:1935/tickets?ticket=";
+    public static final String QUERY_STRING = "ticket=";
     private Logger logger;
 
     TicketToolMock ticketToolMock;
@@ -60,7 +59,7 @@ public class TicketCheckerTest {
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
         Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
+        String queryString = QUERY_STRING + ticket.getId();
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
@@ -74,7 +73,7 @@ public class TicketCheckerTest {
     @Test
     public void testNonExistingTicket() {
         // Setup environment
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + "InvalidID";
+        String queryString = QUERY_STRING + "InvalidID";
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
@@ -89,7 +88,7 @@ public class TicketCheckerTest {
     public void testGetFileToStreamSucces() {
         // Setup
         Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
-        String queryString = RTMP_HYPOTHETICAL_TEST_MACHINE_1935_TICKET + ticket.getId();
+        String queryString = QUERY_STRING + ticket.getId();
 
         IClient iClient = new IClientMock(iAppInstance, logger, queryString);
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);

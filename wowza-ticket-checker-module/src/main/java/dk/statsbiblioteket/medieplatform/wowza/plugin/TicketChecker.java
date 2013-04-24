@@ -8,7 +8,7 @@ import com.wowza.wms.stream.IMediaStream;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.QueryUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 /**
  * This class is used to validate the ticket
@@ -42,7 +42,7 @@ public class TicketChecker {
                 "checkTicket(IMediaStream stream=" + stream + ", String name=" + name
                         + ", String clientQuery=" + clientQuery + ")");
         try {
-            Ticket streamingTicket = QueryUtil.getTicket(clientQuery, ticketTool);
+            Ticket streamingTicket = StringAndTextUtil.getTicket(clientQuery, ticketTool);
             logger.debug("Ticket received: " + (streamingTicket != null ? streamingTicket.getId() : "null"));
             if (
                     streamingTicket != null &&

@@ -12,7 +12,8 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.SessionID
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2 {
 
@@ -31,8 +32,12 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
 		this.logger = logger;
 		this.streamingEventLogger = streamingEventLogger;
 		String queryString = String.valueOf(stream.getClient().getQueryStr());
-		this.mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
-		this.sessionIDPair = streamingEventLogger.getStreamingLogSessionID(mcmObjectID);
+        try {
+            this.mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            this.mcmObjectID = "Unknown";
+        }
+        this.sessionIDPair = streamingEventLogger.getStreamingLogSessionID(mcmObjectID);
 		this.clientID = stream.getClientId();
 		this.lastStartTime = null;
 		this.lastStartLocation = -1;

@@ -6,7 +6,6 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.SessionID
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.PropertiesUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,12 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
-
-    private static final String propertyStatisticsLoggingJDBCDriver = "StatisticsLoggingJDBCDriver";
-    private static final String propertyStatisticsLoggingDBConnectionURL = "StatisticsLoggingDBConnectionURL";
-    private static final String propertyStatisticsLoggingDBUser = "StatisticsLoggingDBUser";
-    private static final String propertyStatisticsLoggingDBPassword = "StatisticsLoggingDBPassword";
-
     private final WMSLogger logger;
     private String jdbcDriverString;
     private String dbConnectionURLString;
@@ -40,15 +33,21 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      * Reads db connection information from property file and creates connection
      *
      * @param logger The wowza logger.
+     * @param jdbcDriverString
+     * @param dbConnectionURLString
+     * @param dbUser
+     * @param dbPassword
      */
-    private StreamingDatabaseEventLogger(WMSLogger logger) {
+    private StreamingDatabaseEventLogger(WMSLogger logger, String jdbcDriverString, String dbConnectionURLString,
+                                         String dbUser, String dbPassword) {
         this.logger = logger;
         if (dbConnection == null) {
-            this.jdbcDriverString = PropertiesUtil.getProperty(propertyStatisticsLoggingJDBCDriver);
-            this.dbConnectionURLString = PropertiesUtil.getProperty(propertyStatisticsLoggingDBConnectionURL);
-            this.dbUser = PropertiesUtil.getProperty(propertyStatisticsLoggingDBUser);
-            this.dbPassword = PropertiesUtil.getProperty(propertyStatisticsLoggingDBPassword);
-            dbConnection = getNewConnection(this.logger, jdbcDriverString, dbConnectionURLString, dbUser, dbPassword);
+            this.jdbcDriverString = jdbcDriverString;
+            this.dbConnectionURLString = dbConnectionURLString;
+            this.dbUser = dbUser;
+            this.dbPassword = dbPassword;
+            dbConnection = getNewConnection(this.logger, this.jdbcDriverString, this.dbConnectionURLString, this.dbUser,
+                                            this.dbPassword);
             logger.info("Created connection: " + dbConnection);
         }
         this.logger.info("Statistics logger " + this.getClass().getName() + " has been created.");
@@ -82,14 +81,16 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      * Creates the singleton objects. Is robust for multiple concurrent requests for create.
      * Only the first request for create, actually creates the object.
      */
-    public static synchronized void createInstance(WMSLogger logger, String vHostHomeDirPath)
+    public static synchronized void createInstance(WMSLogger logger, String jdbcDriverString,
+                                                   String dbConnectionURLString, String dbUser, String dbPassword)
             throws FileNotFoundException, IOException {
-        if ((logger == null) || (vHostHomeDirPath == null)) {
+        if ((logger == null)) {
             throw new IllegalArgumentException(
-                    "A parameter is null. " + "logger=" + logger + " " + "vHostHomeDirPath=" + vHostHomeDirPath);
+                    "A parameter is null. " + "logger=" + logger);
         }
         if (instance == null) {
-            instance = new StreamingDatabaseEventLogger(logger);
+            instance = new StreamingDatabaseEventLogger(logger, jdbcDriverString, dbConnectionURLString, dbUser,
+                                                        dbPassword);
         }
     }
 

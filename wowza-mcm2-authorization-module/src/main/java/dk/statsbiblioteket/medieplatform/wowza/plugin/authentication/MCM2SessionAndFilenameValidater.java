@@ -6,8 +6,7 @@ import com.wowza.wms.logging.WMSLogger;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOReturnValueWrapper;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMSessionAndFilenameValidater;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.PropertiesUtil;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,10 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValidater {
-    private static final String propertyMCMServerURLKey = "GeneralMCM2ServerURL";
-    private static final String propertyMCMValidationMethod = "ValidationMCM2ValidationMethod";
-
-
     /**
      * Reads server connection configuration from property-file. Property file
      * is expected to be at "<VHost_HOME>/<propertyFilePath>"
@@ -32,38 +27,13 @@ public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValida
      * @throws FileNotFoundException if property file is not found
      * @throws IOException           if reading process failed
      */
-    public MCM2SessionAndFilenameValidater(WMSLogger logger, IApplicationInstance appInstance)
+    public MCM2SessionAndFilenameValidater(WMSLogger logger, IApplicationInstance appInstance,
+                                           String connectionURLString, String validationMethodAtServer)
             throws FileNotFoundException, IOException {
         super();
         this.logger = logger;
-        String vhostDir = appInstance.getVHost().getHomePath();
-        logger.info("MCMSessionAndFilenameValidater - VHost home path: " + vhostDir);
-        PropertiesUtil.loadProperties(this.logger, vhostDir,
-                                      new String[]{propertyMCMServerURLKey, propertyMCMValidationMethod});
-        this.connectionURLString = PropertiesUtil.getProperty(propertyMCMServerURLKey);
-        this.validationMethodAtServer = PropertiesUtil.getProperty(propertyMCMValidationMethod);
-    }
-
-    /**
-     * Reads server connection configuration from property-file. Property file
-     * is expected to be at "<vhosDir>/conf/chaos/chaos-streaming-server-plugin.properties"
-     *
-     * Example of content in property file could be:
-     *
-     * GeneralMCM2ServerURL=api.test.chaos-systems.com/
-     * ValidationMCM2ValidationMethod=Object/Get
-     *
-     * @throws FileNotFoundException if property file is not found
-     * @throws IOException           if reading process failed
-     */
-    public MCM2SessionAndFilenameValidater(WMSLogger wmsLogger, String wowzaSystemDir)
-            throws FileNotFoundException, IOException {
-        super();
-        this.logger = wmsLogger;
-        PropertiesUtil.loadProperties(logger, wowzaSystemDir,
-                                      new String[]{propertyMCMServerURLKey, propertyMCMValidationMethod});
-        this.connectionURLString = PropertiesUtil.getProperty(propertyMCMServerURLKey);
-        this.validationMethodAtServer = PropertiesUtil.getProperty(propertyMCMValidationMethod);
+        this.connectionURLString = connectionURLString;
+        this.validationMethodAtServer = validationMethodAtServer;
     }
 
     public MCM2SessionAndFilenameValidater(WMSLogger logger, String connectionURLString,

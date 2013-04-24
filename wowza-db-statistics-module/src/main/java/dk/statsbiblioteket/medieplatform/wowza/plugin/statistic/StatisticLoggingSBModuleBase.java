@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -12,8 +13,9 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLogger;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.PropertiesUtil;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.util.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
 public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
 
@@ -22,6 +24,10 @@ public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleO
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    private static final String PROPERTY_STATISTICS_LOGGING_JDBC_DRIVER = "StatisticsLoggingJDBCDriver";
+    private static final String PROPERTY_STATISTICS_LOGGING_DB_CONNECTION_URL = "StatisticsLoggingDBConnectionURL";
+    private static final String PROPERTY_STATISTICS_LOGGING_DBUSER = "StatisticsLoggingDBUser";
+    private static final String PROPERTY_STATISTICS_LOGGING_DB_PASSWORD = "StatisticsLoggingDBPassword";
 
     public StatisticLoggingSBModuleBase() {
         super();
@@ -29,17 +35,32 @@ public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleO
 
     @Override
     public void onAppStart(IApplicationInstance appInstance) {
-        getLogger().info("onAppStart: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
-        getLogger().info("onAppStart: VHost home path: " + appInstance.getVHost().getHomePath());
-        PropertiesUtil.loadProperties(getLogger(), appInstance.getVHost().getHomePath(),
-                                      new String[]{"StatisticsLoggingJDBCDriver", "StatisticsLoggingDBConnectionURL",
-                                              "StatisticsLoggingDBUser", "StatisticsLoggingDBPassword"});
-        if (StreamingDatabaseEventLogger.getInstance() == null) {
-            try {
-                StreamingDatabaseEventLogger.createInstance(getLogger(), appInstance.getVHost().getHomePath());
-            } catch (IOException e) {
-                throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);
+        String appName = appInstance.getApplication().getName();
+        String vhostDir = appInstance.getVHost().getHomePath();
+        String storageDir = appInstance.getStreamStorageDir();
+        getLogger()
+                .info("***Entered onAppStart: " + appName + "\n  Plugin: " + PLUGIN_NAME + " version " + PLUGIN_VERSION
+                              + "\n  VHost home path: " + vhostDir + " VHost storage dir: " + storageDir);
+        try {
+            //Initialise the config reader
+            ConfigReader cr;
+            cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"),
+                                  PROPERTY_STATISTICS_LOGGING_JDBC_DRIVER, PROPERTY_STATISTICS_LOGGING_DB_CONNECTION_URL,
+                                  PROPERTY_STATISTICS_LOGGING_DBUSER, PROPERTY_STATISTICS_LOGGING_DB_PASSWORD);
+
+            //Read parameters
+            String jdbcDriverString = cr.get(PROPERTY_STATISTICS_LOGGING_JDBC_DRIVER);
+            String dbConnectionURLString = cr.get(PROPERTY_STATISTICS_LOGGING_DB_CONNECTION_URL);
+            String dbUser = cr.get(PROPERTY_STATISTICS_LOGGING_DBUSER);
+            String dbPassword = cr.get(PROPERTY_STATISTICS_LOGGING_DB_PASSWORD);
+
+            //Initialize event logger
+            if (StreamingDatabaseEventLogger.getInstance() == null) {
+                StreamingDatabaseEventLogger
+                        .createInstance(getLogger(), jdbcDriverString, dbConnectionURLString, dbUser, dbPassword);
             }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);
         }
     }
 
@@ -48,22 +69,30 @@ public class StatisticLoggingSBModuleBase extends ModuleBase implements IModuleO
         getLogger().info("onAppStop: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onStreamCreate(IMediaStream stream) {
         getLogger().info("onStreamCreate by: " + stream.getClientId());
         String queryString = String.valueOf(stream.getClient().getQueryStr());
-        String statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
-        if ((statisticsParameter == null) || (!statisticsParameter.equalsIgnoreCase("off"))) {
-            IMediaStreamActionNotify streamActionNotify = new StatisticLoggingStreamListener(getLogger(), stream,
-                                                                                             StreamingDatabaseEventLogger
-                                                                                                     .getInstance());
-            WMSProperties props = stream.getProperties();
-            synchronized (props) {
-                props.put("streamActionNotifierForStatistics", streamActionNotify);
+        String statisticsParameter;
+
+        //Check if statistics are turned off
+        try {
+            statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
+            if (statisticsParameter.equalsIgnoreCase("off")) {
+                return;
             }
-            stream.addClientListener(streamActionNotify);
+        } catch (IllegallyFormattedQueryStringException e) {
+            //Not turned off, so ignore
         }
+
+        IMediaStreamActionNotify streamActionNotify = new StatisticLoggingStreamListener(getLogger(), stream,
+                                                                                         StreamingDatabaseEventLogger
+                                                                                                 .getInstance());
+        WMSProperties props = stream.getProperties();
+        synchronized (props) {
+            props.put("streamActionNotifierForStatistics", streamActionNotify);
+        }
+        stream.addClientListener(streamActionNotify);
     }
 
     @Override

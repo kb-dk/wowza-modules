@@ -5,8 +5,8 @@ import com.wowza.wms.stream.IMediaStream;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.QueryUtil;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -63,7 +63,7 @@ public class StreamingEventLogger {
     private void logUserEvent(IMediaStream stream, Event event) {
         String clientQueryString = stream.getClient().getQueryStr();
         try {
-            Ticket streamingTicket = QueryUtil.getTicket(clientQueryString, ticketTool);
+            Ticket streamingTicket = StringAndTextUtil.getTicket(clientQueryString, ticketTool);
             String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
             writeEventLog(logString);
         } catch (IllegallyFormattedQueryStringException e) {
