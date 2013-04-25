@@ -181,8 +181,7 @@
             <Module>
                 <Name>Chaos-Authentication</Name>
                 <Description>Statsbiblioteket Chaos MCM2 authentication module</Description>
-                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.WowzaSessionAuthenticationMCM2ModuleBase
-                </Class>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.WowzaSessionAuthenticationMCM2ModuleBase</Class>
             </Module>
             <Module>
                 <Name>wowza-content-resolver</Name>
