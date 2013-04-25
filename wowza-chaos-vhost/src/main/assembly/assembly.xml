@@ -7,7 +7,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>applications/lib</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos/applications/lib</outputDirectory>
             <directoryMode>0775</directoryMode>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <scope>runtime</scope>
@@ -16,7 +16,7 @@
 
     <fileSets>
         <fileSet>
-            <outputDirectory>applications/chaos</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos/applications/chaos</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -25,7 +25,7 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>streamingContent</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -34,15 +34,44 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>conf</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos/conf</outputDirectory>
             <directory>src/main/config/wowza_vhost_chaos/conf</directory>
             <directoryMode>0775</directoryMode>
         </fileSet>
-        <fileSet>
-            <outputDirectory>bin</outputDirectory>
-            <directory>src/main/scripts</directory>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>wowza_vhost_chaos_doms/applications/lib</outputDirectory>
             <directoryMode>0775</directoryMode>
-            <fileMode>0755</fileMode>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_doms/applications/chaos</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_doms/streamingContent</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_doms/conf</outputDirectory>
+            <directory>src/main/config/wowza_vhost_chaos_doms/conf</directory>
+            <directoryMode>0775</directoryMode>
         </fileSet>
     </fileSets>
 </assembly>

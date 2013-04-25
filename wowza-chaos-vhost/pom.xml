@@ -59,6 +59,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-db-statistics-module</artifactId>
         </dependency>
