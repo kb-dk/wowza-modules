@@ -12,6 +12,12 @@
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <scope>runtime</scope>
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>wowza_vhost_chaos_doms/applications/lib</outputDirectory>
+            <directoryMode>0775</directoryMode>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <scope>runtime</scope>
+        </dependencySet>
     </dependencySets>
 
     <fileSets>
@@ -38,18 +44,6 @@
             <directory>src/main/config/wowza_vhost_chaos/conf</directory>
             <directoryMode>0775</directoryMode>
         </fileSet>
-    </fileSets>
-
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>wowza_vhost_chaos_doms/applications/lib</outputDirectory>
-            <directoryMode>0775</directoryMode>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <scope>runtime</scope>
-        </dependencySet>
-    </dependencySets>
-
-    <fileSets>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_doms/applications/chaos</outputDirectory>
             <directory>src/main/assembly</directory>
