@@ -185,6 +185,11 @@
                 </Class>
             </Module>
             <Module>
+                <Name>wowza-content-resolver</Name>
+                <Description>Statsbiblioteket Content Resolver plugin</Description>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.ContentResolverModule</Class>
+            </Module>
+            <Module>
                 <Name>Chaos-SB-Logging</Name>
                 <Description>Statsbiblioteket Chaos database logging module</Description>
                 <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingSBModuleBase</Class>

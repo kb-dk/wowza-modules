@@ -1,0 +1,72 @@
+<Root>
+	<TimedTextTypes>
+		<TimedTextType>
+			<Name>Caption</Name>
+		</TimedTextType>
+	</TimedTextTypes>
+
+	<OutputTypes>
+		<OutputType>
+			<Name>CEA608</Name>
+			<Interface>com.wowza.wms.timedtext.cea608.ITimedTextProviderCEA608</Interface>
+			<TimedTextType>Caption</TimedTextType>
+		</OutputType>
+		<OutputType>
+			<Name>AMF</Name>
+			<Interface>com.wowza.wms.timedtext.amf.ITimedTextProviderAMF</Interface>
+			<TimedTextType>Caption</TimedTextType>
+		</OutputType>
+	</OutputTypes>
+	
+	
+	<VODTimedTextProviders>
+	    <!-- Pulls 3GPP captions from mp4 file -->
+		<VODTimedTextProvider>
+			<Name>vodcaptionprovidermp4_3gpp</Name>
+			<TimedTextType>Caption</TimedTextType>
+			<OutputTypes>CEA608,AMF</OutputTypes>
+			<Description>Pulls 3GPP Captions from MP4 VOD asset</Description>
+			<FileExtensions></FileExtensions>
+			<BaseClass>com.wowza.wms.timedtext.vod.model.VODCaptionProviderMP4_3GPP</BaseClass>
+			<Properties>
+			</Properties>
+		</VODTimedTextProvider>
+
+	    <!-- Pulls TTML captions from companion file -->		
+		<VODTimedTextProvider>
+			<Name>vodcaptionproviderttml</Name>
+			<TimedTextType>Caption</TimedTextType>
+			<OutputTypes>CEA608,AMF</OutputTypes>
+			<Description>Pulls TTML Captions from companion file</Description>
+			<FileExtensions>ttml</FileExtensions>
+			<BaseClass>com.wowza.wms.timedtext.vod.model.VODCaptionProviderTTML</BaseClass>
+			<Properties>
+			</Properties>
+		</VODTimedTextProvider>		
+		
+		<!-- Pulls SRT captions from companion file -->		
+		<VODTimedTextProvider>
+			<Name>vodcaptionprovidersrt</Name>
+			<TimedTextType>Caption</TimedTextType>
+			<OutputTypes>CEA608,AMF</OutputTypes>
+			<Description>Pulls SRT Captions from companion file</Description>
+			<FileExtensions>srt</FileExtensions>
+			<BaseClass>com.wowza.wms.timedtext.vod.model.VODCaptionProviderSRT</BaseClass>
+			<Properties>
+			</Properties>
+		</VODTimedTextProvider>			
+
+		<!-- Pulls SCC captions from companion file -->		
+		<VODTimedTextProvider>
+			<Name>vodcaptionproviderscc</Name>
+			<TimedTextType>Caption</TimedTextType>
+			<OutputTypes>CEA608</OutputTypes>
+			<Description>Pulls SCC Captions from companion file</Description>
+			<FileExtensions>scc</FileExtensions>
+			<BaseClass>com.wowza.wms.timedtext.vod.model.VODCaptionProviderSCC</BaseClass>
+			<Properties>
+			</Properties>
+		</VODTimedTextProvider>			
+			
+	</VODTimedTextProviders>	
+</Root>

@@ -7,7 +7,7 @@
 				<!-- Separate multiple ports with commas -->
 				<!-- 80: HTTP, RTMPT -->
 				<!-- 554: RTSP -->
-				<Port>1935</Port>
+				<Port>1938</Port>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
 					<!-- suggested settings for video on demand applications -->
@@ -104,7 +104,7 @@
 			<HostPort>
 				<ProcessorCount>1</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>8084</Port>
+				<Port>8087</Port>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
 					<ReceiveBufferSize>16000</ReceiveBufferSize>
