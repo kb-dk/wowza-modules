@@ -322,7 +322,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.medieplatform.ticketsystem</groupId>
                 <artifactId>ticket-system-common</artifactId>
-                <version>0.1-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
 
             <dependency>

@@ -89,9 +89,9 @@ public class TicketChecker {
     private boolean isClientAllowed(IMediaStream stream, Ticket streamingTicket) {
         String ipOfClient = stream.getClient().getIp();
 
-        boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getUserIdentifier()));
-        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getUserIdentifier(): "
-                + streamingTicket.getUserIdentifier() + ", isAllowed: " + isAllowed);
+        boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getIpAddress()));
+        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getIpAddress(): "
+                + streamingTicket.getIpAddress() + ", isAllowed: " + isAllowed);
         return isAllowed;
     }
 

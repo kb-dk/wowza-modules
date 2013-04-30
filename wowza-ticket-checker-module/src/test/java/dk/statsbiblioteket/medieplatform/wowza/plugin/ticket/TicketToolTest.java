@@ -56,7 +56,7 @@ public class TicketToolTest {
         dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolvedTicket = ticketTool.resolveTicket(issuedTicketId);
         logger.debug("Resolved ticket: " + resolvedTicket);
         Assert.assertEquals(url, resolvedTicket.getResources().get(0));
-        Assert.assertEquals(username, resolvedTicket.getUserIdentifier());
+        Assert.assertEquals(username, resolvedTicket.getIpAddress());
 
     }
 
@@ -66,7 +66,7 @@ public class TicketToolTest {
             clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
             Client client = Client.create(clientConfig);
             WebResource query = client.resource("http://alhena:7950/ticket-system-service/tickets")
-                    .path("/issueTicket").queryParam("userIdentifier", username)
+                    .path("/issueTicket").queryParam("ipAddress", username)
                     .queryParam("id", resource).queryParam("type","Streame");
             for (Property prop : properties) {
                 query = query.queryParam(prop.getName(), prop.getValue());
