@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -15,7 +14,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>2.0.12-SNAPSHOT</version>
+    <version>3.0</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
@@ -83,7 +82,8 @@
         <connection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</developerConnection>
         <url>https://github.com/statsbiblioteket/wowza-ticket-checker</url>
-    </scm>
+      <tag>wowza-modules-3.0</tag>
+  </scm>
 
     <repositories>
         <repository>
