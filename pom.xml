@@ -14,7 +14,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>3.0</version>
+    <version>3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
