@@ -14,7 +14,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
@@ -91,6 +91,7 @@
         <connection>scm:git:git@github.com:statsbiblioteket/wowza-modules.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/wowza-modules.git</developerConnection>
         <url>https://github.com/statsbiblioteket/wowza-modules</url>
+    <tag>wowza-modules-3.0</tag>
   </scm>
 
     <repositories>
