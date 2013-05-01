@@ -76,11 +76,20 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <name>Jeppe Ravn Grove</name>
+            <email>jrg@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</connection>
-        <developerConnection>scm:git:git@github.com:statsbiblioteket/wowza-ticket-checker.git</developerConnection>
+        <connection>scm:git:git@github.com:statsbiblioteket/wowza-modules.git</connection>
+        <developerConnection>scm:git:git@github.com:statsbiblioteket/wowza-modules.git</developerConnection>
         <url>https://github.com/statsbiblioteket/wowza-ticket-checker</url>
       <tag>wowza-modules-3.0</tag>
   </scm>
