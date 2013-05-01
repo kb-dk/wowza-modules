@@ -1,0 +1,47 @@
+These are modules for Wowza 3.5.2 used at the State and University Library, Denmark.
+
+It consists of 7 modules and two example VHosts
+
+= The modules =
+wowza-content-resolver-module
+  Given configuration, lookup streams in diferent directory structure
+
+wowza-ticket-checker-module
+  Read a ticket ID from query param, and check that it is a ticket issued for the given stream and ip of client
+
+wowza-statistics-module
+  Log events from wowza to a simple text file. Also logs information from ticket.
+
+wowza-mcm-authorization-module
+  Given a query parameter, check that it as a valid MCM session
+
+wowza-mcm2-authorization-module
+  Given a query parameter, check that it as a valid MCM2 session
+
+wowza-mcm-statistics-module
+  Log events from wowza to MCM
+
+wowza-db-statistics-module
+  Log events from wowza to a database, including MCM session information.
+
+
+= The VHosts =
+wowza-mediestream-vhost
+
+A complete VHost that contains configuration and the modules
+ * wowza-content-resolver-module
+ * wowza-ticket-checker-module
+ * wowza-statistics-module
+Example configuration can be found in conf/mediestream/wowza-modules.properties
+The streamingContent directory in the VHost should point to the content to be served.
+conf/Vhost.xml should probably be updated with correct port numbers
+
+wowza-chaos-vhost
+
+Two complete VHosts that contain configuration and the modules
+ * wowza-content-resolver-module (only in one VHost)
+ * wowza-mcm2-authorization-module
+ * wowza-db-statistics-module
+Example configuration can be found in conf/chaos/wowza-modules.properties
+The streamingContent directory in the VHost should point to the content to be served.
+conf/Vhost.xml should probably be updated with correct port numbers
