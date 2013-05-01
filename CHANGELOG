@@ -1,3 +1,83 @@
+3.0
+Move to git.
+Merge larm/chaos modules and doms modules
+Upgrade to Wowza 3.5.2
+Split ticket checking, content resolving and statistics logging into separate modules
+Integrate with new SB ticket system, remove old doms ticket system
+Simpler logging of events in SB modules
+Use content resolver in larm/chaos, deprecate BES
+Add crossdomain.xml to configuration
+7adebae 2013-05-01 12:57:24 +0200       Kåre Fiedler Christiansen       Remove extra dependency
+2f0db67 2013-05-01 12:56:52 +0200       Kåre Fiedler Christiansen       Added crossdomain.xml
+a051149 2013-04-30 15:59:42 +0200       Kåre Fiedler Christiansen       Update ticket checker dependency to final
+328e603 2013-04-25 15:01:46 +0200       Kåre Fiedler Christiansen       Fix linebreak in class name
+56ba177 2013-04-25 15:00:48 +0200       Kåre Fiedler Christiansen       Fix invalid assembly description
+ed263e2 2013-04-25 14:36:43 +0200       Kåre Fiedler Christiansen       CHAOS has two VHosts
+ba88f4d 2013-04-25 11:27:31 +0200       Kåre Fiedler Christiansen       CHAOS has two VHosts
+82f7c0a 2013-04-25 11:22:00 +0200       Kåre Fiedler Christiansen       Upgrade configuration to be suitable for MCM 2
+cd84755 2013-04-24 13:36:41 +0200       Kåre Fiedler Christiansen       Fix VHost to point to another port than Mediestream VHost
+adc46b4 2013-04-24 11:39:48 +0200       Kåre Fiedler Christiansen       Add chaos VHost module
+30c7f97 2013-04-24 11:23:01 +0200       Kåre Fiedler Christiansen       Convert tabs to spaces
+f53d0e6 2013-04-24 11:11:20 +0200       Kåre Fiedler Christiansen       Optimize import in project
+8785730 2013-04-24 10:01:09 +0200       Kåre Fiedler Christiansen       Consolidate use of configuration reading and query parameter extraction
+1cfe1bb 2013-04-24 06:55:40 +0200       Kåre Fiedler Christiansen       Restructured packages to correct namespace
+5050534 2013-04-23 16:09:12 +0200       Kåre Fiedler Christiansen       Split MCM modules up into modules
+12a8fa2 2013-04-23 08:01:49 +0200       Kåre Fiedler Christiansen       Make code compile and tests run
+274ead4 2013-04-23 07:50:14 +0200       Kåre Fiedler Christiansen       Import MCM authorization test
+78d2101 2013-04-23 07:48:51 +0200       Kåre Fiedler Christiansen       Merge branch 'master' of ../MCM-Wowza-plugin into import-mcm-auth
+8b3ceeb 2013-04-23 07:46:29 +0200       Kåre Fiedler Christiansen       Import MCM authorization src
+e45804f 2013-04-23 07:43:24 +0200       Kåre Fiedler Christiansen       Merge branch 'master' of ../MCM-Wowza-plugin into import-mcm-auth
+4a996ff 2013-04-23 07:43:08 +0200       Kåre Fiedler Christiansen       MCM authorization module added
+e6357e0 2013-04-22 16:08:23 +0200       Kåre Fiedler Christiansen       Only refer to tickets in ticket checker module, and do not refer to kultur
+30b9b25 2013-04-22 15:08:39 +0200       jrgatsb Fixes after review
+fe75bcb 2013-04-19 15:09:22 +0200       jrgatsb Cleanup of all test classes finished
+eaa1493 2013-04-19 10:58:15 +0200       Kåre Fiedler Christiansen       Report failure from Wowza in a way that is picked up by clients
+60a645e 2013-04-18 23:02:44 +0200       Kåre Fiedler Christiansen       Fix failing test
+bdc6e80 2013-04-18 22:57:05 +0200       Kåre Fiedler Christiansen       Split into three modules: Statistics, ticket checking and content resolving. Do not serve any file on errors, rather close client connection.
+14ab89d 2013-04-18 15:52:50 +0200       jrgatsb Cleanup of all main classes finished
+f604e86 2013-04-17 20:07:01 +0200       Kåre Fiedler Christiansen       Resolve tickets with pathparam, not with 'ID' queryParam, which has been renamed to 'id' anyway
+54c36b0 2013-04-17 20:06:14 +0200       Kåre Fiedler Christiansen       Use correct presentation type from configuration, rather than hardcoded one
+ed681c6 2013-04-17 20:05:45 +0200       Kåre Fiedler Christiansen       Fail early on wrong use of singleton.
+f97a338 2013-04-17 20:05:20 +0200       Kåre Fiedler Christiansen       Documentation updates
+da9875f 2013-04-17 17:41:41 +0200       Kåre Fiedler Christiansen       Replace fully qualified names with import for Ticket. Consilidated getting ticket from query string. Cleanup logging.
+ee9ee30 2013-04-17 16:03:28 +0200       Kåre Fiedler Christiansen       Remove logging of streamingEnd and streamingStart. Parital cleanup of logging.
+59d60c5 2013-04-17 15:34:50 +0200       jrgatsb Added separator before ticket, and removed internal logging
+7169745 2013-04-17 14:54:41 +0200       Kåre Fiedler Christiansen       Update configuration files to match Wowza 3.5.2
+0ca2117 2013-04-17 14:11:03 +0200       Kåre Fiedler Christiansen       Simplyfy and loosely doc query util
+f787e6a 2013-04-17 14:06:24 +0200       Kåre Fiedler Christiansen       Remove deprecated streaming statistics stuff
+85d4ac0 2013-04-17 13:36:42 +0200       Kåre Fiedler Christiansen       Remove serialVersionUID
+0b2ad2d 2013-04-17 13:36:29 +0200       Kåre Fiedler Christiansen       Do not write TODO in javadoc
+d8809b0 2013-04-17 15:20:44 +0200       jrgatsb Implementing event-logging based on well-considered choices
+afd1087 2013-04-17 13:31:59 +0200       Kåre Fiedler Christiansen       Remove references to Doms. Move dependencies from parent modules to submodules.
+7e1a6ee 2013-04-17 13:30:56 +0200       Kåre Fiedler Christiansen       Move statistics scripts to statistics module
+8645824 2013-04-17 10:48:00 +0200       Kåre Fiedler Christiansen       Update dependency management to match version in Wowza 3.5.2
+268778a 2013-04-16 13:43:50 +0200       jrgatsb Making broken unit tests behave enough for test-machine test
+8b40235 2013-04-11 17:34:55 +0200       jrgatsb First try at getting the correct streaming url - for test
+6b08dc1 2013-04-16 13:29:03 +0200       Kåre Fiedler Christiansen       Wowza 3.5.2 upgrade
+0e3c156 2013-04-16 10:29:07 +0200       Asger Askov Blekinge    Merge remote-tracking branch 'origin/master'
+b14df6e 2013-04-16 10:28:56 +0200       Asger Askov Blekinge    Auto updating project version in java file
+36f696f 2013-04-15 09:03:07 +0200       Kåre Fiedler Christiansen       Fix slash being added to streaming URL's ticket id
+d045a28 2013-04-12 20:56:28 +0200       Kåre Fiedler Christiansen       Revert "Event logger now has uuid incorporated, now it just needs to be set."
+dcddf14 2013-04-12 21:08:12 +0200       Kåre Fiedler Christiansen       Upgrade Wowza dependency to 3.5.2
+16e269b 2013-04-12 21:04:39 +0200       Kåre Fiedler Christiansen       Use 'Stream' rather than 'streaming' everywhere
+82bec27 2013-04-12 16:05:03 +0200       Kåre Fiedler Christiansen       Added .gitignore ignoring maven target and IDEA files
+9fd88ec 2013-04-11 17:55:13 +0200       Asger Askov Blekinge    Revert "Event logger now has uuid incorporated, now it just needs to be set."
+00eb370 2013-04-11 17:54:33 +0200       Asger Askov Blekinge    pom work
+327df3b 2013-04-11 14:24:02 +0200       Asger Askov Blekinge    Merge remote-tracking branch 'origin/master'
+dbc78be 2013-04-11 14:23:51 +0200       Asger Askov Blekinge    Renamed the package
+32e3450 2013-04-11 14:19:01 +0200       jrgatsb Event logger now has uuid incorporated, now it just needs to be set.
+f450ba0 2013-04-11 14:13:14 +0200       Asger Askov Blekinge    We now use the ticket presentation type to check
+603d658 2013-04-11 13:57:01 +0200       Asger Askov Blekinge    Should now work with the new ticket checker
+6bb0233 2013-04-11 11:31:54 +0200       Asger Askov Blekinge    Should be a working refactor of the wowza module
+e285db2 2013-04-11 11:29:10 +0200       Asger Askov Blekinge    Split wowza module into separate modules
+2c53fc7 2013-04-10 15:13:33 +0200       Asger Askov Blekinge    Updated  wowza to use the new ticket format. Fixed a lot of tests and mock. Upgraded jersey to 1.17.1 as we now needs json support
+afd6065 2013-04-10 13:56:34 +0200       Asger Askov Blekinge    Updated sbutils
+b27568f 2013-04-10 13:55:01 +0200       Asger Askov Blekinge    Added stub method for the ticket resource check
+3dcc0f6 2013-04-10 13:54:33 +0200       Asger Askov Blekinge    Removed duplicated code in tests
+44184b7 2013-04-10 11:01:50 +0200       Asger Askov Blekinge    Added javadoc to enhance understanding
+1c863a6 2013-04-09 17:38:19 +0200       jrgatsb Commenting code while getting an idea what it is doing
+
+
 2.0.11
 Failed release 2.0.10. No functional changes.
 r134 | kfc | 2012-11-28 11:28:07 +0100 (Wed, 28 Nov 2012) | 1 line||Fix wrong scm url|
