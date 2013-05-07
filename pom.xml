@@ -4,6 +4,8 @@
     <properties>
         <wms.version>3.5.2</wms.version>
         <wms.basedir>/usr/local/WowzaMediaServer-${wms.version}</wms.basedir>
+        <wmsaddoncollection.version>20130507</wmsaddoncollection.version>
+        <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection</wmsaddoncollection.basedir>
     </properties>
 
     <parent>
@@ -185,6 +187,20 @@
                             <file>${wms.basedir}/lib/wms-stream-publish.jar</file>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Install WowzaServerAddOnCollection</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-plugin-collection</artifactId>
+                            <version>${wmsaddoncollection.version}</version>
+                            <file>${wmsaddoncollection.basedir}/lib/wms-plugin-collection.jar</file>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -304,6 +320,13 @@
                 <groupId>com.wms</groupId>
                 <artifactId>wms-stream-publish</artifactId>
                 <version>${wms.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-plugin-collection</artifactId>
+                <version>${wmsaddoncollection.version}</version>
                 <scope>provided</scope>
             </dependency>
 

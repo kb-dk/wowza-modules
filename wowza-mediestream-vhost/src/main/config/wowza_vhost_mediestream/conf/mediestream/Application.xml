@@ -193,9 +193,19 @@
                 <Description>Statsbiblioteket Statistics Logger plugin</Description>
                 <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.StreamingStatisticsModule</Class>
             </Module>
+            <Module>
+            	<Name>ModuleLimitStreamViewers</Name>
+            	<Description>Limit connects to an Application</Description>
+            	<Class>com.wowza.wms.plugin.collection.module.ModuleLimitConnectionsToApplication</Class>
+            </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
         <Properties>
+            <Property>
+            	<Name>maxApplicationConnections</Name>
+            	<Value>1000</Value>
+            	<Type>Integer</Type>
+            </Property>
         </Properties>
     </Application>
 </Root>
