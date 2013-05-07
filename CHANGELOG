@@ -1,3 +1,7 @@
+3.1
+Set a limit of 1000 concurrent connections in Mediestream VHost
+4de82da 2013-05-07 15:41:48 +0200       Kåre Fiedler Christiansen       Limit concurrent connections to 1000
+
 3.0
 Move to git.
 Merge larm/chaos modules and doms modules
