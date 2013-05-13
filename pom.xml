@@ -213,7 +213,6 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>wowza-mock</artifactId>
                 <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -299,56 +298,48 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.9</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-server</artifactId>
                 <version>${wms.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-core</artifactId>
                 <version>${wms.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-stream-publish</artifactId>
                 <version>${wms.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-plugin-collection</artifactId>
                 <version>${wmsaddoncollection.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-ext-jdk15on</artifactId>
                 <version>1.47</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>2.6</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>

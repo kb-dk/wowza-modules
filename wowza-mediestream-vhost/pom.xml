@@ -92,7 +92,6 @@
         <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-plugin-collection</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
