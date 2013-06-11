@@ -14,28 +14,31 @@ from email.mime.text import MIMEText
 count = {}
 maxcount = {}
 report = ''
-with open(sys.argv[1]) as f:
-    firstline = 1
-    for line in f:
-        if firstline:
-            firstline = 0
-            continue
-        parts = line.split(';')
-        action = parts[1]
-        attributes = json.loads(parts[3])
-        user = attributes.get('eduPersonPrincipalName')
-        if user:
-            user = str(user)
-            if action == 'PLAY':
-                count.setdefault(user, 0)
-                count[user] = count[user]+1;
-                maxcount.setdefault(user, 0)
-                maxcount[user] = max(count[user], maxcount[user])
-            elif action == 'STOP':
-                count[user] = count[user]-1;
+try:
+    with open(sys.argv[1]) as f:
+        firstline = 1
+        for line in f:
+            if firstline:
+                firstline = 0
+                continue
+            parts = line.split(';')
+            action = parts[1]
+            attributes = json.loads(parts[3])
+            user = attributes.get('eduPersonPrincipalName')
+            if user:
+                user = str(user)
+                if action == 'PLAY':
+                    count.setdefault(user, 0)
+                    count[user] = count[user]+1;
+                    maxcount.setdefault(user, 0)
+                    maxcount[user] = max(count[user], maxcount[user])
+                elif action == 'STOP':
+                    count[user] = count[user]-1;
+except IOError:
+    exit
 for c in maxcount:
     if maxcount[c] >= int(sys.argv[2]):
-        report += 'User {} has streamed {} simultaneous streams.\n'.format(c, maxcount[c])
+        report += 'User {0} has streamed {1} simultaneous streams.\n'.format(c, maxcount[c])
 if report:
     msg = MIMEText(report)
     msg['Subject'] = sys.argv[4] + ' misuse report'
