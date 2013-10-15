@@ -3,6 +3,7 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
 import com.wowza.wms.module.IModuleOnStream;
@@ -78,11 +79,13 @@ public class TicketCheckerModule extends ModuleBase
     /** Check ticket to see if streaming is allowed. Otherwise report failure. */
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        if (!ticketChecker.checkTicket(stream)) {
-            sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
-            sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
-            stream.getClient().setShutdownClient(true);
-            stream.getClient().shutdownClient();
+        if (stream.getClient() != null) {
+            if (!ticketChecker.checkTicket(stream)) {
+                sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
+                sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
+                stream.getClient().setShutdownClient(true);
+                stream.getClient().shutdownClient();
+            }
         }
     }
 
@@ -129,4 +132,9 @@ public class TicketCheckerModule extends ModuleBase
         // Do nothing.
     }
 
+    public void onHTTPSessionCreate(IHTTPStreamerSession httpSession) {
+        if (!ticketChecker.checkTicket(httpSession)) {
+            httpSession.rejectSession();
+        }
+    }
 }

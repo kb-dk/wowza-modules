@@ -4,6 +4,7 @@ import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnCall;
 import com.wowza.wms.module.IModuleOnConnect;
@@ -122,6 +123,10 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
     @Override
     public void onCall(String handlerName, IClient client, RequestFunction function, AMFDataList params) {
         getLogger().info("onCall, unimplemented method was called: " + handlerName);
+    }
+
+    public void onHTTPSessionCreate(IHTTPStreamerSession httpSession) {
+        getLogger().info("onHttpSessionCreate: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
     }
 
 }

@@ -55,16 +55,11 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
         logger.trace(
                 "streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
                         + ", String streamQuery=" + streamQuery + ")");
-        IClient client = stream.getClient();
-        if (client == null) {
-            logger.debug("No client, returning ", stream);
-            return null;
-        }
         File streamingFile = getFileToStream(name);
         logger.debug(
                 "streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
                         + ", String streamQuery=" + streamQuery + "). Resulting streaming file: '" + streamingFile
-                        .getAbsolutePath() + "'");
+                        .getAbsolutePath() + "'", stream);
         return streamingFile;
     }
 

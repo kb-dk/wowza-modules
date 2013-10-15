@@ -19,11 +19,14 @@ public class StringAndTextUtil {
         if (queryString.endsWith("/")) {
             queryString = queryString.substring(0, queryString.length() - 1);
         }
-        String foundValue = null;
         StringTokenizer queryItems = new StringTokenizer(queryString, "&");
-        while (queryItems.hasMoreTokens() && foundValue == null) {
+        while (queryItems.hasMoreTokens()) {
             String queryParameter = queryItems.nextToken();
             StringTokenizer paramTokenizer = new StringTokenizer(queryParameter, "=");
+            if (paramTokenizer.countTokens() != 2) {
+                //parameters not of the form a=b are ignored
+                continue;
+            }
             String currentKey = paramTokenizer.nextToken();
             String currentValue = paramTokenizer.nextToken();
             if (currentKey.equalsIgnoreCase(key)) {

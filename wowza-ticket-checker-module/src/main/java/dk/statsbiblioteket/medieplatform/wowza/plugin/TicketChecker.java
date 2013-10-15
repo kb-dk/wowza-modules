@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
@@ -31,37 +32,48 @@ public class TicketChecker {
      * @return true if allowed, false otherwise.
      */
     public boolean checkTicket(IMediaStream stream) {
-        String name = stream.getName();
         IClient client = stream.getClient();
         if (client == null) {
             logger.debug("No client, returning ", stream);
             return false;
         }
-        String clientQuery = stream.getClient().getQueryStr();
+        return checkTicket(stream.getName(), client.getQueryStr(), client.getIp());
+    }
+
+    /**
+     * Check if a stream is allowed to play
+     *
+     * @return true if allowed, false otherwise.
+     */
+    public boolean checkTicket(IHTTPStreamerSession httpSession) {
+        return checkTicket(httpSession.getStream().getName(), httpSession.getQueryStr(), httpSession.getIpAddress());
+    }
+
+    private boolean checkTicket(String name, String query, String ip) {
         logger.trace(
-                "checkTicket(IMediaStream stream=" + stream + ", String name=" + name
-                        + ", String clientQuery=" + clientQuery + ")");
+                "checkTicket(String name=" + name
+                        + ", String query=" + query + ")");
         try {
-            Ticket streamingTicket = StringAndTextUtil.getTicket(clientQuery, ticketTool);
+            Ticket streamingTicket = StringAndTextUtil.getTicket(query, ticketTool);
             logger.debug("Ticket received: " + (streamingTicket != null ? streamingTicket.getId() : "null"));
             if (
                     streamingTicket != null &&
-                            isClientAllowed(stream, streamingTicket) &&
+                            isClientAllowed(streamingTicket, ip) &&
                             ticketForThisPresentationType(streamingTicket) &&
                             doesTicketAllowThisStream(name, streamingTicket)
                     ) {
                 logger.info(
-                        "checkTicket(IMediaStream stream=" + stream + ", String name=" + name
-                                + ", String clientQuery=" + clientQuery + ") successful.");
+                        "checkTicket(String name=" + name
+                                + ", String query=" + query + ") successful.");
                 return true;
             } else {
-                logger.info("Client not allowed to get content streamed for IMediaStream stream=" + stream
-                                     + ", String name=" + name + ", String clientQuery=" + clientQuery
+                logger.info("Client not allowed to get content streamed for String name=" + name
+                                    + ", String query=" + query
                                      + ")");
                 return false;
             }
         } catch (IllegallyFormattedQueryStringException e) {
-            logger.warn("Illegally formatted query string [" + clientQuery + "].");
+            logger.warn("Illegally formatted query string [" + query + "].");
             return false;
         }
     }
@@ -82,15 +94,14 @@ public class TicketChecker {
 
     /**
      * This method checks if the ticket is given to the same IP address as the client
-     * @param stream the stream
      * @param streamingTicket the ticket
+     * @param ip ip of client
      * @return true if the ip is the same for the ticket and the user
      */
-    private boolean isClientAllowed(IMediaStream stream, Ticket streamingTicket) {
-        String ipOfClient = stream.getClient().getIp();
+    private boolean isClientAllowed(Ticket streamingTicket, String ip) {
 
-        boolean isAllowed = (ipOfClient != null) && (ipOfClient.equals(streamingTicket.getIpAddress()));
-        logger.debug("isClientAllowed - ipOfClient: " + ipOfClient + ", streamingTicket.getIpAddress(): "
+        boolean isAllowed = (ip != null) && (ip.equals(streamingTicket.getIpAddress()));
+        logger.debug("isClientAllowed - ipOfClient: " + ip + ", streamingTicket.getIpAddress(): "
                 + streamingTicket.getIpAddress() + ", isAllowed: " + isAllowed);
         return isAllowed;
     }
