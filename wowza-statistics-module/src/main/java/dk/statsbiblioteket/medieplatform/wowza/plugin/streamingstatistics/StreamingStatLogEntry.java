@@ -88,6 +88,9 @@ public class StreamingStatLogEntry {
     }
 
     protected String escapeLogString(String logLine) {
+        if (logLine == null) {
+            return null;
+        }
         return logLine.replaceAll(";", "[semicolon]");
     }
 
