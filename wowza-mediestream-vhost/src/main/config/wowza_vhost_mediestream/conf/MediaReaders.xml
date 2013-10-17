@@ -191,6 +191,44 @@
 			</Properties>
 		</MediaReader>
 		<MediaReader>
+			<Name>mp4mpegdash</Name>
+			<Description>MP4 Media Reader MPEG DASH</Description>
+			<FileExtension>mp4</FileExtension>
+			<ContentType>media</ContentType>
+			<ClassBase>com.wowza.wms.httpstreamer.mpegdashstreaming.file.MediaReaderH264MPEGDash</ClassBase>
+			<Properties>
+				<Property>
+					<Name>mp4ReadAheadSize</Name>
+					<Value>65536</Value>
+					<Type>Integer</Type>
+				</Property>
+				<Property>
+					<Name>mp4IndexBufferSize</Name>
+					<Value>16384</Value>
+					<Type>Integer</Type>
+				</Property>
+			</Properties>
+		</MediaReader>
+		<MediaReader>
+			<Name>mp3mpegdash</Name>
+			<Description>MP3 Media Reader MPEG DASH</Description>
+			<FileExtension>mp3</FileExtension>
+			<ContentType>media</ContentType>
+			<ClassBase>com.wowza.wms.httpstreamer.mpegdashstreaming.file.MediaReaderMP3MPEGDash</ClassBase>
+			<Properties>
+				<Property>
+					<Name>mp3JustID3Tags</Name>
+					<Value>false</Value>
+					<Type>Boolean</Type>
+				</Property>
+				<Property>
+					<Name>mp3ReadAheadSize</Name>
+					<Value>65536</Value>
+					<Type>Integer</Type>
+				</Property>
+			</Properties>
+		</MediaReader>
+		<MediaReader>
 			<Name>smil</Name>
 			<Description>SMIL Media Reader</Description>
 			<FileExtension>smil</FileExtension>
@@ -240,7 +278,7 @@
 			<Name>srt</Name>
 			<Description>SRT Reader</Description>
 			<FileExtension>srt</FileExtension>
-			<ContentType>srt</ContentType>
+			<ContentType>timedtext</ContentType>
 			<ClassBase>com.wowza.wms.timedtext.srt.TimedTextReaderSRT</ClassBase>
 			<Properties>
 				<Property>
@@ -251,10 +289,25 @@
 			</Properties>
 		</MediaReader>
 		<MediaReader>
+			<Name>webvtt</Name>
+			<Description>WebVTT Reader</Description>
+			<FileExtension>vtt</FileExtension>
+			<ContentType>timedtext</ContentType>
+			<ClassBase>com.wowza.wms.timedtext.webvtt.TimedTextReaderWebVTT</ClassBase>
+			<Properties>
+				<Property>
+					<Name>webvttMaxFileLength</Name>
+					<Value>1048576</Value>
+					<Type>Long</Type>
+				</Property>
+			</Properties>
+		</MediaReader>
+		
+		<MediaReader>
 			<Name>scc</Name>
 			<Description>SCC Reader</Description>
 			<FileExtension>scc</FileExtension>
-			<ContentType>scc</ContentType>
+			<ContentType>timedtext</ContentType>
 			<ClassBase>com.wowza.wms.timedtext.cea608.TimedTextReaderSCC</ClassBase>
 			<Properties>
 				<Property>

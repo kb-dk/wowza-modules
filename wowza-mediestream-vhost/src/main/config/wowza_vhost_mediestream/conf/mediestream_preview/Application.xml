@@ -27,7 +27,7 @@
             <StreamType>default</StreamType>
 			<StorageDir>${com.wowza.wms.context.VHostConfigHome}/content</StorageDir>
             <KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
-			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
+			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, mpegdashstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
             <LiveStreamPacketizers></LiveStreamPacketizers>
             <!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
             <Properties>
@@ -49,6 +49,8 @@
 			<!-- Or, in an origin-edge configuration, edges use dvrstreamingrepeater in LiveStreamPacketizers above -->
 			<!-- As an origin, also add dvrchunkstreaming to HTTPStreamers below -->
 
+			<!-- If this is a dvrstreamingrepeater, define Application/Repeater/OriginURL to point back to the origin -->
+
 			<!-- To turn on DVR recording set Recorders to dvrrecorder.  This works with dvrstreamingpacketizer  -->
 			<Recorders></Recorders>
 
@@ -65,20 +67,13 @@
 			<!-- valid ArchiveStrategy values are append, version, delete -->
 			<ArchiveStrategy>append</ArchiveStrategy>
 
-			<!-- If this is a dvrstreamingrepeater, -->
-			<!-- either define the general Application/Repeater/OriginURL below to point back to the origin -->
-			<!-- or define this one (which affects only DVR origin-edge).  e.g. http://localhost/dvrorigin -->
-			<Repeater>
-				<ChunkOriginURL></ChunkOriginURL>
-			</Repeater>
-
 			<!-- Properties for DVR -->
 			<Properties>
 			</Properties>
 		</DVR>
 
 		<TimedText>
-			<!-- VOD caption providers (separate with commas): vodcaptionprovidermp4_3gpp, vodcaptionproviderttml, vodcaptionprovidersrt, vodcaptionproviderscc -->
+			<!-- VOD caption providers (separate with commas): vodcaptionprovidermp4_3gpp, vodcaptionproviderttml, vodcaptionproviderwebvtt,  vodcaptionprovidersrt, vodcaptionproviderscc -->
 			<VODTimedTextProviders>vodcaptionprovidermp4_3gpp</VODTimedTextProviders>
 			
 			<!-- Properties for TimedText -->
@@ -86,7 +81,7 @@
 			</Properties>		
 		</TimedText>
 		
-		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming, sanjosestreaming, dvrchunkstreaming -->
+		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming, sanjosestreaming, mpegdashstreaming, dvrchunkstreaming -->
 		<HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming</HTTPStreamers>
         <SharedObjects>
             <StorageDir></StorageDir>
@@ -164,11 +159,6 @@
                 <Class>com.wowza.wms.module.ModuleCore</Class>
             </Module>
             <Module>
-                <Name>properties</Name>
-                <Description>Properties</Description>
-                <Class>com.wowza.wms.module.ModuleProperties</Class>
-            </Module>
-            <Module>
                 <Name>logging</Name>
                 <Description>Client Logging</Description>
                 <Class>com.wowza.wms.module.ModuleClientLogging</Class>
@@ -178,9 +168,19 @@
                 <Description>FLVPlayback</Description>
                 <Class>com.wowza.wms.module.ModuleFLVPlayback</Class>
             </Module>
+            <Module>
+            	<Name>ModuleLimitStreamViewers</Name>
+            	<Description>Limit connects to an Application</Description>
+            	<Class>com.wowza.wms.plugin.collection.module.ModuleLimitConnectionsToApplication</Class>
+            </Module>
         </Modules>
         <!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
         <Properties>
+            <Property>
+            	<Name>maxApplicationConnections</Name>
+            	<Value>1000</Value>
+            	<Type>Integer</Type>
+            </Property>
         </Properties>
     </Application>
 </Root>

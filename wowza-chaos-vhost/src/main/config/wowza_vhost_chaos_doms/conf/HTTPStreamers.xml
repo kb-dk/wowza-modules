@@ -1,6 +1,57 @@
 <Root>
 	<HTTPStreamers>
 		<HTTPStreamer>
+			<Name>mpegdashstreaming</Name>
+			<Description>MPEG Dash Streaming</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.mpegdashstreaming.httpstreamer.HTTPStreamerAdapterMPEGDashStreamer</BaseClass>
+			<ApplicationContextClass>com.wowza.wms.httpstreamer.mpegdashstreaming.httpstreamer.HTTPStreamerApplicationContextMPEGDashStreamer</ApplicationContextClass>
+			<RequestFilters>*.mpd|*_mpd.url|*_mpd.ts|*_mpd.m4s|*_mpd.webm</RequestFilters>
+			<IdleFrequency>250</IdleFrequency>
+			<LiveStreamPacketizer>mpegdashstreamingpacketizer</LiveStreamPacketizer>
+			<LiveStreamRepeater>mpegdashstreamingrepeater</LiveStreamRepeater>
+			<Properties>
+				<Property>
+					<Name>newSessionTimeout</Name>
+					<Value>8000</Value>
+					<Type>Integer</Type>
+				</Property>
+				<Property>
+					<Name>validSessionTimeout</Name>
+					<Value>25000</Value>
+					<Type>Integer</Type>
+				</Property>
+				<Property>
+					<Name>streamStreamType</Name>
+					<Value>httpstreamer</Value>
+				</Property>
+				<Property>
+					<Name>repeaterStreamType</Name>
+					<Value>httprepeater-edge</Value>
+				</Property>
+				<Property>
+					<Name>requestTimeout</Name>
+					<Value>12000</Value>
+					<Type>Integer</Type>
+				</Property>
+				<Property>
+					<Name>tcpTimeToLive</Name>
+					<Value>9000</Value>
+					<Type>Integer</Type>
+				</Property>
+				<Property>
+					<Name>tcpKeepAliveTimeout</Name>
+					<Value>9000</Value>
+					<Type>Integer</Type>
+				</Property>
+				<!--
+				<Property>
+					<Name>mpegdashUserHTTPHeaders</Name>
+					<Value>Access-Control-Allow-Origin:*|Access-Control-Allow-Methods:GET, HEAD, OPTIONS</Value>
+				</Property>
+				-->
+			</Properties>
+		</HTTPStreamer>
+		<HTTPStreamer>
 			<Name>smoothstreaming</Name>
 			<Description>Silverlight Smooth Streaming</Description>
 			<BaseClass>com.wowza.wms.httpstreamer.smoothstreaming.httpstreamer.HTTPStreamerAdapterSmoothStreamer</BaseClass>
@@ -43,6 +94,12 @@
 					<Value>9000</Value>
 					<Type>Integer</Type>
 				</Property>
+				<!--
+				<Property>
+					<Name>smoothUserHTTPHeaders</Name>
+					<Value>Access-Control-Allow-Origin:*|Access-Control-Allow-Methods:GET, HEAD, OPTIONS</Value>
+				</Property>
+				-->
 			</Properties>
 		</HTTPStreamer>
 		<HTTPStreamer>
@@ -50,7 +107,7 @@
 			<Description>Apple Cupertino Streaming</Description>
 			<BaseClass>com.wowza.wms.httpstreamer.cupertinostreaming.httpstreamer.HTTPStreamerAdapterCupertinoStreamer</BaseClass>
 			<ApplicationContextClass>com.wowza.wms.httpstreamer.cupertinostreaming.httpstreamer.HTTPStreamerApplicationContextCupertinoStreamer</ApplicationContextClass>
-			<RequestFilters>*.m3u8|*.m3u|*.ts|*.aac|*.mp3|*.m3u8key</RequestFilters>
+			<RequestFilters>*.m3u8|*.m3u|*.ts|*.aac|*.mp3|*.m3u8key|*.webvtt</RequestFilters>
 			<IdleFrequency>250</IdleFrequency>
 			<LiveStreamPacketizer>cupertinostreamingpacketizer</LiveStreamPacketizer>
 			<LiveStreamRepeater>cupertinostreamingrepeater</LiveStreamRepeater>
@@ -88,6 +145,12 @@
 					<Value>9000</Value>
 					<Type>Integer</Type>
 				</Property>
+				<!--
+				<Property>
+					<Name>cupertinoUserHTTPHeaders</Name>
+					<Value>Access-Control-Allow-Origin:*|Access-Control-Allow-Methods:GET, HEAD, OPTIONS</Value>
+				</Property>
+				-->
 			</Properties>
 		</HTTPStreamer>
 		<HTTPStreamer>
@@ -133,6 +196,12 @@
 					<Value>9000</Value>
 					<Type>Integer</Type>
 				</Property>
+				<!--
+				<Property>
+					<Name>sanjoseUserHTTPHeaders</Name>
+					<Value>Access-Control-Allow-Origin:*|Access-Control-Allow-Methods:GET, HEAD, OPTIONS</Value>
+				</Property>
+				-->
 			</Properties>
 		</HTTPStreamer>
 		<HTTPStreamer>

@@ -1372,4 +1372,14 @@ public class IMediaStreamMock implements IMediaStream {
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public void addCalbackListener(IMediaStreamCallback iMediaStreamCallback) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeCalbackListener(IMediaStreamCallback iMediaStreamCallback) {
+        // TODO Auto-generated method stub
+    }
+
 }
