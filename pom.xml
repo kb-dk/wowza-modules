@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <wms.version>3.5.2</wms.version>
+        <wms.version>3.6.2</wms.version>
         <wms.basedir>/usr/local/WowzaMediaServer-${wms.version}</wms.basedir>
         <wmsaddoncollection.version>20130507</wmsaddoncollection.version>
         <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection</wmsaddoncollection.basedir>
@@ -16,7 +16,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>3.3-SNAPSHOT</version>
+    <version>3.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>

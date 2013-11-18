@@ -10,6 +10,7 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.client.IClientNotify;
 import com.wowza.wms.dvr.DvrApplicationContext;
 import com.wowza.wms.dvr.IDvrStreamManager;
+import com.wowza.wms.httpstreamer.model.IHTTPSessionNotify;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerApplicationContext;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.mediacaster.IMediaCasterNotify;
@@ -19,6 +20,7 @@ import com.wowza.wms.mediacaster.MediaCasterStreamMap;
 import com.wowza.wms.module.IModuleNotify;
 import com.wowza.wms.module.ModuleFunctions;
 import com.wowza.wms.module.ModuleList;
+import com.wowza.wms.rtp.model.IRTPSessionNotify;
 import com.wowza.wms.rtp.model.RTPSession;
 import com.wowza.wms.sharedobject.ISharedObjectNotify;
 import com.wowza.wms.sharedobject.ISharedObjects;
@@ -1434,6 +1436,46 @@ public class IApplicationInstanceMock implements IApplicationInstance {
 
     @Override
     public void setDebugAppTimeout(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addRTPListener(IRTPSessionNotify irtpSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeRTPListener(IRTPSessionNotify irtpSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyRTPSessionCreate(RTPSession rtpSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyRTPSessionDestroy(RTPSession rtpSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addHTTPListener(IHTTPSessionNotify ihttpSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeHTTPListener(IHTTPSessionNotify ihttpSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         // TODO Auto-generated method stub
     }
 

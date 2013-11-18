@@ -8,6 +8,7 @@
 				<!-- 80: HTTP, RTMPT -->
 				<!-- 554: RTSP -->
 				<Port>1937</Port>
+				<HTTPIdent2Response></HTTPIdent2Response>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
 					<!-- suggested settings for video on demand applications -->
@@ -26,7 +27,7 @@
 					<!-- <TcpNoDelay>false</TcpNoDelay> -->
 					<AcceptorBackLog>100</AcceptorBackLog>
 				</SocketConfiguration>
-				<HTTPStreamerAdapterIDs>cupertinostreaming,smoothstreaming,sanjosestreaming,dvrchunkstreaming</HTTPStreamerAdapterIDs>
+				<HTTPStreamerAdapterIDs>cupertinostreaming,smoothstreaming,sanjosestreaming,dvrchunkstreaming,mpegdashstreaming</HTTPStreamerAdapterIDs>
 				<HTTPProviders>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPCrossdomain</BaseClass>
@@ -56,7 +57,8 @@
 			<HostPort>
 				<ProcessorCount>4</ProcessorCount>
 				<IpAddress>*</IpAddress>
-                <Port>443</Port>
+				<Port>443</Port>
+				<HTTPIdent2Response></HTTPIdent2Response>
 				<SSLConfig>
 					<KeyStorePath>${com.wowza.wms.context.VHostConfigHome}/conf/keystore.jks</KeyStorePath>
 					<KeyStorePassword>[password]</KeyStorePassword>
@@ -74,7 +76,7 @@
 					<KeepAlive>true</KeepAlive>
 					<AcceptorBackLog>100</AcceptorBackLog>
 				</SocketConfiguration>
-				<HTTPStreamerAdapterIDs>cupertinostreaming,smoothstreaming,sanjosestreaming,dvrchunkstreaming</HTTPStreamerAdapterIDs>
+				<HTTPStreamerAdapterIDs>cupertinostreaming,smoothstreaming,sanjosestreaming,dvrchunkstreaming,mpegdashstreaming</HTTPStreamerAdapterIDs>
 				<HTTPProviders>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPCrossdomain</BaseClass>
@@ -105,6 +107,7 @@
 				<ProcessorCount>1</ProcessorCount>
 				<IpAddress>*</IpAddress>
 				<Port>8088</Port>
+				<HTTPIdent2Response></HTTPIdent2Response>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
 					<ReceiveBufferSize>16000</ReceiveBufferSize>
@@ -182,6 +185,12 @@
 			<HTTPStreamerAdapter>
 				<ID>dvrchunkstreaming</ID>
 				<Name>dvrchunkstreaming</Name>
+				<Properties>
+				</Properties>
+			</HTTPStreamerAdapter>
+			<HTTPStreamerAdapter>
+				<ID>mpegdashstreaming</ID>
+				<Name>mpegdashstreaming</Name>
 				<Properties>
 				</Properties>
 			</HTTPStreamerAdapter>

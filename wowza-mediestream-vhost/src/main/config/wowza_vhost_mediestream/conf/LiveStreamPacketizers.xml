@@ -90,5 +90,15 @@
 				</Property>
 			</Properties>
 		</LiveStreamPacketizer>
+		<LiveStreamPacketizer>
+			<Name>mpegdashstreamingpacketizer</Name>
+			<Description>MPEG Dash Packetizer</Description>
+			<BaseClass>com.wowza.wms.httpstreamer.mpegdashstreaming.livestreampacketizer.LiveStreamPacketizerMPEGDash</BaseClass>
+			<IsRepeater>false</IsRepeater>
+			<LiveRepeaterPlayerClass></LiveRepeaterPlayerClass>
+			<LiveRepeaterReceiverClass></LiveRepeaterReceiverClass>
+			<Properties>
+			</Properties>
+			</LiveStreamPacketizer>
 	</LiveStreamPacketizers>
 </Root>
