@@ -1,6 +1,5 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
-import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;

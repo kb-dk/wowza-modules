@@ -22,11 +22,10 @@ public class StreamingStatLogEntry {
 
     private String userAttributesAsJson;  // Contains user roles
 
-    public StreamingStatLogEntry(IMediaStream stream, Event event, Ticket streamingTicket) {
+    public StreamingStatLogEntry(Event event, Ticket streamingTicket, String streamingURL) {
         this.timestamp = new Date();
 
-        this.streamingURL = stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt() + ':'
-                + stream.getName();
+        this.streamingURL = streamingURL;
         this.event = event;
 
         if ((streamingTicket != null)) {

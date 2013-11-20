@@ -65,7 +65,7 @@ public class TicketCheckerTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
         // Run test
-        boolean result = ticketChecker.checkTicket(stream);
+        boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
         assertFalse("Expected not to be allowed", result);
     }
@@ -79,7 +79,7 @@ public class TicketCheckerTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
         // Run test
-        boolean result = ticketChecker.checkTicket(stream);
+        boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
         assertFalse("Expected not to be allowed", result);
     }
@@ -94,7 +94,7 @@ public class TicketCheckerTest {
         IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
         // Test
-        boolean result = ticketChecker.checkTicket(stream);
+        boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate
         assertTrue("Expected success", result);
     }

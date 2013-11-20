@@ -17,8 +17,18 @@ public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStrea
         this.streamingEventLogger = streamingEventLogger;
     }
 
+    private static String getQueryString(IMediaStream stream) {
+        return stream.getClient().getQueryStr();
+    }
+
+    private static String getStreamingUrl(IMediaStream stream) {
+        return stream.getClient().getUri() + '?' + stream.getClient().getQueryStr() + '/' +  stream.getExt() + ':'
+                    + stream.getName();
+    }
+
     public void onPlay(IMediaStream stream, String streamName, double playStart, double playLen, int playReset) {
-        streamingEventLogger.logUserEventPlay(stream);
+        streamingEventLogger.logUserEventPlay(getQueryString(stream),
+                                              getStreamingUrl(stream));
     }
 
     public void onMetaData(IMediaStream stream, AMFPacket metaDataPacket) {
@@ -26,15 +36,18 @@ public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStrea
     }
 
     public void onPauseRaw(IMediaStream stream, boolean isPause, double location) {
-        streamingEventLogger.logUserEventPause(stream);
+        streamingEventLogger.logUserEventPause(getQueryString(stream),
+                                               getStreamingUrl(stream));
     }
 
     public void onSeek(IMediaStream stream, double location) {
-        streamingEventLogger.logUserEventSeek(stream);
+        streamingEventLogger.logUserEventSeek(getQueryString(stream),
+                                              getStreamingUrl(stream));
     }
 
     public void onStop(IMediaStream stream) {
-        streamingEventLogger.logUserEventStop(stream);
+        streamingEventLogger.logUserEventStop(getQueryString(stream),
+                                              getStreamingUrl(stream));
     }
 
     public void onUnPublish(IMediaStream stream, String streamName, boolean isRecord, boolean isAppend) {
@@ -46,6 +59,7 @@ public class StreamingStatisticsIMediaStreamActionNotify2 implements IMediaStrea
     }
 
     public void onPause(IMediaStream stream, boolean isPause, double location) {
-        streamingEventLogger.logUserEventPause(stream);
+        streamingEventLogger.logUserEventPause(getQueryString(stream),
+                                               getStreamingUrl(stream));
     }
 }

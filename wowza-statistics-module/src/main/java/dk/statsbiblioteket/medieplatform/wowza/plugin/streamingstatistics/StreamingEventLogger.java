@@ -40,36 +40,40 @@ public class StreamingEventLogger {
         this.newlineString = System.getProperty("line.separator");
     }
 
-    public void logUserEventPlay(IMediaStream stream) {
-        logUserEvent(stream, Event.PLAY);
+    public void logUserEventPlay(String queryString, String streamingUrl) {
+        logUserEvent(Event.PLAY, queryString, streamingUrl);
     }
 
-    public void logUserEventStop(IMediaStream stream) {
-        logUserEvent(stream, Event.STOP);
+    public void logUserEventStop(String queryString, String streamingUrl) {
+        logUserEvent(Event.STOP, queryString, streamingUrl);
     }
 
-    public void logUserEventPause(IMediaStream stream) {
-        logUserEvent(stream, Event.PAUSE);
+    public void logUserEventPause(String queryString, String streamingUrl) {
+        logUserEvent(Event.PAUSE, queryString, streamingUrl);
     }
 
-    public void logUserEventSeek(IMediaStream stream) {
-        logUserEvent(stream, Event.SEEK);
+    public void logUserEventSeek(String queryString, String streamingUrl) {
+        logUserEvent(Event.SEEK, queryString, streamingUrl);
     }
 
     /**
      * Log the given event
-     * @param stream Stream from which to get the ticket needed for creating the log line
      * @param event The event to log
+     * @param queryString Query string to read parameters for
+     * @param streamingURL The URL or this stream
      */
-    private void logUserEvent(IMediaStream stream, Event event) {
-        String clientQueryString = stream.getClient().getQueryStr();
+    private void logUserEvent(Event event, String queryString, String streamingURL) {
+        if (queryString == null)  {
+            logger.warn("No logging was performed. Query string of client could not be found.");
+            return;
+        }
         try {
-            Ticket streamingTicket = StringAndTextUtil.getTicket(clientQueryString, ticketTool);
-            String logString = new StreamingStatLogEntry(stream, event, streamingTicket).getLogString();
+            Ticket streamingTicket = StringAndTextUtil.getTicket(queryString, ticketTool);
+            String logString = new StreamingStatLogEntry(event, streamingTicket, streamingURL).getLogString();
             writeEventLog(logString);
         } catch (IllegallyFormattedQueryStringException e) {
-            logger.warn("No logging was performed. Query string of client dos not match expected format. Was "
-                    + clientQueryString);
+            logger.warn("No logging was performed. Query string of client does not match expected format. Was "
+                    + queryString);
         }
     }
 

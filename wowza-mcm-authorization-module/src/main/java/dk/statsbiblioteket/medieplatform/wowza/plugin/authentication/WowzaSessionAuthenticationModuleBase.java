@@ -4,9 +4,11 @@ import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnCall;
 import com.wowza.wms.module.IModuleOnConnect;
+import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
@@ -22,7 +24,7 @@ import java.io.IOException;
 
 
 public class WowzaSessionAuthenticationModuleBase extends ModuleBase 
-             implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall {
+             implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Authentication";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -30,7 +32,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
     public static final String PROPERTY_MCM_SERVER_URL_KEY = "GeneralMCMServerURL";
     public static final String PROPERTY_MCM_VALIDATION_METHOD = "ValidationMCMValidationMethod";
 
-    private IMediaStreamActionNotify2 streamAuthenticater;
+    private StreamAuthenticater streamAuthenticater;
 
     public WowzaSessionAuthenticationModuleBase() {
         super();
@@ -84,6 +86,9 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
      */
     @SuppressWarnings("unchecked")
     public void onStreamCreate(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().info("onStreamCreate by: " + stream.getClientId());
         IMediaStreamActionNotify streamActionNotify  = streamAuthenticater;
         WMSProperties props = stream.getProperties();
@@ -102,6 +107,9 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
      * Unregister event hook for the stream.
      */
     public void onStreamDestroy(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().info("onStreamDestroy by: " + stream.getClientId());
         IMediaStreamActionNotify actionNotify = null;
         WMSProperties props = stream.getProperties();
@@ -126,5 +134,20 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
     @Override
     public void onCall(String handlerName, IClient client, RequestFunction function, AMFDataList params) {
         getLogger().info("onCall, unimplemented method was called: " + handlerName);
+    }
+
+    @Override
+    public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
+        getLogger().info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
+        boolean authenticated = streamAuthenticater
+                .checkAuthorization(ihttpStreamerSession.getQueryStr(), ihttpStreamerSession.getStreamName());
+        if (!authenticated) {
+            ihttpStreamerSession.rejectSession();
+        }
+    }
+
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        getLogger().info("onHTTPSessionDestroy by: " + ihttpStreamerSession.getIpAddress());
     }
 }

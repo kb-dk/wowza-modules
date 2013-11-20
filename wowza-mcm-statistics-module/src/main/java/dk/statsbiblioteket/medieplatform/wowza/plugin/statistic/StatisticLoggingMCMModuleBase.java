@@ -2,12 +2,16 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
+import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.module.IModuleOnApp;
+import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.StreamingMCMEventLogger;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
@@ -18,7 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream {
+public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream,
+        IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics MCM";
        private static final String PLUGIN_VERSION = "${project.version}";
@@ -117,6 +122,9 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
 
     @Override
     public void onStreamCreate(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().info("onStreamCreate by: " + stream.getClientId());
         String queryString = String.valueOf(stream.getClient().getQueryStr());
         String statisticsParameter;
@@ -143,6 +151,9 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
 
     @Override
     public void onStreamDestroy(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().info("onStreamDestroy by: " + stream.getClientId());
         IMediaStreamActionNotify actionNotify = null;
         WMSProperties props = stream.getProperties();
@@ -153,5 +164,85 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
             stream.removeClientListener(actionNotify);
             getLogger().info("removeClientListener: " + stream.getSrc());
         }
+    }
+
+    @Override
+    public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
+        WMSLogger logger = getLogger();
+        logger.info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
+        String queryString = ihttpStreamerSession.getQueryStr();
+        String statisticsParameter;
+
+        //Check if statistics are turned off
+        try {
+            statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
+            if (statisticsParameter.equalsIgnoreCase("off")) {
+                return;
+            }
+        } catch (IllegallyFormattedQueryStringException e) {
+            //Not turned off, so ignore
+        }
+
+        // Get session and object ID
+        String sessionID;
+        String objectID;
+        try {
+            sessionID = StringAndTextUtil.extractValueFromQueryStringAndKey("SessionID", queryString);
+            objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            logger.warn("Illegal query string in '" + ihttpStreamerSession.getUri() + "'. Not able to log.", e);
+            return;
+        }
+
+        // Log event
+        String streamName = ihttpStreamerSession.getStreamName();
+        logger.debug("Event triggered [onHTTPSessionCreate]" + streamName);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, 0,
+                                                                   sessionID,
+                                                                   objectID,
+                                                                   ihttpStreamerSession.getPlayStart(),
+                                                                   ihttpStreamerSession.getPlayDuration()
+                                                                           - ihttpStreamerSession.getPlayStart(),
+                                                                   StreamingStatLogEntry.Event.PLAY);
+        StreamingMCMEventLogger.getInstance().logEvent(logEntry);
+    }
+
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        WMSLogger logger = getLogger();
+        logger.info("onHTTPSessionDestroy by: " + ihttpStreamerSession.getIpAddress());
+        String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
+        String statisticsParameter;
+
+        //Check if statistics are turned off
+        try {
+            statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
+            if (statisticsParameter.equalsIgnoreCase("off")) {
+                return;
+            }
+        } catch (IllegallyFormattedQueryStringException e) {
+            //Not turned off, so ignore
+        }
+
+        // Get object ID
+        String objectID;
+        try {
+            objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            logger.warn("Illegal query string in '" + ihttpStreamerSession.getUri() + "'. Not able to log.", e);
+            return;
+        }
+
+        // Log event
+        String streamName = ihttpStreamerSession.getStreamName();
+        logger.debug("Event triggered [onHTTPSessionDestroy]: " + streamName);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, 0,
+                                                                   ihttpStreamerSession.getSessionId(),
+                                                                   ihttpStreamerSession.getSessionId() + objectID,
+                                                                   ihttpStreamerSession.getPlayStart(),
+                                                                   ihttpStreamerSession.getPlayDuration()
+                                                                           - ihttpStreamerSession.getPlayStart(),
+                                                                   StreamingStatLogEntry.Event.STOP);
+        StreamingMCMEventLogger.getInstance().logEvent(logEntry);
     }
 }

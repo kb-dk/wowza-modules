@@ -6,6 +6,7 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
+import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
@@ -25,7 +26,7 @@ import java.io.IOException;
  * @author heb + jrg + abr + kfc
  */
 public class TicketCheckerModule extends ModuleBase
-        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
+        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -80,7 +81,7 @@ public class TicketCheckerModule extends ModuleBase
     @Override
     public void onStreamCreate(IMediaStream stream) {
         if (stream.getClient() != null) {
-            if (!ticketChecker.checkTicket(stream)) {
+            if (!ticketChecker.checkTicket(stream, stream.getClient())) {
                 sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
                 sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
                 stream.getClient().setShutdownClient(true);
@@ -135,6 +136,13 @@ public class TicketCheckerModule extends ModuleBase
     public void onHTTPSessionCreate(IHTTPStreamerSession httpSession) {
         if (!ticketChecker.checkTicket(httpSession)) {
             httpSession.rejectSession();
+            getLogger().warn("User not allowed to stream: " + httpSession.getUri());
         }
+    }
+
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        // Do nothing
     }
 }

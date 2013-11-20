@@ -54,25 +54,25 @@ public class StreamAuthenticaterTest {
     @Test
     public void testCheckAuthorizationEverythingOK() {
         
-        boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, validFilename, null);
+        boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, validFilename);
         assertEquals("Input expected to be valid.", true, result);
     }
 
     @Test
     public void testCheckAuthorizationInvalidSessionID() {
-        boolean result = streamAuthenticater.checkAuthorization(invalidSessionID, validObjectID, validFilename, null);
+        boolean result = streamAuthenticater.checkAuthorization(invalidSessionID, validObjectID, validFilename);
         assertEquals("Input is not expected to be valid.", false, result);
     }
 
     @Test
     public void testCheckAuthorizationInvalidObjectID() {
-        boolean result = streamAuthenticater.checkAuthorization(validSessionID, invalidObjectID, validFilename, null);
+        boolean result = streamAuthenticater.checkAuthorization(validSessionID, invalidObjectID, validFilename);
         assertEquals("Input is not expected to be valid.", false, result);
     }
 
     @Test
     public void testCheckAuthorizationInvalidFilename() {
-        boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, invalidFilename, null);
+        boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, invalidFilename);
         assertEquals("Input is not expected to be valid.", false, result);
     }
 

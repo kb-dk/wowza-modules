@@ -31,8 +31,7 @@ public class TicketChecker {
      *
      * @return true if allowed, false otherwise.
      */
-    public boolean checkTicket(IMediaStream stream) {
-        IClient client = stream.getClient();
+    public boolean checkTicket(IMediaStream stream, IClient client) {
         if (client == null) {
             logger.debug("No client, returning ", stream);
             return false;
@@ -46,7 +45,7 @@ public class TicketChecker {
      * @return true if allowed, false otherwise.
      */
     public boolean checkTicket(IHTTPStreamerSession httpSession) {
-        return checkTicket(httpSession.getStream().getName(), httpSession.getQueryStr(), httpSession.getIpAddress());
+        return checkTicket(httpSession.getStreamName(), httpSession.getQueryStr(), httpSession.getIpAddress());
     }
 
     private boolean checkTicket(String name, String query, String ip) {

@@ -29,6 +29,14 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
     public void onPlay(IMediaStream stream, String streamName, double playStart,
             double playLen, int playReset) {
         String queryString = String.valueOf(stream.getClient().getQueryStr());
+        boolean isAuthorized = checkAuthorization(queryString, stream.getName());
+        if (!isAuthorized) {
+            wmsLogger.warn("User not allowed to get content streamed.", stream);
+            stream.getClient().setShutdownClient(true);
+        }
+    }
+
+    public boolean checkAuthorization(String queryString, String filename) {
         String sessionID;
         String objectID;
         try {
@@ -36,42 +44,35 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
             objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
             wmsLogger.warn("User not allowed to get content streamed, because SessionID or ObjectID was not sent", e);
-            stream.getClient().setShutdownClient(true);
-            return;
+            return false;
         }
-        String filename = stream.getName(); // getStreamFileForRead().getAbsolutePath();
         wmsLogger.info("Object ID (onPlay)   : MCM authenticating: " +
                 "Session ID [" + sessionID + "] " +
                 "Object ID [" + objectID + "] " +
                 "Stream file [" + filename + "] ");
-        boolean isAuthorized = checkAuthorization(sessionID, objectID, filename,
-                stream);
+        boolean isAuthorized = checkAuthorization(sessionID, objectID, filename);
         wmsLogger.info("Object ID (onPlay)   : MCM result: [" + sessionID + "] allowed access: " + isAuthorized);
-        if (!isAuthorized) {
-            wmsLogger.warn("User not allowed to get content streamed.", stream);
-            stream.getClient().setShutdownClient(true);
-        }
+        return isAuthorized;
     }
 
-    protected boolean checkAuthorization(String sessionID, String objectID,
-            String filename, IMediaStream stream) {
+    protected boolean checkAuthorization(String sessionID, String objectID, String filename) {
         boolean isAuthorized = false;
         if (filename!=null && sessionID!=null && objectID!=null) {
             try {
                 isAuthorized = this.validater.validateRightsToPlayFile(sessionID, objectID, filename);
             } catch (MalformedURLException e) {
-                wmsLogger.error("URL to MCM is malformed. " + e.getMessage(), stream);
+                wmsLogger.error("URL to MCM is malformed. " + e.toString());
                 wmsLogger.error(e.getStackTrace());
             } catch (IOException e) {
-                wmsLogger.error("Could not retrieve MCM information. " + e.getMessage(), stream);
+                wmsLogger.error("Could not retrieve MCM information. " + e.toString());
                 wmsLogger.error(e.getStackTrace());
             } catch (MCMOutputException e) {
-                wmsLogger.error("Could not read MCM output. " + e.getMessage(), stream);
+                wmsLogger.error("Could not read MCM output. " + e.toString());
                 wmsLogger.error(e.getStackTrace());
             }
         } else {
             wmsLogger.error("Arguments missing in order to authenticate stream. " +
-                    "(sessionID=" + sessionID + ", objectID=" + objectID + ", filename=" + filename + ")", stream);
+                    "(sessionID=" + sessionID + ", objectID=" + objectID + ", filename=" + filename + ")");
         }
         
         return isAuthorized;

@@ -3,8 +3,10 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
+import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
@@ -26,7 +28,7 @@ import java.io.IOException;
  * @author heb + jrg + abr + kfc
  */
 public class ContentResolverModule extends ModuleBase
-        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
+        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "Wowza Content Resolver Plugin";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -138,4 +140,16 @@ public class ContentResolverModule extends ModuleBase
         // Do nothing.
     }
 
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onHTTPSessionCreate(IHTTPStreamerSession httpSession) {
+        // Auto-accept is false in Application.xml. Therefore it is
+        // necessary to accept the connection explicitly here.
+        httpSession.acceptSession();
+    }
+
+    /*Mainly here to remember that we can hook this method*/
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+    }
 }

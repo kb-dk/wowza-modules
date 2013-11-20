@@ -63,7 +63,7 @@ public class StreamingStatLogEntryTest extends TestCase {
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.PLAY;
         // Test
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logEvent, ticket, "");
         // Validate
         assertEquals("StreamingStatLogEntry value", Event.PLAY, logEntry.getEvent());
         assertTrue(logEntry.getLogString().contains("\"schacHomeOrganization\":[\"au.dk\"]"));
@@ -81,7 +81,7 @@ public class StreamingStatLogEntryTest extends TestCase {
         Ticket ticket = ticketTool.issueTicket(defaultUsername, defaultResource, properties);
         Event logEvent = Event.PLAY;
         // Test
-        String logEntry = new StreamingStatLogEntry(defaultStream, logEvent, ticket).getLogString();
+        String logEntry = new StreamingStatLogEntry(logEvent, ticket, "").getLogString();
         String logHeader = StreamingStatLogEntry.getLogStringHeadline();
         assertEquals("Expected same amount of entries in header and logline", logEntry.split(";").length,
                 logHeader.split(";").length);

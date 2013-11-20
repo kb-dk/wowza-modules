@@ -4,8 +4,10 @@ import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
+import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnConnect;
+import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
@@ -27,7 +29,7 @@ import java.io.IOException;
  * @author heb + jrg + abr + kfc
  */
 public class StreamingStatisticsModule extends ModuleBase
-        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify {
+        implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "Wowza statistics logger plugin";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -93,6 +95,9 @@ public class StreamingStatisticsModule extends ModuleBase
      */
     @Override
     public void onStreamCreate(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().debug("onStreamCreate, clientID='" + stream.getClientId() + "'");
         IMediaStreamActionNotify streamActionNotify = new StreamingStatisticsIMediaStreamActionNotify2(streamingEventLogger);
         WMSProperties props = stream.getProperties();
@@ -108,6 +113,9 @@ public class StreamingStatisticsModule extends ModuleBase
      */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            return;
+        }
         getLogger().debug("onStreamDestroy, clientID='" + stream.getClientId() + "'");
         IMediaStreamActionNotify actionNotify;
         WMSProperties props = stream.getProperties();
@@ -155,4 +163,15 @@ public class StreamingStatisticsModule extends ModuleBase
         // Do nothing.
     }
 
+    @Override
+    public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
+        streamingEventLogger.logUserEventPlay(ihttpStreamerSession.getQueryStr(),
+                                              ihttpStreamerSession.getUri());
+    }
+
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        streamingEventLogger.logUserEventStop(ihttpStreamerSession.getQueryStr(),
+                                              ihttpStreamerSession.getUri());
+    }
 }
