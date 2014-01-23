@@ -85,9 +85,6 @@ public class ContentResolverModule extends ModuleBase
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onConnect(IClient client, RequestFunction function, AMFDataList params) {
-        // Auto-accept is false in Application.xml. Therefore it is
-        // necessary to accept the connection explicitly here.
-        client.acceptConnection();
     }
 
 
@@ -143,13 +140,12 @@ public class ContentResolverModule extends ModuleBase
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession httpSession) {
-        // Auto-accept is false in Application.xml. Therefore it is
-        // necessary to accept the connection explicitly here.
-        httpSession.acceptSession();
+        // Do nothing.
     }
 
     /*Mainly here to remember that we can hook this method*/
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        // Do nothing.
     }
 }
