@@ -15,6 +15,9 @@ import java.util.StringTokenizer;
 public class StringAndTextUtil {
     public static String extractValueFromQueryStringAndKey(String key,
             String queryString) throws IllegallyFormattedQueryStringException {
+        if (queryString == null) {
+            queryString = "";
+        }
         // Some players add a / to the query string. Strip it
         if (queryString.endsWith("/")) {
             queryString = queryString.substring(0, queryString.length() - 1);
