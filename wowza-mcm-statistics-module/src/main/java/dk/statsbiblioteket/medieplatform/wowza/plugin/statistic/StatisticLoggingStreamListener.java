@@ -31,7 +31,7 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
     public StatisticLoggingStreamListener(WMSLogger logger, IMediaStream stream, StreamingEventLoggerIF streamingEventLogger) {
         this.logger = logger;
         this.streamingEventLogger = streamingEventLogger;
-        String queryString = String.valueOf(stream.getClient().getQueryStr());
+        String queryString = getQueryString(stream);
         try {
             this.mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
@@ -41,6 +41,16 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         this.clientID = stream.getClientId();
         this.lastStartTime = null;
         this.lastStartLocation = -1;
+    }
+
+    private String getQueryString(IMediaStream stream) {
+        if (stream.getClient() != null) {
+            return String.valueOf(stream.getClient().getQueryStr());
+        } else if (stream.getHTTPStreamerSession() != null) {
+            return String.valueOf(stream.getHTTPStreamerSession().getQueryStr());
+        } else {
+            return "";
+        }
     }
 
     @Override

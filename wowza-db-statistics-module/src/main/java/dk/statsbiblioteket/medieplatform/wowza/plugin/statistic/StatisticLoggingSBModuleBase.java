@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class StatisticLoggingSBModuleBase extends ModuleBase
-        implements IModuleOnApp, IModuleOnStream, IModuleOnHTTPSession {
+        implements IModuleOnApp, IModuleOnStream {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics SB";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -61,10 +61,8 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
             String dbPassword = cr.get(PROPERTY_STATISTICS_LOGGING_DB_PASSWORD);
 
             //Initialize event logger
-            if (StreamingDatabaseEventLogger.getInstance() == null) {
-                StreamingDatabaseEventLogger
-                        .createInstance(getLogger(), jdbcDriverString, dbConnectionURLString, dbUser, dbPassword);
-            }
+            StreamingDatabaseEventLogger
+                    .createInstance(getLogger(), jdbcDriverString, dbConnectionURLString, dbUser, dbPassword);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);
         }
@@ -77,11 +75,8 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
 
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        if (stream.getClient() == null) {
-            return;
-        }
         getLogger().info("onStreamCreate by: " + stream.getClientId());
-        String queryString = String.valueOf(stream.getClient().getQueryStr());
+        String queryString = getQueryString(stream);
         String statisticsParameter;
 
         //Check if statistics are turned off
@@ -104,11 +99,18 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         stream.addClientListener(streamActionNotify);
     }
 
+    private String getQueryString(IMediaStream stream) {
+        if (stream.getClient() != null) {
+            return String.valueOf(stream.getClient().getQueryStr());
+        } else if (stream.getHTTPStreamerSession() != null) {
+            return String.valueOf(stream.getHTTPStreamerSession().getQueryStr());
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public void onStreamDestroy(IMediaStream stream) {
-        if (stream.getClient() == null) {
-            return;
-        }
         getLogger().info("onStreamDestroy by: " + stream.getClientId());
         IMediaStreamActionNotify actionNotify;
         WMSProperties props = stream.getProperties();
@@ -119,85 +121,5 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
             stream.removeClientListener(actionNotify);
             getLogger().info("removeClientListener: " + stream.getSrc());
         }
-    }
-
-    @Override
-    public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
-        WMSLogger logger = getLogger();
-        logger.info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
-        String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
-        String statisticsParameter;
-
-        //Check if statistics are turned off
-        try {
-            statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
-            if (statisticsParameter.equalsIgnoreCase("off")) {
-                return;
-            }
-        } catch (IllegallyFormattedQueryStringException e) {
-            //Not turned off, so ignore
-        }
-
-        // Get session and object ID
-        String sessionID;
-        String objectID;
-        try {
-            sessionID = StringAndTextUtil.extractValueFromQueryStringAndKey("SessionID", queryString);
-            objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
-        } catch (IllegallyFormattedQueryStringException e) {
-            logger.warn("Illegal query string in '" + ihttpStreamerSession.getUri() + "'. Not able to log.", e);
-            return;
-        }
-
-        // Log event
-        String streamName = ihttpStreamerSession.getStreamName();
-        logger.debug("Event triggered [onHTTPSessionCreate]" + streamName);
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, 0,
-                                                                   sessionID,
-                                                                   objectID,
-                                                                   ihttpStreamerSession.getPlayStart(),
-                                                                   ihttpStreamerSession.getPlayDuration()
-                                                                           - ihttpStreamerSession.getPlayStart(),
-                                                                   StreamingStatLogEntry.Event.PLAY);
-        StreamingDatabaseEventLogger.getInstance().logEvent(logEntry);
-    }
-
-    @Override
-    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
-        WMSLogger logger = getLogger();
-        logger.info("onHTTPSessionDestroy by: " + ihttpStreamerSession.getIpAddress());
-        String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
-        String statisticsParameter;
-
-        //Check if statistics are turned off
-        try {
-            statisticsParameter = StringAndTextUtil.extractValueFromQueryStringAndKey("statistics", queryString);
-            if (statisticsParameter.equalsIgnoreCase("off")) {
-                return;
-            }
-        } catch (IllegallyFormattedQueryStringException e) {
-            //Not turned off, so ignore
-        }
-
-        // Get object ID
-        String objectID;
-        try {
-            objectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
-        } catch (IllegallyFormattedQueryStringException e) {
-            logger.warn("Illegal query string in '" + ihttpStreamerSession.getUri() + "'. Not able to log.", e);
-            return;
-        }
-
-        // Log event
-        String streamName = ihttpStreamerSession.getStreamName();
-        logger.debug("Event triggered [onHTTPSessionDestroy]: " + streamName);
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, 0,
-                                                                   ihttpStreamerSession.getSessionId(),
-                                                                   ihttpStreamerSession.getSessionId() + objectID,
-                                                                   ihttpStreamerSession.getPlayStart(),
-                                                                   ihttpStreamerSession.getPlayDuration()
-                                                                           - ihttpStreamerSession.getPlayStart(),
-                                                                   StreamingStatLogEntry.Event.STOP);
-        StreamingDatabaseEventLogger.getInstance().logEvent(logEntry);
     }
 }
