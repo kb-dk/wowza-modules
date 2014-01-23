@@ -3,7 +3,6 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
-import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.module.IModuleOnApp;
 import com.wowza.wms.module.IModuleOnHTTPSession;
 import com.wowza.wms.module.IModuleOnStream;
@@ -11,6 +10,7 @@ import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.SessionIDPair;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db.StreamingDatabaseEventLogger;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class StatisticLoggingSBModuleBase extends ModuleBase
-        implements IModuleOnApp, IModuleOnStream {
+        implements IModuleOnApp, IModuleOnStream, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics SB";
     private static final String PLUGIN_VERSION = "${project.version}";
@@ -121,5 +121,53 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
             stream.removeClientListener(actionNotify);
             getLogger().info("removeClientListener: " + stream.getSrc());
         }
+    }
+
+    @Override
+    public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
+        getLogger().info("onHttpSessionCreate by: " + ihttpStreamerSession.getIpAddress());
+
+        String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
+        String mcmObjectID;
+        try {
+            mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            mcmObjectID = "Unknown";
+        }
+        StreamingDatabaseEventLogger eventLogger = StreamingDatabaseEventLogger.getInstance();
+        SessionIDPair sessionIDPair = eventLogger.getStreamingLogSessionID(mcmObjectID);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(getLogger(),
+                ihttpStreamerSession.getStreamName(),
+                0,
+                sessionIDPair.getSessionID(),
+                sessionIDPair.getObjectSessionID(),
+                0L,
+                0L,
+                StreamingStatLogEntry.Event.PLAY);
+        eventLogger.logEvent(logEntry);
+    }
+
+    @Override
+    public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
+        getLogger().info("onHttpSessionDestroy by: " + ihttpStreamerSession.getIpAddress());
+
+        String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
+        String mcmObjectID;
+        try {
+            mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            mcmObjectID = "Unknown";
+        }
+        StreamingDatabaseEventLogger eventLogger = StreamingDatabaseEventLogger.getInstance();
+        SessionIDPair sessionIDPair = eventLogger.getStreamingLogSessionID(mcmObjectID);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(getLogger(),
+                ihttpStreamerSession.getStreamName(),
+                0,
+                sessionIDPair.getSessionID(),
+                sessionIDPair.getObjectSessionID(),
+                0L,
+                0L,
+                StreamingStatLogEntry.Event.STOP);
+        eventLogger.logEvent(logEntry);
     }
 }
