@@ -133,11 +133,19 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
 
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
-        getLogger().info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
-        boolean authenticated = streamAuthenticater
-                .checkAuthorization(ihttpStreamerSession.getQueryStr(), ihttpStreamerSession.getStreamName());
-        if (!authenticated) {
+        try {
+            getLogger().info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
+            boolean authenticated = streamAuthenticater
+                    .checkAuthorization(ihttpStreamerSession.getQueryStr(), ihttpStreamerSession.getStreamName());
+            if (!authenticated) {
+                getLogger().warn("Not authorized '" + ihttpStreamerSession.getUri() + "' for: " + ihttpStreamerSession.getIpAddress());
+                ihttpStreamerSession.rejectSession();
+                ihttpStreamerSession.shutdown();
+            }
+        } catch (Exception e) {
+            getLogger().warn("Error checking authorization of '" + ihttpStreamerSession.getUri() + "' for: " + ihttpStreamerSession.getIpAddress(), e);
             ihttpStreamerSession.rejectSession();
+            ihttpStreamerSession.shutdown();
         }
     }
 
