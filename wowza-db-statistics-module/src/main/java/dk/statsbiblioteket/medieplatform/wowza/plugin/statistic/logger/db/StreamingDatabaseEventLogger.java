@@ -18,7 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implementation of the event logger interface, that logs events in a database.
+ */
 public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
+    /** The used logger. */
     private final WMSLogger logger;
     private String jdbcDriverString;
     private String dbConnectionURLString;
@@ -30,13 +34,13 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     private int session = 0;
 
     /**
-     * Reads db connection information from property file and creates connection
+     * Creates database connection using given properties.
      *
      * @param logger The wowza logger.
-     * @param jdbcDriverString
-     * @param dbConnectionURLString
-     * @param dbUser
-     * @param dbPassword
+     * @param jdbcDriverString The JDBC driver to use.
+     * @param dbConnectionURLString The connection string to the database.
+     * @param dbUser Database username.
+     * @param dbPassword Database password.
      */
     private StreamingDatabaseEventLogger(WMSLogger logger, String jdbcDriverString, String dbConnectionURLString,
                                          String dbUser, String dbPassword) {
@@ -53,7 +57,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         this.logger.info("Statistics logger " + this.getClass().getName() + " has been created.");
     }
 
-    /** TEST constructor!!! */
+    /** TEST constructor!!! initalises database in alternative fashion. */
     private StreamingDatabaseEventLogger(WMSLogger logger, Connection connection) {
         super();
         this.logger = logger;
@@ -63,8 +67,13 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     }
 
     /**
-     * Creates the singleton objects. Is robust for multiple concurrent requests for create.
+     * Creates the singleton objects - test version. Is robust for multiple concurrent requests for create.
      * Only the first request for create, actually creates the object.
+     *
+     * CAUTION! Once the test singleton is created, since it's a singleton, a non-test version will not be possible.
+     *
+     * @param logger The WMS logger.
+     * @param connection The database connection.
      */
     public static synchronized void createInstanceForTestPurpose(WMSLogger logger, Connection connection)
             throws FileNotFoundException, IOException {
@@ -94,15 +103,30 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         }
     }
 
+    /**
+     * Get the singleton instance, assuming it is already initialised.
+     * @return The singleton instance.
+     */
     public static synchronized StreamingDatabaseEventLogger getInstance() {
         return instance;
     }
 
+    /**
+     * Generate the session id for a log string.
+     * In the database logging, this is just a counter increasing with one on each call, plus a copy
+     * of the object id.
+     * @param mcmObjectID The MCM object id.
+     * @return The session id.
+     */
     @Override
     public SessionIDPair getStreamingLogSessionID(String mcmObjectID) {
         return new SessionIDPair(Integer.toString(session++), session + "-" + mcmObjectID);
     }
 
+    /**
+     * Log an event in the database.
+     * @param logEntry
+     */
     @Override
     public void logEvent(StreamingStatLogEntry logEntry) {
         if (Event.PLAY.equals(logEntry.getEvent()) || Event.PAUSE.equals(logEntry.getEvent())
@@ -113,6 +137,11 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         }
     }
 
+    /**
+     * Log event in database. Adds a row to the database with the information in the log entry.
+     * Will log errors in log files, but otherwise ognore them.
+     * @param logEntry The log entry to add.
+     */
     private synchronized void logEventInDB(StreamingStatLogEntry logEntry) {
         try {
             logEntry.setEventID(getNextEventID());
@@ -132,6 +161,11 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         }
     }
 
+    /**
+     * Gets next event ID to generate log entry.
+     * @return Next event ID. Assumes no other process is writing event IDs to the database.
+     * @throws SQLException on database trouble.
+     */
     protected synchronized int getNextEventID() throws SQLException {
         Statement stmt = dbConnection.createStatement();
         String queryString = "SELECT MAX(event_id) as max_event_id FROM events";
@@ -146,6 +180,15 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
                  */
     }
 
+    /**
+     * Make a connection to the database.
+     * @param logger The Wowza logger
+     * @param jdbcDriver The JDBC driver to use.
+     * @param connectionURL The connection URL
+     * @param user DB user
+     * @param password DB password.
+     * @return A database connection.
+     */
     protected synchronized static Connection getNewConnection(WMSLogger logger, String jdbcDriver, String connectionURL,
                                                               String user, String password) {
         try {
@@ -167,6 +210,10 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         return conn;
     }
 
+    /**
+     * Return the newest log event from database.
+     * @return
+     */
     @Override
     public StreamingStatLogEntry getLogEntryLatest() {
         StreamingStatLogEntry logEntry = null;
@@ -196,6 +243,11 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         return logEntry;
     }
 
+    /**
+     * Return the newest numberOfEntries log event from database.
+     * @param numberOfEntries The number of log events to return.
+     * @return
+     */
     public List<StreamingStatLogEntry> getLogEntryLatest(int numberOfEntries) {
         List<StreamingStatLogEntry> logEntries = new ArrayList<StreamingStatLogEntry>();
         try {

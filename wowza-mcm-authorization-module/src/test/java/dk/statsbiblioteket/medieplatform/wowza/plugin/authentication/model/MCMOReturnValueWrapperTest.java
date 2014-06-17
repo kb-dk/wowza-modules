@@ -14,6 +14,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests for parsing XML results in the return value wrapper.
+ */
 public class MCMOReturnValueWrapperTest {
 
     private String filenameOfvalidMCMOutputFull = getClass().getClassLoader().getResource(

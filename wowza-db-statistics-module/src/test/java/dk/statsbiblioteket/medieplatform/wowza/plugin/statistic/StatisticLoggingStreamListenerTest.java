@@ -29,6 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Test logging in the stream listener.
+ */
 public class StatisticLoggingStreamListenerTest extends TestCase {
     
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";

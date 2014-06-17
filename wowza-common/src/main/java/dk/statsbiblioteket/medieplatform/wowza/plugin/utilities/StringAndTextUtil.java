@@ -12,7 +12,19 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.StringTokenizer;
 
+/**
+ * Utility methods for working with Wowza strings.
+ */
 public class StringAndTextUtil {
+    /**
+     * Given a query string, return the value for a given key. Throws exception if key is not set.
+     * @param key The key to look up in query string.
+     * @param queryString The query string to read key from.
+     * @return The value of the given key.
+     *
+     * @throws IllegallyFormattedQueryStringException If key is not set in query string, or if query string has bad
+     * format.
+     */
     public static String extractValueFromQueryStringAndKey(String key,
             String queryString) throws IllegallyFormattedQueryStringException {
         if (queryString == null) {
@@ -40,6 +52,12 @@ public class StringAndTextUtil {
                 "Expected key '" + key + "' not found in query string" + queryString + "'");
     }
 
+    /**
+     * Given an input stream, read contents into a string using UTF-8 as charset.
+     * @param is Input stream
+     * @return Contents of input stream.
+     * @throws IOException On trouble reading from input stream.
+     */
     public static String convertStreamToString(InputStream is)
                 throws IOException {
             /*

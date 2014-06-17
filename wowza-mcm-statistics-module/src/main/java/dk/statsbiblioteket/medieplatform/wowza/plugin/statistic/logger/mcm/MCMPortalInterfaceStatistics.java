@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm;
 
+/** Interface for logging events to MCM, and reading them.
+ * @deprecated */
 public interface MCMPortalInterfaceStatistics {
 
     public abstract String getStatisticsSession();

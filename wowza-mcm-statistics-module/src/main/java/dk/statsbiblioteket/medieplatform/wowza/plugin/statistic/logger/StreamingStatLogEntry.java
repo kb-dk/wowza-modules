@@ -5,6 +5,9 @@ import com.wowza.wms.logging.WMSLogger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Information for a log event.
+ */
 public class StreamingStatLogEntry {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
@@ -30,11 +33,14 @@ public class StreamingStatLogEntry {
      * 
      * Note the eventID is first set just before the log entry is persisted
      *
-     * @param logger
-     * @param endedAt
-     * @param startedAt
-     * @param stream
-     * @param event
+     * @param logger Wowza logger for logging what is going on.
+     * @param streamName Name of stream this is an entry for
+     * @param clientID ID of client that initiated the event. Taken from wowza.
+     * @param mcmSessionID ID of session for this event, when used by MCM
+     * @param mcmObjectSessionID ID of object session for this event, when used by MCM
+     * @param startedAt Time in stream when event started.
+     * @param endedAt Time in stream when event ended.
+     * @param event Event that happened.
      */
     public StreamingStatLogEntry(WMSLogger logger, String streamName, int clientID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt, Event event) {
         this.logger = logger;
@@ -50,6 +56,22 @@ public class StreamingStatLogEntry {
         this.logger.debug("Created log entry object: " + this.toString());
     }
 
+    /**
+     * This constructor is used when reading a log entry from database.
+     *
+     * Note the eventID is first set just before the log entry is persisted
+     *
+     * @param logger Wowza logger for logging what is going on.
+     * @param eventID ID of event logged.
+     * @param timestamp Time of event.
+     * @param streamName Name of stream this is an entry for
+     * @param userID ID of client that initiated the event. Taken from wowza.
+     * @param mcmSessionID ID of session for this event, when used by MCM
+     * @param mcmObjectSessionID ID of object session for this event, when used by MCM
+     * @param startedAt Time in stream when event started.
+     * @param endedAt Time in stream when event ended.
+     * @param event Event that happened.
+     */
     public StreamingStatLogEntry(WMSLogger logger, long eventID, Date timestamp, String streamName, int userID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt, Event event) {
         this(logger, streamName, userID, mcmSessionID, mcmObjectSessionID, startedAt, endedAt, event);
         this.eventID = eventID;

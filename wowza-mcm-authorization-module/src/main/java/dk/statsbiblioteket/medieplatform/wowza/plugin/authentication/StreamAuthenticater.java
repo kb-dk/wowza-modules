@@ -14,18 +14,40 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/** Wowza aciion notifier, that prevents a play action if session is not validated. */
 class StreamAuthenticater  implements IMediaStreamActionNotify2 {
     
-    private SessionAndFilenameValidaterIF validater; 
+    /** The session validator to use for validating access. */
+    private SessionAndFilenameValidaterIF validater;
+    /** Logger-. */
     private WMSLogger wmsLogger;
-    
-    public StreamAuthenticater(WMSLogger logger, SessionAndFilenameValidaterIF validater) throws FileNotFoundException, IOException {
+
+    /** Initialise with a wowza logger and a session validator.
+     *
+     * @param logger Used for logging events.
+     * @param validater Used for validating a session before playing.
+     */
+    public StreamAuthenticater(WMSLogger logger, SessionAndFilenameValidaterIF validater) {
         super();
         this.wmsLogger = logger;
         this.validater = validater;
         wmsLogger.info("StreamAuthenticater created");
     }
 
+    /**
+     * Prevent playing if session is not valid. Session is validated using values for ObjectID and SessionID given in
+     * query string on stream, and stream name. {@link #checkAuthorization(String, String)} is used to check
+     * authorization.
+     * Stream is shut down if client not allowed to play.
+     * Called by wowza on playevent.
+     *
+     * @param stream The stream requested to play. Used for extracting query parameters and stream name.
+     * @param streamName Not used.
+     * @param playStart Not used.
+     * @param playLen Not used.
+     * @param playReset Not used.
+     */
+    @Override
     public void onPlay(IMediaStream stream, String streamName, double playStart,
             double playLen, int playReset) {
         String queryString = String.valueOf(stream.getClient().getQueryStr());
@@ -36,6 +58,13 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
         }
     }
 
+    /**
+     * Extract ObjectID and SessionID from query string and call
+     * {@link #checkAuthorization(String, String, String)}.
+     * @param queryString Query string to extract SessionID and ObjectID from
+     * @param filename File name to pass on.
+     * @return Whether stream is valid for playing.
+     */
     public boolean checkAuthorization(String queryString, String filename) {
         String sessionID;
         String objectID;
@@ -55,6 +84,15 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
         return isAuthorized;
     }
 
+    /**
+     * Check that stream is valid for playing, by calling
+     * {@link SessionAndFilenameValidaterIF#validateRightsToPlayFile(String, String, String)}
+     *
+     * @param sessionID The session ID.
+     * @param objectID The object ID.
+     * @param filename The filename to play.
+     * @return Whether stream is valid for playing.
+     */
     protected boolean checkAuthorization(String sessionID, String objectID, String filename) {
         boolean isAuthorized = false;
         if (filename!=null && sessionID!=null && objectID!=null) {

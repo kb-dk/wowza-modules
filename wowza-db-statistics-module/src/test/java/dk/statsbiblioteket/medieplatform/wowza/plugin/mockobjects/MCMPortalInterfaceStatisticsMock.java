@@ -4,6 +4,9 @@ import com.wowza.wms.logging.WMSLogger;
 
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatistics;
 
+/**
+ * Mock class for MCM to use in statistics tests.
+ */
 public class MCMPortalInterfaceStatisticsMock implements MCMPortalInterfaceStatistics {
 
     private WMSLogger logger;

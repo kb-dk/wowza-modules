@@ -20,6 +20,9 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
+/**
+ * Module that logs events in the MCM database.
+ */
 public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream,
         IModuleOnHTTPSession {
 
@@ -57,6 +60,10 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         super();
     }
 
+    /**
+     * Initialise the statistics logger, based on properties.
+     * @param appInstance The app instance that was started.
+     */
     @Override
     public void onAppStart(IApplicationInstance appInstance) {
         String appName = appInstance.getApplication().getName();
@@ -119,6 +126,11 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         getLogger().info("onAppStop: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
     }
 
+    /**
+     * Register an action listener that logs events to MCM, unless statistics are disabled in query string using
+     * "statistics=off".
+     * @param stream The stream created to add an action listener for.
+     */
     @Override
     public void onStreamCreate(IMediaStream stream) {
         if (stream.getClient() == null) {
@@ -148,6 +160,10 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         stream.addClientListener(streamActionNotify);
     }
 
+    /**
+     * Remove the previously added action listener.
+     * @param stream The stream destroyed to remove an action listener from.
+     */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
         if (stream.getClient() == null) {
@@ -165,6 +181,10 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         }
     }
 
+    /**
+     * On HTTP connections, log the event directly, unless turned off in the query string using "statistics=off".
+     * @param ihttpStreamerSession The http streamer session.
+     */
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
         WMSLogger logger = getLogger();
@@ -206,6 +226,10 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         StreamingMCMEventLogger.getInstance().logEvent(logEntry);
     }
 
+    /**
+     * On HTTP connections, log the event directly, unless turned off in the query string using "statistics=off".
+     * @param ihttpStreamerSession The http streamer session.
+     */
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         WMSLogger logger = getLogger();

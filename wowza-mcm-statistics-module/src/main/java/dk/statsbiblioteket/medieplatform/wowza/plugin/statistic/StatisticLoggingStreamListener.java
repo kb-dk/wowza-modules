@@ -15,6 +15,9 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUti
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Action listerner, that logs events in a StreamingEventLogger.
+ */
 public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2 {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
@@ -27,7 +30,13 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
     private int clientID;
     private Date lastStartTime;
     private long lastStartLocation;
-    
+
+    /** Initialise with given values. Also reads object ID from query string.
+     *
+     * @param logger Wowza logger
+     * @param stream Stream to listen for events on
+     * @param streamingEventLogger StreamingEventLogger to log events to.
+     */
     public StatisticLoggingStreamListener(WMSLogger logger, IMediaStream stream, StreamingEventLoggerIF streamingEventLogger) {
         this.logger = logger;
         this.streamingEventLogger = streamingEventLogger;
@@ -53,6 +62,14 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         }
     }
 
+    /**
+     * Log play event.
+     * @param stream Stream to log
+     * @param streamName Name of stream to log
+     * @param playStart Start time
+     * @param playLen Length played
+     * @param playReset Unused.
+     */
     @Override
     public void onPlay(IMediaStream stream, String streamName, double playStart, double playLen, int playReset) {
         logger.debug("Event triggered [onPlay]: " + stream.getName() + " - " + playStart + ", " + playLen + ", " + playReset); 
@@ -72,6 +89,7 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
     }
 
     /**
+     * Log pause event.
      * State: Playing
      *  Case 1: Event pausing in client results in: onPause(stream, true, location)
      *  Case 2: Event seeking in client results in: onPause(stream, true, location) - > onPause(stream, false, location) - > onSeek
@@ -79,6 +97,10 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
      * State: Paused
      *  Case 3: Event resume in client results in: onPause(stream, true, location) - > onSeek
      *  Case 4: Event seeking in client results in: onPause(stream, false, location) - > onSeek
+     *
+     * @param stream Stream that was paused.
+     * @param isPause whether it was a pause event.
+     * @param location position in stream.
      */
     @Override
     public void onPause(IMediaStream stream, boolean isPause, double location) {
@@ -125,11 +147,17 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
     }
 
 
+    /** See {@link #onPause(IMediaStream, boolean, double)}  */
     @Override
     public void onPauseRaw(IMediaStream stream, boolean isPause, double location) {
         this.onPause(stream, isPause, location);
     }
 
+    /**
+     * Log seek event.
+     * @param stream      Stream event happened for.
+     * @param location    Location in stream.
+     */
     @Override
     public void onSeek(IMediaStream stream, double location) {
         logger.debug("Event triggered [onSeek]: " + stream.getName() + " - " + location); 
@@ -172,6 +200,10 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         }
     }
 
+    /**
+     * Log stop event. Uses cached value to calculate how long it played.
+     * @param stream      Stream event happened for.
+     */
     @Override
     public void onStop(IMediaStream stream) {
         logger.debug("Event triggered [onStop]: " + stream.getName() + " - "); 

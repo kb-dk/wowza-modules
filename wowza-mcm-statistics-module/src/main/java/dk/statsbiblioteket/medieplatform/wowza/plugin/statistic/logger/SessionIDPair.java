@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger;
 
+/**
+ * Pair of SessionID and ObjectSessionID used for generating a log entry.
+ */
 public class SessionIDPair {
     
     // ID pair for MCM statistics logging

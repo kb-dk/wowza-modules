@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/**
+ * Mock for the session and filename validator.
+ */
 public class SessionAndFilenameValidaterMock implements
         SessionAndFilenameValidaterIF {
 

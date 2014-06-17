@@ -10,9 +10,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Check if an MCM SessionID and ObjectID is valid for playing a file.
+ */
 public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidaterIF {
+    /** The wowza logger */
     protected WMSLogger logger;
+    /** The connection string to MCM */
     protected String connectionURLString;
+    /** The MCM method to call */
     protected String validationMethodAtServer;
 
     /**
@@ -43,9 +49,11 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
         }
     }
 
-    /* (non-Javadoc)
-      * @see dk.statsbiblioteket.larm.wowza.plugin.authentication.model.SessionAndFilenameValidater#validateRightsToPlayFile(java.lang.String, java.lang.String, java.lang.String)
-      */
+    /**
+     * Validate rights to play file.
+     *
+     * @see SessionAndFilenameValidaterIF#validateRightsToPlayFile(java.lang.String, java.lang.String, java.lang.String)
+     */
     @Override
     public boolean validateRightsToPlayFile(String sessionID, String objectID, String filenameAndPath)
             throws MalformedURLException, IOException, MCMOutputException {
@@ -70,8 +78,17 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
         return isAllowedToStream;
     }
 
+    /**
+     * Helper method to compare local file name with MCM file names.
+     * Will accept the requested filename, if any of the MCM file names match the requested filename, with path
+     * removed from the Wowza path.
+     *
+     * @param requestedPathAndFilename The path and file name requested by Wowza
+     * @param mcmFilenames List of filenames extracted from MCM
+     * @return True, of requested filename with path removed is contained in MCM filenames, false otherwise.
+     */
     protected boolean validateFilerequestWithMCMResult(String requestedPathAndFilename, List<String> mcmFilenames) {
-        // Defualt with unix style path separator
+        // Default with unix style path separator
         String filename = getFilenameUsingSeparator(requestedPathAndFilename, "/");
         boolean filenameEquals = mcmFilenames.contains(filename);
         if (!filenameEquals) {
@@ -84,6 +101,12 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
         return filenameEquals;
     }
 
+    /**
+     * Extract a filename from a path with given separator.
+     * @param requestedPathAndFilename The path.
+     * @param separator The separator to use.
+     * @return The filename extracted.
+     */
     protected String getFilenameUsingSeparator(String requestedPathAndFilename, String separator) {
         int sep = requestedPathAndFilename.lastIndexOf(separator);
         String filename = requestedPathAndFilename.substring(sep + 1);
@@ -91,6 +114,15 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
         return filename;
     }
 
+    /**
+     * Connect to MCM and read object information with the given sessionID and objectID.
+     * @param sessionID SessionID to use when connecting to MCM
+     * @param objectID ObjectID to use when connecting to MCM
+     * @return The result in a wrapped class,
+     * @throws IOException On trouble communicating.
+     * @throws MalformedURLException On troulbe with connection URL
+     * @throws MCMOutputException On any trouble reading or understanding MCM return values.
+     */
     protected MCMOReturnValueWrapper getInputFromMCM(String sessionID, String objectID)
             throws IOException, MalformedURLException, MCMOutputException {
         String urlStringToMCM = connectionURLString + "/" + validationMethodAtServer + "?" + "sessionID=" + sessionID

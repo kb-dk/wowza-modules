@@ -3,6 +3,9 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/**
+ * Interface for checking a session for validity for playing.
+ */
 public interface SessionAndFilenameValidaterIF {
 
     /**
@@ -17,15 +20,15 @@ public interface SessionAndFilenameValidaterIF {
      *       granted</li>
      * </ol> 
      * 
-     * @param sessionID the session id related to the session. This is not the Wowza 
+     * @param sessionID the MCM session id related to the session. This is not the Wowza
      *        clientID
-     * @param objectID the object id of the given file to be played
-     * @param filename the file to be streamed
-     * @return <code>true</code> if the session is allowed to play the file. 
-     *         <code>false</code> otherwise
+     * @param objectID the object id of the given file to be played.
+     * @param filename the file to be streamed.
+     * @return <code>true</code> if the session is allowed to play the file,
+     *         <code>false</code> otherwise.
      * @throws MalformedURLException if the URL to the validation server is malformed.
      * @throws IOException if something went wrong when connecting to the server. 
-     * @throws MCMOutputException if the output from MCM cannot be read
+     * @throws MCMOutputException if the output from MCM cannot be read.
      */
     public abstract boolean validateRightsToPlayFile(String sessionID,
             String objectID, String filename) throws MalformedURLException,

@@ -14,6 +14,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wrapper for a response from MCM2. Will update the state of the return value from the response ML document.
+ */
 public class MCMOReturnValueWrapper {
 
     protected Logger logger;
@@ -27,6 +30,13 @@ public class MCMOReturnValueWrapper {
         extractReturnValuesFromXML(inputStreamFromMCM);
     }
 
+    /**
+     * Get the result from the call.
+     * Reads XML document from input stream, and parses values using
+     * {@link #extractMultipleElementsStringContent(Element, String)}
+     * @param mcmXMLOutputIS Returned XML document.
+     * @throws MCMOutputException On trouble communicating or parsing.
+     */
     protected void extractReturnValuesFromXML(InputStream mcmXMLOutputIS) throws MCMOutputException {
         try {
             Document dom = null;
@@ -44,6 +54,12 @@ public class MCMOReturnValueWrapper {
         }
     }
 
+    /**
+     * Get the result from the call.
+     * If the call is successful, extracts object ID from the element GUID and file name from the element Filename.
+     * @param docEle Returned XML document.
+     * @throws MCMOutputException On trouble communicating or parsing.
+     */
     protected void extractReturnValuesForSession(Element docEle) throws MCMOutputException {
         String returnType = docEle.getNodeName();
         if (returnType.equals("ICollection")) {
@@ -61,6 +77,12 @@ public class MCMOReturnValueWrapper {
         }
     }
 
+    /**
+     * Helper method to extract values from an element in an XML document.
+     * @param docEle XML document to extract values from.
+     * @param elementName Name of element to extract value from.
+     * @return The value for that element.
+     */
     protected String extractStringContent(Element docEle, String elementName) {
         Element folderPathElement = null;
         NodeList nodelist = docEle.getElementsByTagName(elementName);
@@ -71,6 +93,12 @@ public class MCMOReturnValueWrapper {
         return stringContent;
     }
 
+    /**
+     * Helper method to extract multiple values from an element in an XML document.
+     * @param docEle XML document to extract values from.
+     * @param elementName Name of element to extract values from.
+     * @return List of  values for that element.
+     */
     protected List<String> extractMultipleElementsStringContent(Element docEle, String elementName) {
         List<String> extractedValues = new ArrayList<String>();
         NodeList nodelist = docEle.getElementsByTagName(elementName);

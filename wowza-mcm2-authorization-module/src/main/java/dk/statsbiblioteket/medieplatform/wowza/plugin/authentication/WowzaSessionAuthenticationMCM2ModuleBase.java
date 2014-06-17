@@ -20,6 +20,9 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Module that registers an action listener, which prevents playback if stream is not authenticated using MCM2.
+ */
 public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
@@ -28,12 +31,14 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
             WowzaSessionAuthenticationMCM2ModuleBase.class.getPackage().getImplementationVersion();
     private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
     private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
+    /** The authenticator used for validatoing playback permissions. */
     private StreamAuthenticater streamAuthenticater;
 
     public WowzaSessionAuthenticationMCM2ModuleBase() {
         super();
     }
 
+    /** Register the action listener that prevents playback on invalid sessions. */
     public void onAppStart(IApplicationInstance appInstance) {
         String appName = appInstance.getApplication().getName();
         String vhostDir = appInstance.getVHost().getHomePath();
@@ -61,6 +66,7 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
         }
     }
 
+    /** Connection is accepted by default, because we can't do the actual authorization before a stream is played */
     public void onConnect(IClient client, RequestFunction function,
             AMFDataList params) {
         getLogger().info("onConnect (client ID)   : " + client.getClientId());
@@ -150,6 +156,10 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
         }
     }
 
+    /**
+     * For HTTP connections, immediately accept or reject the connection, based on the authenticator.
+     * @param ihttpStreamerSession
+     */
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         getLogger().info("onHTTPSessionDestroy by: " + ihttpStreamerSession.getIpAddress());

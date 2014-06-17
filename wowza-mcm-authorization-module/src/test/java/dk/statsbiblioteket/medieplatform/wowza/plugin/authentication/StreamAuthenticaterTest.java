@@ -17,6 +17,9 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test authorization based on sessionid, objectid and filename.
+ */
 public class StreamAuthenticaterTest {
 
     private WMSLogger logger;

@@ -20,8 +20,7 @@ import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedConte
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
 /**
- * This class handles events that happen during streaming. Also sets up the file
- * mapper that is needed for identifying the file to be played.
+ * This module sets up the file mapper that is needed for identifying the file to be played.
  *
  * @author heb + jrg + abr + kfc
  */

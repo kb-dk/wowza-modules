@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/** Functionality for logging events to MCM, and reading them.
+ * @deprecated */
 public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStatistics {
 
     private static MCMPortalInterfaceStatistics instance = null;
