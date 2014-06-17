@@ -10,6 +10,9 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * Tests for extracting values from querystring.
+ */
 public class StringAndTextUtilTest {
     private String param1 = "param1Key=param1Value";
     private String param2 = "param1Key=param2Value";

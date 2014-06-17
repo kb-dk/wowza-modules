@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/** Test MCM2 authorization validator */
 public class MCM2SessionAndFilenameValidaterTest {
 
     private Logger logger;

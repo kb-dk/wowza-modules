@@ -16,6 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/** Test return value parsing from MCM2. */
 public class MCM2OReturnValueWrapperTest {
 
     private String filenameOfvalidMCMOutputFull = getClass().getClassLoader().getResource(

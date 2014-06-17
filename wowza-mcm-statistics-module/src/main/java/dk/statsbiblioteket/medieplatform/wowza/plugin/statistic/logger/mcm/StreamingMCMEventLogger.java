@@ -9,6 +9,10 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.Streaming
 
 import java.util.List;
 
+/**
+ * Event logger that logs to MCM.
+ * @deprecated
+ */
 public class StreamingMCMEventLogger implements StreamingEventLoggerIF {
 
     private final WMSLogger logger;

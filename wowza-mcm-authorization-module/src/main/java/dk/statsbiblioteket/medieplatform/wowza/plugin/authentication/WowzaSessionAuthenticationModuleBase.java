@@ -22,7 +22,9 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * Module that registers an action listener, which prevents playback if stream is not authenticated using MCM.
+ */
 public class WowzaSessionAuthenticationModuleBase extends ModuleBase 
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
@@ -32,12 +34,14 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
     public static final String PROPERTY_MCM_SERVER_URL_KEY = "GeneralMCMServerURL";
     public static final String PROPERTY_MCM_VALIDATION_METHOD = "ValidationMCMValidationMethod";
 
+    /** The authenticator used for validatoing playback permissions. */
     private StreamAuthenticater streamAuthenticater;
 
     public WowzaSessionAuthenticationModuleBase() {
         super();
     }
 
+    /** Register the action listener that prevents playback on invalid sessions. */
     public void onAppStart(IApplicationInstance appInstance) {
         String appName = appInstance.getApplication().getName();
         String vhostDir = appInstance.getVHost().getHomePath();
@@ -65,6 +69,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
         }
     }
 
+    /** Connection is accepted by default, because we can't do the actual authorization before a stream is played */
     public void onConnect(IClient client, RequestFunction function,
             AMFDataList params) {
         getLogger().info("onConnect (client ID)   : " + client.getClientId());
@@ -136,13 +141,25 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
         getLogger().info("onCall, unimplemented method was called: " + handlerName);
     }
 
+    /**
+     * For HTTP connections, immediately accept or reject the connection, based on the authenticator.
+     * @param ihttpStreamerSession
+     */
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
-        getLogger().info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
-        boolean authenticated = streamAuthenticater
-                .checkAuthorization(ihttpStreamerSession.getQueryStr(), ihttpStreamerSession.getStreamName());
-        if (!authenticated) {
+        try {
+            getLogger().info("onHTTPSessionCreate by: " + ihttpStreamerSession.getIpAddress());
+            boolean authenticated = streamAuthenticater
+                    .checkAuthorization(ihttpStreamerSession.getQueryStr(), ihttpStreamerSession.getStreamName());
+            if (!authenticated) {
+                getLogger().warn("Not authorized '" + ihttpStreamerSession.getUri() + "' for: " + ihttpStreamerSession.getIpAddress());
+                ihttpStreamerSession.rejectSession();
+                ihttpStreamerSession.shutdown();
+            }
+        } catch (Exception e) {
+            getLogger().warn("Error checking authorization of '" + ihttpStreamerSession.getUri() + "' for: " + ihttpStreamerSession.getIpAddress(), e);
             ihttpStreamerSession.rejectSession();
+            ihttpStreamerSession.shutdown();
         }
     }
 

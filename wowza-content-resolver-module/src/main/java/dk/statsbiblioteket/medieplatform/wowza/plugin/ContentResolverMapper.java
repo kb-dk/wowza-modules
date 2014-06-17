@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * This class is used to let the user see the correct file
+ * This class is used to let the user see the correct file, given an identifier.
  */
 public class ContentResolverMapper extends MediaStreamFileMapperBase implements IMediaStreamFileMapper {
 
@@ -23,6 +23,13 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
     private final IMediaStreamFileMapper defaultMapper;
     private final ContentResolver contentResolver;
 
+    /**
+     * Initialise a content resolver mapper.
+     *
+     * @param presentationType The presentation type used by the content resolver.
+     * @param defaultMapper The normal file mapper, used for passing on unresolved ids.
+     * @param contentResolver The content resolver used for resolving ids to file names.
+     */
     public ContentResolverMapper(String presentationType, IMediaStreamFileMapper defaultMapper,
                                  ContentResolver contentResolver) {
         super();
@@ -32,6 +39,11 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
+    /**
+     * This method is invoked when Wowza tries to figure out which file to play
+     * @param stream the stream requested
+     * @return The file to stream.
+     */
     @Override
     public File streamToFileForRead(IMediaStream stream) {
         logger.trace("streamToFileForRead(IMediaStream stream=" + stream + ")");
@@ -46,7 +58,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
      * @param stream the stream requested
      * @param name the name of the file to play
      * @param ext the extension of the file
-     * @param streamQuery ?
+     * @param streamQuery the query string from the stream.
      * @return the file to play
      */
     @Override
@@ -62,6 +74,11 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
         return streamingFile;
     }
 
+    /**
+     * Ignore parts of name after first . and before first :
+     * @param name
+     * @return
+     */
     private String clean(String name) {
         if (name.contains(".")){
             name = name.substring(0, name.indexOf("."));
@@ -74,7 +91,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
     }
 
     /**
-     * This method retrieves the filename from the ticket, by querying the content resolver to get the
+     * This method retrieves the filename, by querying the content resolver to get the
      * streaming resource
      * @param name the filename
      * @return the file to stream

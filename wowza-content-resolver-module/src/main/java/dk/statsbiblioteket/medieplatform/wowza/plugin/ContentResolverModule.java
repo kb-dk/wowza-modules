@@ -22,8 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class handles events that happen during streaming. Also sets up the file
- * mapper that is needed for identifying the file to be played.
+ * This module sets up the file mapper that is needed for identifying the file to be played.
  *
  * @author heb + jrg + abr + kfc
  */

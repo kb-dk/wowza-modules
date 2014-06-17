@@ -10,15 +10,22 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-//TODO javadoc
+/**
+ * Read configuration.
+ * This reads configuration file from a given path.
+ */
 public class ConfigReader {
 
     private Properties properties;
 
-    // TODO javadoc
     /**
+     * Read configuration from given path.
+     * Fails if list of required properties are not defined.
+     * @param path The path to read properties from.
+     * @param requiredProperties If given properties are not found, throws exception.
      *
-     * @param path
+     * @throws RuntimeException if properties are not set.
+     * @throws IOException on trouble reading property from path.
      */
     public ConfigReader(String path, String... requiredProperties) throws IOException {
 
@@ -38,20 +45,30 @@ public class ConfigReader {
         checkProperties(requiredProperties);
     }
 
-    // TODO javadoc
     /**
-     *
-     * @param key
-     * @return object of key
+     * Read property.
+     * @param key The property key.
+     * @return The property value.
      */
     public String get(String key) {
         return properties.getProperty(key);
     }
 
+    /**
+     * Read property.
+     * @param key The property key.
+     * @return The property value, or defaultValue if key is not set.
+     */
     public String get(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
 
+    /**
+     * Throw exception if given property keys are not set.
+     * @param propertyKeys Properties that must be set.
+     *
+     * @throws RuntimeException if properties are not set.
+     */
     private void checkProperties(String[] propertyKeys) {
         Set<String> keysLeft = new HashSet<String>();
         keysLeft.addAll(Arrays.asList(propertyKeys));

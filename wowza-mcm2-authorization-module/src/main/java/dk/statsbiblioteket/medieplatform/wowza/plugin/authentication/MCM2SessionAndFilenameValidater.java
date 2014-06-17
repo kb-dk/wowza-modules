@@ -14,6 +14,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Call MCM to see if session is valid and lookup object from the GUID.
+ */
 public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValidater {
     /**
      * Reads server connection configuration from property-file. Property file
@@ -41,6 +44,15 @@ public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValida
         super(logger, connectionURLString, validationMethodAtServer);
     }
 
+    /**
+     * Get session validation information from MCM2.
+     * @param sessionID MCM2 Session ID
+     * @param objectID MCM2 Object GUID
+     * @return Object containing information about session validity and file names for GUID.
+     * @throws IOException On trouble connection to MCM2
+     * @throws MalformedURLException On bad URL connecting to MCM2
+     * @throws MCMOutputException On trouble reading MCM2 output.
+     */
     @Override
     protected MCMOReturnValueWrapper getInputFromMCM(String sessionID, String objectID)
             throws IOException, MalformedURLException, MCMOutputException {

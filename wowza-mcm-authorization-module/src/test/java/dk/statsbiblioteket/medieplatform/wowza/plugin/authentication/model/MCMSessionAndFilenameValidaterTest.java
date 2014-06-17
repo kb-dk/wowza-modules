@@ -13,6 +13,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests for the validator.
+ */
 public class MCMSessionAndFilenameValidaterTest {
 
     private Logger logger;

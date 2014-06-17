@@ -8,11 +8,20 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOu
 
 import java.io.InputStream;
 
+/**
+ * Wrapper for a response from MCM2. Will update the state of the return value from the response ML document.
+ */
 public class MCM2OReturnValueWrapper extends MCMOReturnValueWrapper {
     public MCM2OReturnValueWrapper(Logger logger, InputStream inputStreamFromMCM) throws MCMOutputException {
         super(logger, inputStreamFromMCM);
     }
 
+    /**
+     * Get the result from the call.
+     * If the call is successful, extracts object ID from the element GUID and file name from the element Filename.
+     * @param docEle Returned XML document.
+     * @throws MCMOutputException On trouble communicating or parsing.
+     */
     protected void extractReturnValuesForSession(Element docEle) throws MCMOutputException {
         String returnType = docEle.getNodeName();
         if (returnType.equals("PortalResult")) {

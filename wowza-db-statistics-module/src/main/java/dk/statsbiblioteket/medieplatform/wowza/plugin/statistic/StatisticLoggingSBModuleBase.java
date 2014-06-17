@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+/**
+ * Module that logs events to a database.
+ */
 public class StatisticLoggingSBModuleBase extends ModuleBase
         implements IModuleOnApp, IModuleOnStream, IModuleOnHTTPSession {
 
@@ -34,10 +37,17 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
     private static final String PROPERTY_STATISTICS_LOGGING_DBUSER = "StatisticsLoggingDBUser";
     private static final String PROPERTY_STATISTICS_LOGGING_DB_PASSWORD = "StatisticsLoggingDBPassword";
 
+    /**
+     * Default constructor.
+     */
     public StatisticLoggingSBModuleBase() {
         super();
     }
 
+    /**
+     * On App Start, initialise database connection.
+     * @param appInstance The app being initialised.
+     */
     @Override
     public void onAppStart(IApplicationInstance appInstance) {
         String appName = appInstance.getApplication().getName();
@@ -68,11 +78,20 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         }
     }
 
+    /**
+     * On App Stop nothing special is done.
+     * @param appInstance
+     */
     @Override
     public void onAppStop(IApplicationInstance appInstance) {
         getLogger().info("onAppStop: " + PLUGIN_NAME + " version " + PLUGIN_VERSION);
     }
 
+    /**
+     * On stream creation, add a listener that logs events to the database, unless the querystring contains the
+     * entry "streamActionNotifierForStatistics=off"
+     * @param stream The stream being added.
+     */
     @Override
     public void onStreamCreate(IMediaStream stream) {
         getLogger().info("onStreamCreate by: " + stream.getClientId());
@@ -99,6 +118,11 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         stream.addClientListener(streamActionNotify);
     }
 
+    /**
+     * Helper method to get query string.
+     * @param stream THe stream to get query string from
+     * @return Query string
+     */
     private String getQueryString(IMediaStream stream) {
         if (stream.getClient() != null) {
             return String.valueOf(stream.getClient().getQueryStr());
@@ -109,6 +133,10 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         }
     }
 
+    /**
+     * On stream destruction, remove the action listener that logs events.
+     * @param stream
+     */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
         getLogger().info("onStreamDestroy by: " + stream.getClientId());
@@ -123,6 +151,11 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         }
     }
 
+    /**
+     * On HTTP connection, log an event in the database.
+     * Note there are no action listeners for HTTP streaming.
+     * @param ihttpStreamerSession The http session initiated.
+     */
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
         getLogger().info("onHttpSessionCreate by: " + ihttpStreamerSession.getIpAddress());
@@ -147,6 +180,11 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         eventLogger.logEvent(logEntry);
     }
 
+    /**
+     * On HTTP disconnection, log an event in the database.
+     * Note there are no action listeners for HTTP streaming.
+     * @param ihttpStreamerSession The http session initiated.
+     */
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         getLogger().info("onHttpSessionDestroy by: " + ihttpStreamerSession.getIpAddress());

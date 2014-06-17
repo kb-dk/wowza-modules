@@ -21,6 +21,9 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the content resolver mapper.
+ */
 public class ContentResolverMapperTest {
 
     public static final String RTMP_HYPOTHETICAL_URL = "rtmp://hypothetical-test-machine:1935/mediestream";
