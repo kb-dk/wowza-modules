@@ -24,7 +24,8 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM2 Authentication";
-       private static final String PLUGIN_VERSION = "${project.version}";
+    private static final String PLUGIN_VERSION =
+            WowzaSessionAuthenticationMCM2ModuleBase.class.getPackage().getImplementationVersion();
     private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
     private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
     private StreamAuthenticater streamAuthenticater;

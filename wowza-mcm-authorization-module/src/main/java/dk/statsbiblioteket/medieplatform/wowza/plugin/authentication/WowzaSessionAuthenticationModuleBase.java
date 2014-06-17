@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication;
 
+import java.io.File;
+import java.io.IOException;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
@@ -14,20 +16,16 @@ import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
-import com.wowza.wms.stream.IMediaStreamActionNotify2;
-
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMSessionAndFilenameValidater;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
-
-import java.io.File;
-import java.io.IOException;
 
 
 public class WowzaSessionAuthenticationModuleBase extends ModuleBase 
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Authentication";
-    private static final String PLUGIN_VERSION = "${project.version}";
+    private static final String PLUGIN_VERSION =
+            WowzaSessionAuthenticationModuleBase.class.getPackage().getImplementationVersion();
 
     public static final String PROPERTY_MCM_SERVER_URL_KEY = "GeneralMCMServerURL";
     public static final String PROPERTY_MCM_VALIDATION_METHOD = "ValidationMCMValidationMethod";

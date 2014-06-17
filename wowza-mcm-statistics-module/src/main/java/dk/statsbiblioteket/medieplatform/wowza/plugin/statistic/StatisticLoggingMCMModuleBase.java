@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
@@ -10,7 +13,6 @@ import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
-
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.StreamingMCMEventLogger;
@@ -18,15 +20,12 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModuleOnApp, IModuleOnStream,
         IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics MCM";
-       private static final String PLUGIN_VERSION = "${project.version}";
+    private static final String PLUGIN_VERSION =
+            StatisticLoggingMCMModuleBase.class.getPackage().getImplementationVersion();
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);

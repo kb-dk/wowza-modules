@@ -1,18 +1,16 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model;
 
-import com.wowza.wms.logging.WMSLoggerFactory;
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM2OReturnValueWrapper;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
-
+import com.wowza.wms.logging.WMSLoggerFactory;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM2OReturnValueWrapper;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

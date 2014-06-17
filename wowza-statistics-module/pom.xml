@@ -10,7 +10,6 @@
 
     <artifactId>wowza-statistics-module</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -29,8 +28,8 @@
         </dependency>
 
         <dependency>
-        	<groupId>org.codehaus.jackson</groupId>
-        	<artifactId>jackson-mapper-asl</artifactId>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
         </dependency>
 
         <dependency>

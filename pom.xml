@@ -51,7 +51,6 @@
 
     <developers>
         <developer>
-
             <name>Asger Askov Blekinge</name>
             <email>abr@statsbiblioteket.dk</email>
             <organization>The State and University Library, Denmark</organization>
@@ -81,6 +80,15 @@
         <developer>
             <name>Jeppe Ravn Grove</name>
             <email>jrg@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Mikis Seth Sørensen</name>
+            <email>mss@statsbiblioteket.dk</email>
             <organization>The State and University Library, Denmark</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
             <roles>
@@ -202,6 +210,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <key>value</key>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -350,8 +374,8 @@
 
             <dependency>
             	<groupId>org.codehaus.jackson</groupId>
-            	<artifactId>jackson-mapper-asl</artifactId>
-            	<version>1.9.12</version>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.12</version>
             </dependency>
 
             <dependency>

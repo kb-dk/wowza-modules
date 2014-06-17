@@ -1,3 +1,6 @@
+3.4
+Switching to reading plugin version from jar manifest.
+
 3.3
 Upgrade to Wowza 3.6.2
 Fix NPE when trying to escape semicolon in log lines

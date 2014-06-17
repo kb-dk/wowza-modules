@@ -1,18 +1,15 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM2SessionAndFilenameValidater;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM2SessionAndFilenameValidater;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 
 public class MCM2SessionAndFilenameValidaterTest {

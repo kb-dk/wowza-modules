@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
+import java.io.File;
+import java.io.IOException;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
@@ -14,13 +16,9 @@ import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamNotify;
-
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingEventLogger;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * This class handles events that happen during streaming. Also sets up the file
@@ -32,7 +30,7 @@ public class StreamingStatisticsModule extends ModuleBase
         implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IMediaStreamNotify, IModuleOnHTTPSession {
 
     private static final String PLUGIN_NAME = "Wowza statistics logger plugin";
-    private static final String PLUGIN_VERSION = "${project.version}";
+    private static final String PLUGIN_VERSION = StreamingStatisticsModule.class.getPackage().getImplementationVersion();
     private StreamingEventLogger streamingEventLogger;
 
     public StreamingStatisticsModule() {

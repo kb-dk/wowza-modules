@@ -11,24 +11,6 @@
     <artifactId>wowza-mediestream-vhost</artifactId>
 
     <build>
-        <!-- Configure the source files as resources to be filtered
-          into a custom target directory -->
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <filtering>true</filtering>
-                <targetPath>../filtered-sources/java</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
-
-        <!-- Overrule the default pom source directory to match
-              our generated sources so the compiler will pick them up -->
-        <sourceDirectory>target/filtered-sources/java</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -40,6 +22,7 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
+                            <tarLongFileMode>gnu</tarLongFileMode>
                         </configuration>
                         <!-- this is used for inheritance merges -->
                         <phase>package</phase>
@@ -53,7 +36,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
@@ -69,35 +51,6 @@
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-content-resolver-module</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wms</groupId>
-            <artifactId>wms-server</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wms</groupId>
-            <artifactId>wms-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wms</groupId>
-            <artifactId>wms-stream-publish</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wms</groupId>
-            <artifactId>wms-plugin-collection</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
