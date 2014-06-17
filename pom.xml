@@ -2,10 +2,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <wms.version>3.6.2</wms.version>
-        <wms.basedir>/usr/local/WowzaMediaServer-${wms.version}</wms.basedir>
-        <wmsaddoncollection.version>20130507</wmsaddoncollection.version>
-        <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection</wmsaddoncollection.basedir>
+        <wms.version>4.0.3</wms.version>
+        <wms.basedir>/usr/local/WowzaStreamingEngine-${wms.version}</wms.basedir>
+        <wmsaddoncollection.version>4.0</wmsaddoncollection.version>
+        <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection-${wmsaddoncollection.version}</wmsaddoncollection.basedir>
     </properties>
 
     <parent>
@@ -168,6 +168,48 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Install Wmsbootstrap</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-bootstrap</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-bootstrap.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmsmediacache</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-mediacache</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-mediacache.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmspushpublish</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-pushpublish</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-pushpublish.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Install Wmscore</id>
                         <phase>validate</phase>
                         <goals>
@@ -302,19 +344,19 @@
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-client</artifactId>
-                <version>1.17.1</version>
+                <version>1.18.1</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-server</artifactId>
-                <version>1.17.1</version>
+                <version>1.18.1</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-json</artifactId>
-                <version>1.17.1</version>
+                <version>1.18.1</version>
             </dependency>
 
 
@@ -327,6 +369,24 @@
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-server</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-bootstrap</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-mediacache</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-pushpublish</artifactId>
                 <version>${wms.version}</version>
             </dependency>
 
@@ -351,7 +411,7 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-ext-jdk15on</artifactId>
-                <version>1.47</version>
+                <version>1.49</version>
             </dependency>
 
             <dependency>
@@ -374,8 +434,20 @@
 
             <dependency>
             	<groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.12</version>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+
+            <dependency>
+            	<groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+
+            <dependency>
+            	<groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.1.1</version>
             </dependency>
 
             <dependency>

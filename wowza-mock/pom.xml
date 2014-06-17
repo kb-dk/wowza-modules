@@ -31,6 +31,21 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-mediacache</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-bootstrap</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-pushpublish</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>

@@ -4,6 +4,7 @@ import com.wowza.util.ElapsedTimer;
 import com.wowza.util.IOPerformanceCounter;
 import com.wowza.wms.amf.AMFObj;
 import com.wowza.wms.amf.AMFPacket;
+import com.wowza.wms.amf.IAMFPacketExtraData;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
@@ -20,6 +21,7 @@ import com.wowza.wms.stream.IMediaStreamActionNotify2;
 import com.wowza.wms.stream.IMediaStreamActionNotify3;
 import com.wowza.wms.stream.IMediaStreamCallback;
 import com.wowza.wms.stream.IMediaStreamH264SEINotify;
+import com.wowza.wms.stream.IMediaStreamLivePacketNotify;
 import com.wowza.wms.stream.IMediaStreamMetaDataProvider;
 import com.wowza.wms.stream.IMediaStreamPlay;
 import com.wowza.wms.stream.MediaStreamMap;
@@ -949,6 +951,21 @@ public class IMediaStreamMock implements IMediaStream {
     }
 
     @Override
+    public void addAudioExtraData(Map<String, IAMFPacketExtraData> stringIAMFPacketExtraDataMap) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addVideoExtraData(Map<String, IAMFPacketExtraData> stringIAMFPacketExtraDataMap) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addDataExtraData(Map<String, IAMFPacketExtraData> stringIAMFPacketExtraDataMap) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void setDataTC(long dataTC) {
         // TODO Auto-generated method stub
 
@@ -1380,6 +1397,31 @@ public class IMediaStreamMock implements IMediaStream {
     @Override
     public void removeCalbackListener(IMediaStreamCallback iMediaStreamCallback) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addLivePacketListener(IMediaStreamLivePacketNotify iMediaStreamLivePacketNotify) {
+
+    }
+
+    @Override
+    public void removeLivePacketListener(IMediaStreamLivePacketNotify iMediaStreamLivePacketNotify) {
+
+    }
+
+    @Override
+    public void notifyLivePacket(AMFPacket amfPacket) {
+
+    }
+
+    @Override
+    public boolean isPublisherStream() {
+        return false;
+    }
+
+    @Override
+    public void setPublisherStream(boolean b) {
+
     }
 
 }

@@ -272,6 +272,18 @@ public class IClientMock implements IClient {
     }
 
     @Override
+    public int getPlayStreamCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPublishStreamCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
     public String getQueryStr() {
         logger.info("iClient getQueryStr: " + queryString);
         return queryString;
@@ -759,6 +771,17 @@ public class IClientMock implements IClient {
 
     @Override
     public void setWowzSession(WOWZSession wowzSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean isSendCloseOnRejectConnection() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setSendCloseOnRejectConnection(boolean b) {
         // TODO Auto-generated method stub
     }
 

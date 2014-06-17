@@ -70,7 +70,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
         logger.debug(
                 "streamToFileForRead(IMediaStream stream=" + stream + ", String name=" + name + ", String ext=" + ext
                         + ", String streamQuery=" + streamQuery + "). Resulting streaming file: '" + streamingFile
-                        .getAbsolutePath() + "'", stream);
+                        .getAbsolutePath() + "'");
         return streamingFile;
     }
 

@@ -1,5 +1,9 @@
-<Root>
+<?xml version="1.0" encoding="UTF-8"?>
+<Root version="1">
     <Application>
+		<Name></Name>
+		<AppType></AppType>
+		<Description></Description>
         <!-- Uncomment to set application level timeout values
           <ApplicationTimeout>60000</ApplicationTimeout>
           <PingTimeout>12000</PingTimeout>
@@ -27,7 +31,7 @@
             <StreamType>default</StreamType>
 			<StorageDir>${com.wowza.wms.context.VHostConfigHome}/content</StorageDir>
             <KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
-			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, mpegdashstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
+			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, mpegdashstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, mpegdashstreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
             <LiveStreamPacketizers></LiveStreamPacketizers>
             <!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
             <Properties>
@@ -82,15 +86,18 @@
 		</TimedText>
 		
 		<!-- HTTPStreamers (separate with commas): cupertinostreaming, smoothstreaming, sanjosestreaming, mpegdashstreaming, dvrchunkstreaming -->
-		<HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming</HTTPStreamers>
+		<HTTPStreamers>cupertinostreaming,smoothstreaming,sanjosestreaming,mpegdashstreaming</HTTPStreamers>
+		<MediaCache>
+			<MediaCacheSourceList></MediaCacheSourceList>
+		</MediaCache>		
         <SharedObjects>
-            <StorageDir></StorageDir>
+			<StorageDir>${com.wowza.wms.context.VHostConfigHome}/applications/${com.wowza.wms.context.Application}/sharedobjects/${com.wowza.wms.context.ApplicationInstance}</StorageDir>
         </SharedObjects>
         <Client>
             <IdleFrequency>-1</IdleFrequency>
             <Access>
                 <StreamReadAccess>*</StreamReadAccess>
-                <StreamWriteAccess>*</StreamWriteAccess>
+				<StreamWriteAccess></StreamWriteAccess>
                 <StreamAudioSampleAccess></StreamAudioSampleAccess>
                 <StreamVideoSampleAccess></StreamVideoSampleAccess>
                 <SharedObjectReadAccess>*</SharedObjectReadAccess>
@@ -100,7 +107,7 @@
         <RTP>
             <!-- RTP/Authentication/[type]Methods defined in Authentication.xml. Default setup includes; none, basic, digest -->
             <Authentication>
-                <PublishMethod>digest</PublishMethod>
+				<PublishMethod>block</PublishMethod>
                 <PlayMethod>digest</PlayMethod>
             </Authentication>
             <!-- RTP/AVSyncMethod. Valid values are: senderreport, systemclock, rtptimecode -->
@@ -124,6 +131,28 @@
 					<RTPTransportMode>interleave</RTPTransportMode>
 				</RTSP>
 			</RTP>
+			<StreamValidator>
+				<Enable>true</Enable>
+				<ResetNameGroups>true</ResetNameGroups>
+				<StreamStartTimeout>20000</StreamStartTimeout>
+				<StreamTimeout>12000</StreamTimeout>
+				<VideoStartTimeout>0</VideoStartTimeout>
+				<VideoTimeout>0</VideoTimeout>
+				<AudioStartTimeout>0</AudioStartTimeout>
+				<AudioTimeout>0</AudioTimeout>
+				<VideoTCToleranceEnable>false</VideoTCToleranceEnable>
+				<VideoTCPosTolerance>3000</VideoTCPosTolerance>
+				<VideoTCNegTolerance>-500</VideoTCNegTolerance>
+				<AudioTCToleranceEnable>false</AudioTCToleranceEnable>
+				<AudioTCPosTolerance>3000</AudioTCPosTolerance>
+				<AudioTCNegTolerance>-500</AudioTCNegTolerance>
+				<DataTCToleranceEnable>false</DataTCToleranceEnable>
+				<DataTCPosTolerance>3000</DataTCPosTolerance>
+				<DataTCNegTolerance>-500</DataTCNegTolerance>
+				<AVSyncToleranceEnable>false</AVSyncToleranceEnable>
+				<AVSyncTolerance>1500</AVSyncTolerance>
+				<DebugLog>false</DebugLog>
+			</StreamValidator>
             <!-- Properties defined here will override any properties defined in conf/MediaCasters.xml for any MediaCasters loaded by this applications -->
             <Properties>
             </Properties>
@@ -148,10 +177,19 @@
             <Properties>
             </Properties>
         </HTTPStreamer>
+		<Manager>
+			<!-- Properties defined are used by the Manager -->
+			<Properties>
+			</Properties>
+		</Manager>
         <Repeater>
             <OriginURL></OriginURL>
             <QueryString><![CDATA[]]></QueryString>
         </Repeater>
+		<StreamRecorder>
+			<Properties>
+			</Properties>
+		</StreamRecorder> 
         <Modules>
             <Module>
                 <Name>base</Name>

@@ -35,6 +35,12 @@
 
         <dependency>
             <groupId>com.wms</groupId>
+            <artifactId>wms-bootstrap</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
             <artifactId>wms-core</artifactId>
             <scope>provided</scope>
         </dependency>

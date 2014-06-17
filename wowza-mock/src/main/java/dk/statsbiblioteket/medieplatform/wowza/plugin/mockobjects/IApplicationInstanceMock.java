@@ -521,6 +521,12 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     }
 
     @Override
+    public WMSProperties getManagerProperties() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public List<String> getPublishStreamNames() {
         // TODO Auto-generated method stub
         return null;
@@ -1375,8 +1381,8 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     }
 
     @Override
-    public void notifyDvrStreamManagerCreate(IDvrStreamManager iDvrStreamManager) {
-        // TODO Auto-generated method stub
+    public void notifyDvrStreamManagerCreate(IDvrStreamManager iDvrStreamManager, String s) {
+
     }
 
     @Override
@@ -1477,6 +1483,83 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     @Override
     public void notifyHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public List<com.wowza.wms.mediacache.model.MediaCacheSourceFilter> getMediaCacheFilters() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isMediaCacheSourceAllowed(String s) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public List<com.wowza.wms.pushpublish.model.IPushPublishSession> getPushPublishSessions(IMediaStream iMediaStream) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<com.wowza.wms.pushpublish.model.IPushPublishSession> getPushPublishSessions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addPushPublishSession(IMediaStream iMediaStream,
+                                      com.wowza.wms.pushpublish.model.IPushPublishSession iPushPublishSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removePushPublishSession(IMediaStream iMediaStream,
+                                         com.wowza.wms.pushpublish.model.IPushPublishSession iPushPublishSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removePushPublishSessions(IMediaStream iMediaStream) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addPushPublishSessionListener(
+            com.wowza.wms.pushpublish.model.IPushPublishSessionNotify iPushPublishSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removePushPublishSessionListener(
+            com.wowza.wms.pushpublish.model.IPushPublishSessionNotify iPushPublishSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyPushPublishSessionCreate(String s, IMediaStream iMediaStream,
+                                               com.wowza.wms.pushpublish.model.IPushPublishSession iPushPublishSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifyPushPublishSessionDestroy(String s, IMediaStream iMediaStream,
+                                                com.wowza.wms.pushpublish.model.IPushPublishSession iPushPublishSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getPushPublishSessionCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public WMSProperties getStreamRecorderProperties() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

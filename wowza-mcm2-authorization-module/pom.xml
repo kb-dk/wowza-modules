@@ -10,27 +10,6 @@
 
     <artifactId>wowza-mcm2-authorization-module</artifactId>
 
-    <build>
-        <!-- Configure the source files as resources to be filtered
-          into a custom target directory -->
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <filtering>true</filtering>
-                <targetPath>../filtered-sources/java</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
-
-        <!-- Overrule the default pom source directory to match
-              our generated sources so the compiler will pick them up -->
-        <sourceDirectory>target/filtered-sources/java</sourceDirectory>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
@@ -56,6 +35,12 @@
         <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-bootstrap</artifactId>
             <scope>provided</scope>
         </dependency>
 

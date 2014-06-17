@@ -28,13 +28,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-server</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wms</groupId>
-            <artifactId>wms-server</artifactId>
+            <artifactId>wms-bootstrap</artifactId>
             <scope>provided</scope>
         </dependency>
 

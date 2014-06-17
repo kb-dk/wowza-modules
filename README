@@ -1,4 +1,4 @@
-These are modules for Wowza 3.6.2 used at the State and University Library, Denmark.
+These are modules for Wowza 4.0.3 used at the State and University Library, Denmark.
 
 It consists of 7 modules and two example VHosts
 
@@ -14,12 +14,14 @@ wowza-statistics-module
 
 wowza-mcm-authorization-module
   Given a query parameter, check that it as a valid MCM session. This module is deprecated. Use MCM2 module instead.
+  Some classes are used by wowza-mcm2-authorization-module
 
 wowza-mcm2-authorization-module
   Given a query parameter, check that it as a valid MCM2 session
 
 wowza-mcm-statistics-module
-  Log events from wowza to MCM. This module is deprecated, statistics logging is not supported in MCM2.
+  Log events from wowza to MCM. This module is deprecated, statistics logging is not supported in MCM2. Some classes
+  are used by wowza-db-statistics-module.
 
 wowza-db-statistics-module
   Log events from wowza to a database, including MCM session information.

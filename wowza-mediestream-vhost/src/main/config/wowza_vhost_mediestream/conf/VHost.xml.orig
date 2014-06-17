@@ -1,17 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Root version="2">
+<Root>
 	<VHost>
-		<Description></Description>
 		<HostPortList>
 			<HostPort>
-				<Name>Default Streaming</Name>
-				<Type>Streaming</Type>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>4</ProcessorCount>
 				<IpAddress>*</IpAddress>
 				<!-- Separate multiple ports with commas -->
 				<!-- 80: HTTP, RTMPT -->
 				<!-- 554: RTSP -->
-				<Port>1935</Port>
+				<Port>1937</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
@@ -49,11 +45,6 @@
 						<AuthenticationMethod>none</AuthenticationMethod>
 					</HTTPProvider>
 					<HTTPProvider>
-					    <BaseClass>com.wowza.wms.timedtext.http.HTTPProviderCaptionFile</BaseClass>
-					    <RequestFilters>*.ttml|*.srt|*.scc|*.vtt</RequestFilters>
-					    <AuthenticationMethod>none</AuthenticationMethod>
-					</HTTPProvider>
-					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerVersion</BaseClass>
 						<RequestFilters>*</RequestFilters>
 						<AuthenticationMethod>none</AuthenticationMethod>
@@ -64,9 +55,7 @@
 			<!-- 443 with SSL -->
 			<!--
 			<HostPort>
-				<Name>Default SSL Streaming</Name>
-				<Type>Streaming</Type>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>4</ProcessorCount>
 				<IpAddress>*</IpAddress>
 				<Port>443</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
@@ -115,11 +104,9 @@
 			
 			<!-- Admin HostPort -->
 			<HostPort>
-				<Name>Default Admin</Name>
-				<Type>Admin</Type>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>1</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>8084</Port>
+				<Port>8088</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
@@ -209,20 +196,19 @@
 			</HTTPStreamerAdapter>
 		</HTTPStreamerAdapters>
 
-		<!-- When set to zero, thread pool configuration is done in Server.xml -->
 		<HandlerThreadPool>
-			<PoolSize>0</PoolSize>
+			<PoolSize>120</PoolSize>
 		</HandlerThreadPool>
 		<TransportThreadPool>
-			<PoolSize>0</PoolSize>
+			<PoolSize>80</PoolSize>
 		</TransportThreadPool>
 		<IdleWorkers>
-			<WorkerCount>${com.wowza.wms.TuningAuto}</WorkerCount>
+			<WorkerCount>4</WorkerCount>
 			<CheckFrequency>50</CheckFrequency>
 			<MinimumWaitTime>5</MinimumWaitTime>
 		</IdleWorkers>
 		<NetConnections>
-			<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+			<ProcessorCount>4</ProcessorCount>
 			<IdleFrequency>250</IdleFrequency>
 			<SocketConfiguration>
 				<ReuseAddress>true</ReuseAddress>
@@ -237,24 +223,6 @@
 				<AcceptorBackLog>100</AcceptorBackLog>
 			</SocketConfiguration>
 		</NetConnections>
-		<MediaCasters>
-			<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
-			<SocketConfiguration>
-				<ReuseAddress>true</ReuseAddress>
-				<ReceiveBufferSize>65000</ReceiveBufferSize>
-				<ReadBufferSize>65000</ReadBufferSize>
-				<SendBufferSize>65000</SendBufferSize>
-				<KeepAlive>true</KeepAlive>
-				<!-- <TrafficClass>0</TrafficClass> -->
-				<!-- <OobInline>false</OobInline> -->
-				<!-- <SoLingerTime>-1</SoLingerTime> -->
-				<!-- <TcpNoDelay>false</TcpNoDelay> -->
-				<ConnectionTimeout>10000</ConnectionTimeout>
-			</SocketConfiguration>
-		</MediaCasters>
-		<LiveStreamTranscoders>
-			<MaximumConcurrentTranscodes>0</MaximumConcurrentTranscodes>
-		</LiveStreamTranscoders>
 		<HTTPTunnel>
 			<KeepAliveTimeout>2000</KeepAliveTimeout>
 		</HTTPTunnel>
@@ -288,39 +256,26 @@
 				</Outgoing>
 			</DatagramConfiguration>
 			<UnicastIncoming>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>4</ProcessorCount>
 			</UnicastIncoming>
 			<UnicastOutgoing>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>8</ProcessorCount>
 			</UnicastOutgoing>
 			<MulticastIncoming>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>4</ProcessorCount>
 			</MulticastIncoming>
 			<MulticastOutgoing>
-				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
+				<ProcessorCount>4</ProcessorCount>
 			</MulticastOutgoing>
 		</RTP>
 		<Application>
 			<ApplicationTimeout>60000</ApplicationTimeout>
 			<PingTimeout>12000</PingTimeout>
-			<UnidentifiedSessionTimeout>30000</UnidentifiedSessionTimeout>
 			<ValidationFrequency>20000</ValidationFrequency>
 			<MaximumPendingWriteBytes>0</MaximumPendingWriteBytes>
 			<MaximumSetBufferTime>60000</MaximumSetBufferTime>
 		</Application>
 		<StartStartupStreams>true</StartStartupStreams>
-		
-		<Manager>
-			<TestPlayer>
-				<IpAddress>${com.wowza.wms.HostPort.IpAddress}</IpAddress>
-				<Port>${com.wowza.wms.HostPort.FirstStreamingPort}</Port>
-				<SSLEnable>${com.wowza.wms.HostPort.SSLEnable}</SSLEnable>
-			</TestPlayer>
-			<!-- Properties defined are used by the Manager -->
-			<Properties>
-			</Properties>
-		</Manager>
-		
 		<!-- Properties defined here will be added to the IVHost.getProperties() collection -->
 		<Properties>
 		</Properties>
