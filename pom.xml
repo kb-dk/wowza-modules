@@ -36,6 +36,7 @@
         <module>wowza-mediestream-vhost</module>
         <module>wowza-mcm-authorization-module</module>
         <module>wowza-mcm2-authorization-module</module>
+        <module>wowza-mcm3-authorization-module</module>
         <module>wowza-mcm-statistics-module</module>
         <module>wowza-db-statistics-module</module>
         <module>wowza-chaos-vhost</module>

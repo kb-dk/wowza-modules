@@ -1,0 +1,44 @@
+<!-- URL - http://api.test.chaos-systems.com/Object/Get?sessionGUID=1ce3f796-7e89-d34e-880b-25e408dd64e4&query=GUID:368c6661-3db2-0344-bdf8-0f7d9d98f36f&includeFiles=true&pageSize=1&format=XML -->
+<PortalResult Duration="135">
+    <ModuleResults>
+        <ModuleResult Fullname="MCM" Duration="130" Count="1" TotalCount="1">
+            <Results>
+                <Result FullName="CHAOS.MCM.Data.DTO.Object">
+                    <GUID>368c6661-3db2-0344-bdf8-0f7d9d98f36f</GUID>
+                    <ObjectTypeID>40</ObjectTypeID>
+                    <DateCreated>13-06-2012 19:44:22</DateCreated>
+                    <Metadatas/>
+                    <Files>
+                        <Result FullName="CHAOS.MCM.Data.DTO.FileInfo">
+                            <ID>27900</ID>
+                            <Filename>P3_2000_2200_890622_001.mp3</Filename>
+                            <OriginalFilename>P3_2000_2200_890622_001.mp3</OriginalFilename>
+                            <Token>RTMP Streaming</Token>
+                            <URL>
+                                rtmp://streaming.chaos.larm-archive.org/chaos_non/mp3:Kulturarv_MP3/Batch04/Disc11/mp3_128kbps/P3_2000_2200_890622_001.mp3
+                            </URL>
+                            <FormatID>6</FormatID>
+                            <Format>MP3 128 kbit CBR</Format>
+                            <FormatCategory>Audio Preview</FormatCategory>
+                            <FormatType>Audio</FormatType>
+                        </Result>
+                        <Result FullName="CHAOS.MCM.Data.DTO.FileInfo">
+                            <ID>50007</ID>
+                            <Filename>P3_logo.png</Filename>
+                            <OriginalFilename>P3_logo.png</OriginalFilename>
+                            <Token>HTTP Download</Token>
+                            <URL>
+                                http://s3-eu-west-1.amazonaws.com/mcm/LarmLogos/P3_logo.png
+                            </URL>
+                            <FormatID>5</FormatID>
+                            <Format>PNG</Format>
+                            <FormatCategory>Thumbnail</FormatCategory>
+                            <FormatType>Image</FormatType>
+                        </Result>
+                    </Files>
+                    <ObjectRelations/>
+                </Result>
+            </Results>
+        </ModuleResult>
+    </ModuleResults>
+</PortalResult>
