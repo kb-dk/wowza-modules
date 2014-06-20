@@ -56,6 +56,11 @@
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <artifactId>wowza-mcm3-authorization-module</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-content-resolver-module</artifactId>
         </dependency>
     </dependencies>
