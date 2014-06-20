@@ -46,7 +46,7 @@ public class MCM3OReturnValueWrapperTest {
         InputStream is = getTestDataFileAsInputStream(filenameOfvalidMCMOutputFull);
         MCM3OReturnValueWrapper returnWrapper = new MCM3OReturnValueWrapper(logger, is);
         String returnedValue = returnWrapper.getFilenames().get(0);
-        String expectedValue = "P3_2000_2200_890622_001.mp3";
+        String expectedValue = "P1_0000_000850_00000000_2023_Tysk propaganda-udsendelse - Reportage fra østfronten.mp3";
         assertEquals("Filename", expectedValue, returnedValue);
     }
 
@@ -55,7 +55,7 @@ public class MCM3OReturnValueWrapperTest {
         InputStream is = getTestDataFileAsInputStream(filenameOfvalidMCMOutputFull);
         MCM3OReturnValueWrapper returnWrapper = new MCM3OReturnValueWrapper(logger, is);
         String returnedValue = returnWrapper.getObjectID();
-        String expectedValue = "368c6661-3db2-0344-bdf8-0f7d9d98f36f";
+        String expectedValue = "84802737-4910-d941-a7f0-14e4bdf1bc4d";
         assertEquals("ObjectID", expectedValue, returnedValue);
     }
 
@@ -79,8 +79,8 @@ public class MCM3OReturnValueWrapperTest {
         InputStream is = getTestDataFileAsInputStream(filenameOfvalidMCMOutputFull);
         MCM3OReturnValueWrapper returnWrapper = new MCM3OReturnValueWrapper(logger, is);
         List<String> returnedFilenames = returnWrapper.getFilenames();
-        String expectedValue1 = "P3_2000_2200_890622_001.mp3";
-        String expectedValue2 = "P3_logo.png";
+        String expectedValue1 = "P1_0000_000850_00000000_2023_Tysk propaganda-udsendelse - Reportage fra østfronten.mp3";
+        String expectedValue2 = "P1_logo.png";
         assertTrue("Filename", returnedFilenames.contains(expectedValue1));
         assertTrue("Filename", returnedFilenames.contains(expectedValue2));
     }
