@@ -23,6 +23,7 @@ public class MCM3OReturnValueWrapper extends MCMOReturnValueWrapper {
      * @param docEle Returned XML document.
      * @throws MCMOutputException On trouble communicating or parsing.
      */
+    @Override
     protected void extractReturnValuesForSession(Element docEle) throws MCMOutputException {
         String returnType = docEle.getNodeName();
         if (returnType.equals("PortalResult")) {

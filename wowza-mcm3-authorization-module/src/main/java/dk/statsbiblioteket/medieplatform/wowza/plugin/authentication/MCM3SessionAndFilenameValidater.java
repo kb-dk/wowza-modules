@@ -58,12 +58,19 @@ public class MCM3SessionAndFilenameValidater extends MCMSessionAndFilenameValida
             throws IOException, MalformedURLException, MCMOutputException {
         String urlStringToMCM = connectionURLString + "/" + validationMethodAtServer + "?" + "sessionGUID=" + sessionID
                 + "&" + "objectGuids=" + objectID + "&" + "includeMetadata=true" + "&" + "includeFiles=true";
-        InputStream in = new URL(urlStringToMCM).openConnection().getInputStream();
-        if (logger.isDebugEnabled()) {
-            logger.debug("MCM URL:" + urlStringToMCM);
-            InputStream inDebug = new URL(urlStringToMCM).openConnection().getInputStream();
-            logger.debug("Returned from MCM: " + StringAndTextUtil.convertStreamToString(inDebug));
+        InputStream in = null;
+        try {
+            in = new URL(urlStringToMCM).openConnection().getInputStream();
+            if (logger.isDebugEnabled()) {
+                logger.debug("MCM URL:" + urlStringToMCM);
+                InputStream inDebug = new URL(urlStringToMCM).openConnection().getInputStream();
+                logger.debug("Returned from MCM: " + StringAndTextUtil.convertStreamToString(inDebug));
+            }
+            return new MCM3OReturnValueWrapper(logger, in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
-        return new MCM3OReturnValueWrapper(logger, in);
     }
 }

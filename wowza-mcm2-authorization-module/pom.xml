@@ -13,12 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mock</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-common</artifactId>
         </dependency>
 

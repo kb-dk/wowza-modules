@@ -31,7 +31,7 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
             WowzaSessionAuthenticationMCM2ModuleBase.class.getPackage().getImplementationVersion();
     private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
     private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
-    /** The authenticator used for validatoing playback permissions. */
+    /** The authenticator used for validating playback permissions. */
     private StreamAuthenticater streamAuthenticater;
 
     public WowzaSessionAuthenticationMCM2ModuleBase() {
