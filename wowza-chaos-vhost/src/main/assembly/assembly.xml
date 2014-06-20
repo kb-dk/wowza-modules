@@ -122,7 +122,7 @@
         </fileSet>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_mcm3_doms/conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_chaos_doms/conf</directory>
+            <directory>src/main/config/wowza_vhost_chaos_mcm3_doms/conf</directory>
             <directoryMode>0775</directoryMode>
         </fileSet>
     </fileSets>
