@@ -8,6 +8,8 @@ import datetime
 import os
 import csv
 import re
+import json
+import codecs
 
 config = ConfigParser.SafeConfigParser()
 config.read("NO-154.cfg")
@@ -22,10 +24,10 @@ re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 #doms_id = "5c457f00-bb98-4fb3-b3c8-f2df56018130"
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
-start_str = "2013-06-01"
+start_str = "2013-06-17"
 end_str = start_str # "2013-06-01"
 
-# http://stackoverflow.com/a/24637447/53897
+# http://stackoverflow.com/a/24637447/53897 - 10:00 is to be far away from midnight
 start_date = datetime.datetime.strptime(start_str + ' 10:00', '%Y-%m-%d %H:%M')
 end_date = datetime.datetime.strptime(end_str + ' 10:00', '%Y-%m-%d %H:%M')
 
@@ -38,7 +40,7 @@ fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestids
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess", "Event", "UUID"]
 
-result_file = open("out.txt", "wb")
+result_file = codecs.open("out.txt", encoding="utf-8", mode="w")
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter=";")
 result_dict_writer.writeheader()
 
@@ -119,6 +121,20 @@ for date in dates:
         out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0]
         out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0]
         out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0]
+
+        # credentials
+
+        creds = json.loads(attr)
+
+        for cred in ["schacHomeOrganization", "eduPersonPrimaryAffiliation",
+              "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
+              "SBIPRoleMapper", "MediestreamFullAccess"]:
+            if cred in creds:
+                out[cred] = creds[cred]
+            else:
+                out[cred] = ""
+
+        print out
         result_dict_writer.writerow(out)
         
     log_file.close()
