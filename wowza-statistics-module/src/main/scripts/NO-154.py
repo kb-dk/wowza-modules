@@ -1,17 +1,18 @@
 #!/usr/bin/env python2
 
-import requests
 from lxml import etree as ET
 from pprint import pprint
 import ConfigParser
-import datetime
-import os
 import csv
-import re
-import json
+import datetime
 import io
+import json
+import os
+import re
+import requests
+import sys
 
-encoding = "latin-1" # "utf-8"
+encoding = "latin-1" # What to convert non-ASCII chars to.
 
 config = ConfigParser.SafeConfigParser()
 config.read("NO-154.cfg")
@@ -20,14 +21,9 @@ doms_url_prefix = config.get("cgi", "doms_url_prefix") # .../uuid%3A
 
 re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$")
 
-# Utoya
-#doms_id = "00f2f269-505d-4e59-892e-b31655c721c2"
-# Avis biludlejning
-#doms_id = "5c457f00-bb98-4fb3-b3c8-f2df56018130"
-
 log_file_pattern = config.get("cgi", "log_file_pattern")
-start_str = "2013-06-17"
-end_str = start_str # "2013-06-01"
+start_str = "2013-06-15"
+end_str = "2013-07-01"
 
 # http://stackoverflow.com/a/24637447/53897 - 10:00 is to be far away from midnight
 start_date = datetime.datetime.strptime(start_str + ' 10:00', '%Y-%m-%d %H:%M')
@@ -36,24 +32,26 @@ end_date = datetime.datetime.strptime(end_str + ' 10:00', '%Y-%m-%d %H:%M')
 # generate dates. note:  range(0,1) -> [0] hence the +1
 dates = [start_date + datetime.timedelta(days = x) for x in range(0,(end_date - start_date).days + 1)]
 
+# Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
               "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
               "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess", "Event", "UUID"]
 
-result_file = open("out.csv", "wb")
+result_file = sys.stdout; # open("out.csv", "wb")
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 result_dict_writer.writeheader()
 
-seen_before = {} # cache the two lookups in the DOMS for a given id.
+seen_before = {} # DOMS lookup cache, id is key
 
 for date in dates:
     log_file_name = log_file_pattern % date.strftime("%Y-%m-%d")
-    print log_file_name
+    # print log_file_name
     
     if os.path.isfile(log_file_name) == False:
-        print "Not found: ", log_file_name
+        #print "Not found: ", log_file_name
+        continue
 
     log_file = open(log_file_name, "rb")
 
@@ -133,7 +131,6 @@ for date in dates:
         out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
-
         creds = json.loads(attr)
 
         for cred in ["schacHomeOrganization", "eduPersonPrimaryAffiliation",
@@ -149,5 +146,5 @@ for date in dates:
         result_dict_writer.writerow(out)
         
     log_file.close()
-    result_file.close()
+#    result_file.close()
 
