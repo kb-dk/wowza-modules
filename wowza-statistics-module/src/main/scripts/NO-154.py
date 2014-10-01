@@ -9,7 +9,9 @@ import os
 import csv
 import re
 import json
-import codecs
+import io
+
+encoding = "latin-1" # "utf-8"
 
 config = ConfigParser.SafeConfigParser()
 config.read("NO-154.cfg")
@@ -40,9 +42,11 @@ fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestids
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess", "Event", "UUID"]
 
-result_file = codecs.open("out.txt", encoding="utf-8", mode="w")
-result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter=";")
+result_file = open("out.csv", "wb")
+result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 result_dict_writer.writeheader()
+
+seen_before = {} # cache the two lookups in the DOMS for a given id.
 
 for date in dates:
     log_file_name = log_file_pattern % date.strftime("%Y-%m-%d")
@@ -74,23 +78,29 @@ for date in dates:
         
         # print doms_id
 
-        url_core = doms_url_prefix + doms_id + "/datastreams/PBCORE/content"
-        url_ext = doms_url_prefix + doms_id + "/datastreams/RELS-EXT/content"
+        if doms_id in seen_before:
+            (ext_body, core_body) = seen_before[doms_id]
+        else:
+            url_core = doms_url_prefix + doms_id + "/datastreams/PBCORE/content"
+            url_ext = doms_url_prefix + doms_id + "/datastreams/RELS-EXT/content"
+            
+            username = config.get("cgi", "username")
+            password = config.get("cgi", "password")
+            
+            ext_body = requests.get(url_ext, auth=(username,password))
+            
+            if ext_body.status_code != 200:
+                print "status_code = " + ext_body.status_code
+                continue
 
-        username = config.get("cgi", "username")
-        password = config.get("cgi", "password")
+            core_body = requests.get(url_core, auth=(username,password))
 
-        ext_body = requests.get(url_ext, auth=(username,password))
+            if core_body.status_code != 200:
+                print "status_code = " + ext_core.status_code
+                continue
+            
+            seen_before[doms_id] = (ext_body, core_body)
 
-        if ext_body.status_code != 200:
-            print "status_code = " + ext_body.status_code
-            continue
-
-        core_body = requests.get(url_core, auth=(username,password))
-
-        if core_body.status_code != 200:
-            print "status_code = " + ext_core.status_code
-            continue
 
         #print(ext_body.text)
 
@@ -109,18 +119,18 @@ for date in dates:
         core = ET.fromstring(core_body.text)
 
         # Radio/TV collection
-        out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0]
-        out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0]
-        out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0]
-        out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0]
+        out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
     
         # Reklamefilm
-        out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0]
-        out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0]
-        out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0]
-        out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0]
-        out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0]
-        out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0]
+        out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
 
@@ -130,11 +140,12 @@ for date in dates:
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess"]:
             if cred in creds:
-                out[cred] = creds[cred]
+                
+                out[cred] = ", ".join(e.encode(encoding) for e in creds[cred])
             else:
                 out[cred] = ""
 
-        print out
+        # print out
         result_dict_writer.writerow(out)
         
     log_file.close()

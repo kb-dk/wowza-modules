@@ -1,0 +1,8 @@
+[cgi]
+doms_url_prefix = http://naiad:7880/fedora/objects/uuid%%3A
+
+username = ##DOMS USERNAME##
+password = ##DOMS PASSWORD##
+
+log_file_pattern = sample-logs/StreamingStat-%%s.log
+
