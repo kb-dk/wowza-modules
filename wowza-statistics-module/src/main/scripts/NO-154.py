@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 
 from lxml import etree as ET
-from pprint import pprint
 import ConfigParser
 import csv
 import datetime
@@ -11,6 +10,10 @@ import os
 import re
 import requests
 import sys
+import cgi
+import cgitb
+
+cgitb.enable() # web page feedback in case of problems
 
 encoding = "latin-1" # What to convert non-ASCII chars to.
 
