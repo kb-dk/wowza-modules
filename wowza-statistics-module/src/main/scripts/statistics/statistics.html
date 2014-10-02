@@ -43,8 +43,8 @@
       }
 
       $(document).ready(function(){
-        $("#fromDate").datepicker();
-        $("#toDate").datepicker();
+        $("#fromDate").datepicker({format: "yyyy-mm-dd"});
+        $("#toDate").datepicker({format: "yyyy-mm-dd"});
         $("#getStatistics").attr("href", myBaseUrl);
         $("#getStatistics").click(function(event) {changedDate();});
       }); 
