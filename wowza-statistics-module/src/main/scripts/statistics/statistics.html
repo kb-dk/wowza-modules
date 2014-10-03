@@ -28,17 +28,16 @@
         </div>
       </div>
     </div>
-
+	<div>Der arbejdes paa en kopi af produktionsdata fra 2013-06-17 til 2014-09-21</div>
     <script type="text/javascript" src="jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="datepicker/js/bootstrap-datepicker.js"></script>
     <script>
 
-      var myBaseUrl = "baseurl";
+      var myBaseUrl = "statistics.py";
 
       function changedDate() {
-        alert("changing date");
-        var url = myBaseUrl +  "?fromDate=" + $("#fromDate").val() + "&toDate=" + $("#fromDate").val();
+        var url = myBaseUrl +  "?fromDate=" + $("#fromDate").val() + "&toDate=" + $("#toDate").val();
         $("#getStatistics").attr("href", url);
       }
 

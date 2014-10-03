@@ -1,36 +1,48 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.4
 
 from lxml import etree as ET
 import ConfigParser
 import csv
 import datetime
-import io
 import simplejson
 import os
 import re
 import sys
+import time
 import cgi
-#import cgitb
+import cgitb
 import urllib2
 
-#cgitb.enable() # web page feedback in case of problems
+cgitb.enable() # web page feedback in case of problems
+parameters = cgi.FieldStorage()
 
-encoding = "latin-1" # What to convert non-ASCII chars to.
+encoding = "utf-8" # What to convert non-ASCII chars to.
 
 config = ConfigParser.SafeConfigParser()
-config.read("NO-154.cfg")
+config.read("../../statistics.py.cfg")
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
 re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
-start_str = "2013-06-15"
-end_str = "2013-07-01"
+if "fromDate" in parameters:
+	start_str = parameters["fromDate"].value # "2013-06-15"
+else:
+	start_str = "2014-09-01"
+
+if "toDate" in parameters:
+	end_str = parameters["toDate"].value
+else:
+	end_str = "2014-12-01"
 
 # http://stackoverflow.com/a/24637447/53897 - 10:00 is to be far away from midnight
-start_date = datetime.datetime.strptime(start_str + ' 10:00', '%Y-%m-%d %H:%M')
-end_date = datetime.datetime.strptime(end_str + ' 10:00', '%Y-%m-%d %H:%M')
+#start_date = datetime.datetime.strptime(start_str + ' 10:00', '%Y-%m-%d %H:%M')
+#end_date = datetime.datetime.strptime(end_str + ' 10:00', '%Y-%m-%d %H:%M')
+
+# http://stackoverflow.com/a/2997846/53897
+start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
+end_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(end_str + " 10:00", '%Y-%m-%d %H:%M')))
 
 # generate dates. note:  range(0,1) -> [0] hence the +1
 dates = [start_date + datetime.timedelta(days = x) for x in range(0,(end_date - start_date).days + 1)]
@@ -56,9 +68,17 @@ fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestids
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess", "UUID", "URL"]
 
+print "Content-type: text/csv"
+print "Content-disposition: attachment; filename=stat-" + start_str + "-" + end_str + ".csv"
+print
+
+
 result_file = sys.stdout; # open("out.csv", "wb")
+
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
-result_dict_writer.writeheader()
+#result_dict_writer.writeheader() - not present in 2.4
+header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
+result_dict_writer.writerow(header)
 
 doms_ids_seen = {} # DOMS lookup cache, id is key
 urls_seen = {} # PLAY event seen for this URL?
@@ -109,9 +129,12 @@ for date in dates:
             
             ext_body = opener.open(url_ext)
             ext_body_text = ext_body.read()
+	    ext_body.close()		
+	
 
             core_body = opener.open(url_core)
             core_body_text = core_body.read()
+	    core_body.close()
             
             doms_ids_seen[doms_id] = (ext_body, core_body)
 
@@ -161,4 +184,5 @@ for date in dates:
         
     log_file.close()
 #    result_file.close()
+
 
