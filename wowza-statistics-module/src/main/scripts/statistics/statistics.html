@@ -36,7 +36,7 @@
 
       var myBaseUrl = "statistics.py";
 
-      function changedDate() {
+      function updateLink() {
         var url = myBaseUrl +  "?fromDate=" + $("#fromDate").val() + "&toDate=" + $("#toDate").val();
         $("#getStatistics").attr("href", url);
       }
@@ -45,7 +45,7 @@
         $("#fromDate").datepicker({format: "yyyy-mm-dd"});
         $("#toDate").datepicker({format: "yyyy-mm-dd"});
         $("#getStatistics").attr("href", myBaseUrl);
-        $("#getStatistics").click(function(event) {changedDate();});
+        $("#getStatistics").click(function(event) {updateLink();});
       }); 
     </script>
   </body>
