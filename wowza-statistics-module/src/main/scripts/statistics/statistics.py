@@ -13,6 +13,8 @@ import cgi
 import cgitb
 import urllib2
 
+populate = True
+
 cgitb.enable() # web page feedback in case of problems
 parameters = cgi.FieldStorage()
 
@@ -23,7 +25,8 @@ config.read("../../statistics.py.cfg")
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
-re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$")
+# Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f (optionally trailed by a ".fileending")
+re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\.[a-zA-Z0-9]*)?$")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
@@ -59,7 +62,6 @@ password_mgr.add_password(None, top_level_url, username, password)
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
-
             
 # Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
@@ -76,12 +78,13 @@ print
 result_file = sys.stdout; # open("out.csv", "wb")
 
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
-#result_dict_writer.writeheader() - not present in 2.4
+# Inlined result_dict_writer.writeheader() - not present in 2.4.
+# Writes out a row where each column name has been put in the corresponding column 
 header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
 doms_ids_seen = {} # DOMS lookup cache, id is key
-urls_seen = {} # PLAY event seen for this URL?
+urls_seen = {} # PLAY event seen yet for this URL? (value is not important)
 
 for date in dates:
     log_file_name = log_file_pattern % date.strftime("%Y-%m-%d")
@@ -100,29 +103,35 @@ for date in dates:
         attr = line["User attributes"]
         ts = line["Timestamp"]
 
-        # Ditte + Mogens - only give first PLAY event for each URL.
+        # Ditte + Mogens rule - only give first PLAY event for each URL.
         
         if (event != "PLAY"):
             continue
 
         if url in urls_seen:
             continue
+	else:
+	    urls_seen[url] = ts # only key matters.
 
-        urls_seen[url] = ts # only key matters.
-            
-        out = { "Timestamp": ts, "URL": url}
+	# Ok.  Now slowly build row to write in "out"           
+ 
+        out = { "Timestamp": ts, "URL": url} # add more below
         
-        m = re_doms_id_from_url.search(url)
-        if m == None:
-            print "No UUID in URL"
+        regexp_match = re_doms_id_from_url.search(url)
+        if regexp_match == None:
+            print "No UUID in URL: " + url + ", line skipped"
             continue
 
-        doms_id = m.group(0)
+        doms_id = regexp_match.group(1)
 
-        out["UUID"] = doms_id
+	# big sister probes this, skip
+	if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
+		continue        
+
+	out["UUID"] = doms_id
         
         if doms_id in doms_ids_seen:
-            (ext_body, core_body) = doms_ids_seen[doms_id]
+            (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
         else:
             url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
             url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
@@ -136,37 +145,33 @@ for date in dates:
             core_body_text = core_body.read()
 	    core_body.close()
             
-            doms_ids_seen[doms_id] = (ext_body, core_body)
-
-        #print(ext_body.text)
+            doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
 
         namespaces = { "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
                        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                        "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+        
+       	ext = ET.fromstring(ext_body_text)
 
-        ext = ET.fromstring(ext_body_text)
+       	# The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-        # The (get_list() or [""])[0] returns the empty string if the first list is empty
+       	out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+       	core = ET.fromstring(core_body_text)
 
-        # print(core_body_text)
-
-        core = ET.fromstring(core_body_text)
-
-        # Radio/TV collection
-        out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+	# Radio/TV collection
+       	out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
     
-        # Reklamefilm
-        out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	# Reklamefilm
+       	out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+       	out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
         creds = simplejson.loads(attr)
@@ -175,7 +180,7 @@ for date in dates:
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess"]:
             if cred in creds:
-                
+        	# creds[cred] is list, encode each entry, and join them as a single comma-separated string.        
                 out[cred] = ", ".join(e.encode(encoding) for e in creds[cred])
             else:
                 out[cred] = ""
@@ -183,6 +188,3 @@ for date in dates:
         result_dict_writer.writerow(out)
         
     log_file.close()
-#    result_file.close()
-
-
