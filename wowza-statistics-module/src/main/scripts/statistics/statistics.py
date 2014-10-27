@@ -1,5 +1,7 @@
 #!/usr/bin/env python2.4
 
+# Jira issue NO-154.  Enrich mediastream player log with DOMS meta data.
+
 from lxml import etree as ET
 import ConfigParser
 import csv
@@ -13,7 +15,11 @@ import cgi
 import cgitb
 import urllib2
 
-populate = True
+# 
+
+config_file_name = "../../statistics.py.cfg"
+
+# -----
 
 cgitb.enable() # web page feedback in case of problems
 parameters = cgi.FieldStorage()
@@ -21,7 +27,7 @@ parameters = cgi.FieldStorage()
 encoding = "utf-8" # What to convert non-ASCII chars to.
 
 config = ConfigParser.SafeConfigParser()
-config.read("../../statistics.py.cfg")
+config.read(config_file_name)
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
@@ -39,11 +45,7 @@ if "toDate" in parameters:
 else:
 	end_str = "2014-12-01"
 
-# http://stackoverflow.com/a/24637447/53897 - 10:00 is to be far away from midnight
-#start_date = datetime.datetime.strptime(start_str + ' 10:00', '%Y-%m-%d %H:%M')
-#end_date = datetime.datetime.strptime(end_str + ' 10:00', '%Y-%m-%d %H:%M')
-
-# http://stackoverflow.com/a/2997846/53897
+# http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
 end_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(end_str + " 10:00", '%Y-%m-%d %H:%M')))
 
@@ -103,7 +105,7 @@ for date in dates:
         attr = line["User attributes"]
         ts = line["Timestamp"]
 
-        # Ditte + Mogens rule - only give first PLAY event for each URL.
+        # Ditte + Mogens rule - we only look at the very first event with the type "PLAY" for each URL.
         
         if (event != "PLAY"):
             continue
@@ -124,7 +126,7 @@ for date in dates:
 
         doms_id = regexp_match.group(1)
 
-	# big sister probes this, skip
+	# big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
 	if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
 		continue        
 
