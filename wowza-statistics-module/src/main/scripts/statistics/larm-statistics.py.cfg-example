@@ -1,0 +1,8 @@
+[cgi]
+doms_url = http://naiad:7880/fedora/
+
+username = ...
+password = ...
+
+log_file_pattern = ../../NO-154-logs/StreamingStat-%%s.log
+
