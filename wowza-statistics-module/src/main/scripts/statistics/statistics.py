@@ -177,12 +177,12 @@ for date in dates:
 
         # credentials
         creds = simplejson.loads(attr)
-
+  
         for cred in ["schacHomeOrganization", "eduPersonPrimaryAffiliation",
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess"]:
-            if cred in creds:
-        	# creds[cred] is list, encode each entry, and join them as a single comma-separated string.        
+            if creds and cred in creds:
+                # creds[cred] is list, encode each entry, and join them as a single comma-separated string.
                 out[cred] = ", ".join(e.encode(encoding) for e in creds[cred])
             else:
                 out[cred] = ""
