@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python2.7
 
 # NO-272 streamingstatistik for larm.fm.
 
@@ -15,6 +15,7 @@ import time
 import cgi
 import cgitb
 import urllib2
+import string
 
 config_file_name = "../../larm-statistics.py.cfg"
 
@@ -61,7 +62,7 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Filename", "Userid", "UUID"]
+fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Userid", "UUID"]
 # fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
 # "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
 # "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
@@ -112,7 +113,7 @@ for record in cur:
         continue
     else:
         ids_seen[id] = event  # only key matters.
-        out = {"Timestamp": ts, "Filename": filename, "Userid": userid}
+        out = {"Timestamp": ts, "Userid": userid}
         regexp_match = re_doms_id_from_url.search(filename)
         if regexp_match != None:
             doms_id = regexp_match.group(1)
@@ -147,9 +148,12 @@ for record in cur:
 
         # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-            out["Filename"] = (shard.xpath("/shard_metadata/file/file_name/text()")[0])
+            out["Kanal"] = string.split(shard.xpath("/shard_metadata/file/file_name/text()")[0], "_")[2]
 
 #        core = ET.fromstring(core_body_text)
+        else:
+            out["Kanal"] = string.split(filename, "_")[2]
+            
     result_dict_writer.writerow(out)
 
 conn.close()
