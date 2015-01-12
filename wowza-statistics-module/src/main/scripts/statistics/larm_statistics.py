@@ -2,7 +2,7 @@
 
 # NO-272 streamingstatistik for larm.fm.
 
-#from lxml import etree as ET
+from lxml import etree as ET
 import ConfigParser
 import psycopg2
 import csv
@@ -18,7 +18,7 @@ import urllib2
 
 config_file_name = "../../larm-statistics.py.cfg"
 
-cgitb.enable()  # web page feedback in case of problems
+#cgitb.enable()  # web page feedback in case of problems
 parameters = cgi.FieldStorage()
 
 encoding = "utf-8"  # What to convert non-ASCII chars to.
@@ -35,12 +35,12 @@ log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
     start_str = parameters["fromDate"].value  # "2013-06-15"
 else:
-    start_str = "2014-09-01"
+    start_str = "2014-01-03"
 
 if "toDate" in parameters:
     end_str = parameters["toDate"].value
 else:
-    end_str = "2014-12-01"
+    end_str = "2014-01-06"
 
 # http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
@@ -123,31 +123,32 @@ for record in cur:
 
             out["UUID"] = doms_id
 
-        #     if doms_id in doms_ids_seen:
-        #         (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
-        #     else:
-        #         url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
-        #         url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
-        #
-        #         ext_body = opener.open(url_ext)
-        #         ext_body_text = ext_body.read()
-        #     ext_body.close()
-        #
-        #     core_body = opener.open(url_core)
-        #     core_body_text = core_body.read()
-        # core_body.close()
-        #
-        # doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
-        #
-        # namespaces = {"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
-        #               "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        #               "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+            if doms_id in doms_ids_seen:
+                (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
+            else:
+                url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
+                #url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
+                #url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
 
-#        ext = ET.fromstring(ext_body_text)
+                #ext_body = opener.open(url_ext)
+                #ext_body_text = ext_body.read()
+            #ext_body.close()
+
+            shard_metadata = opener.open(url_shard_metadata)
+            shard_metadata_text = shard_metadata.read()
+            shard_metadata.close()
+
+#        doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
+#
+#        namespaces = {"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+#                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+#                      "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+#
+            shard = ET.fromstring(shard_metadata_text)
 
         # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-#        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+            out["Filename"] = (shard.xpath("/shard_metadata/file/file_name/text()")[0])
 
 #        core = ET.fromstring(core_body_text)
     result_dict_writer.writerow(out)
