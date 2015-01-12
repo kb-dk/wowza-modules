@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2.4
 
 # NO-272 streamingstatistik for larm.fm.
 
