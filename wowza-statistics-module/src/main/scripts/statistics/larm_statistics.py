@@ -85,7 +85,12 @@ result_dict_writer.writerow(header)
 doms_ids_seen = {}  # DOMS lookup cache, id is key
 urls_seen = {}  # PLAY event seen yet for this URL? (value is not important)
 
-conn = psycopg2.connect("dbname=larm-prod user=larm-ro password=2ko6ghphBm host=hyperion")
+larm_db_host = config.get("cgi", "larm_db_host")
+larm_db_name = config.get("cgi", "larm_db_name")
+larm_db_username = config.get("cgi", "larm_db_username")
+larm_db_password = config.get("cgi", "larm_db_password")
+
+conn = psycopg2.connect(host=larm_db_host, database=larm_db_name, user=larm_db_username, password=larm_db_password)
 cur = conn.cursor()
 query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= '%s' AND timestamp < '%s';" % (
     start_date, end_date)
