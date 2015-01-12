@@ -62,8 +62,8 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Filename", "Userid", "UUID"]
-# fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
+fieldnames = ["Timestamp", "Type", "Filename", "Starttidspunkt", "Sluttidspunkt", "Userid", "UUID"]
+# fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Starttidspunkt",
 # "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
 # "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
 #              "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
@@ -119,30 +119,33 @@ for record in cur:
             out["UUID"] = doms_id
 
             if doms_id in doms_ids_seen:
-                (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
+                (ext_body_text, url_shard_metadata) = doms_ids_seen[doms_id]
             else:
                 url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
                 #url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
-                #url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
+                url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
 
-                #ext_body = opener.open(url_ext)
-                #ext_body_text = ext_body.read()
-            #ext_body.close()
+                ext_body = opener.open(url_ext)
+                ext_body_text = ext_body.read()
+                ext_body.close()
 
-            shard_metadata = opener.open(url_shard_metadata)
-            shard_metadata_text = shard_metadata.read()
-            shard_metadata.close()
+                shard_metadata = opener.open(url_shard_metadata)
+                shard_metadata_text = shard_metadata.read()
+                shard_metadata.close()
 
-#        doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
-#
-#        namespaces = {"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
-#                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-#                      "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
-#
+            doms_ids_seen[doms_id] = (ext_body_text, url_shard_metadata)
+
+            namespaces = {
+                      #"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                      "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+
+
+            # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
+            ext = ET.fromstring(ext_body_text)
+            out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+
             shard = ET.fromstring(shard_metadata_text)
-
-        # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
-
             out["Filename"] = (shard.xpath("/shard_metadata/file/file_name/text()")[0])
 
 #        core = ET.fromstring(core_body_text)
