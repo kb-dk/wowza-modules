@@ -15,6 +15,7 @@ import time
 import cgi
 import cgitb
 import urllib2
+import string
 
 config_file_name = "../../larm-statistics.py.cfg"
 
@@ -31,7 +32,6 @@ doms_url = config.get("cgi", "doms_url")  # .../fedora/
 # Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f (optionally trailed by a ".fileending")
 re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\.[a-zA-Z0-9]*)?$")
 
-log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
     start_str = parameters["fromDate"].value  # "2013-06-15"
 else:
@@ -62,8 +62,8 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Filename", "Starttidspunkt", "Sluttidspunkt", "Userid", "UUID"]
-# fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Starttidspunkt",
+fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Userid", "UUID"]
+# fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
 # "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
 # "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
 #              "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
@@ -85,7 +85,12 @@ result_dict_writer.writerow(header)
 doms_ids_seen = {}  # DOMS lookup cache, id is key
 urls_seen = {}  # PLAY event seen yet for this URL? (value is not important)
 
-conn = psycopg2.connect("dbname=larm-prod user=larm-ro password=2ko6ghphBm host=hyperion")
+larm_db_host = config.get("cgi", "larm_db_host")
+larm_db_name = config.get("cgi", "larm_db_name")
+larm_db_username = config.get("cgi", "larm_db_username")
+larm_db_password = config.get("cgi", "larm_db_password")
+
+conn = psycopg2.connect(host=larm_db_host, database=larm_db_name, user=larm_db_username, password=larm_db_password)
 cur = conn.cursor()
 query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= '%s' AND timestamp < '%s';" % (
     start_date, end_date)
@@ -108,7 +113,7 @@ for record in cur:
         continue
     else:
         ids_seen[id] = event  # only key matters.
-        out = {"Timestamp": ts, "Filename": filename, "Userid": userid}
+        out = {"Timestamp": ts, "Userid": userid}
         regexp_match = re_doms_id_from_url.search(filename)
         if regexp_match != None:
             doms_id = regexp_match.group(1)
@@ -147,8 +152,12 @@ for record in cur:
 
             shard = ET.fromstring(shard_metadata_text)
             out["Filename"] = (shard.xpath("/shard_metadata/file/file_name/text()")[0])
+            out["Kanal"] = string.split(shard.xpath("/shard_metadata/file/file_name/text()")[0], "_")[2]
 
 #        core = ET.fromstring(core_body_text)
+        else:
+            out["Kanal"] = string.split(filename, "_")[2]
+            
     result_dict_writer.writerow(out)
 
 conn.close()
