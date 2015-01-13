@@ -62,7 +62,7 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Userid", "UUID"]
+fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Userid", "UUID"]
 # fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
 # "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
 # "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
@@ -70,7 +70,7 @@ fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestids
 #              "SBIPRoleMapper", "MediestreamFullAccess", "UUID", "URL"]
 
 print "Content-type: text/csv"
-print "Content-disposition: attachment; filename=stat-" + start_str + "-" + end_str + ".csv"
+print "Content-disposition: attachment; filename=larm_fm_stat-" + start_str + "-" + end_str + ".csv"
 print
 
 result_file = sys.stdout;  # open("out.csv", "wb")
@@ -99,7 +99,7 @@ cur.execute(query)
 ids_seen = {}  # PLAY event seen yet for this URL? (value is not important)
 
 for record in cur:
-    ts = record[1]
+    timestamp = record[1]
     filename = record[2]
     event = record[3]
     userid = record[4]
@@ -113,7 +113,7 @@ for record in cur:
         continue
     else:
         ids_seen[id] = event  # only key matters.
-        out = {"Timestamp": ts, "Userid": userid}
+        out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid}
         regexp_match = re_doms_id_from_url.search(filename)
         if regexp_match != None:
             doms_id = regexp_match.group(1)
@@ -148,7 +148,16 @@ for record in cur:
 
         # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-            out["Kanal"] = string.split(shard.xpath("/shard_metadata/file/file_name/text()")[0], "_")[2]
+            filename_text = shard.xpath("/shard_metadata/file/file_name/text()")[0]
+            out["Filename"] = filename_text
+
+            filename_text_entries = string.split(filename_text, "_")
+            out["Kanal"] = filename_text_entries[2]
+            
+            timestamp_from_filename = filename_text_entries[4] #date format 20060109040501
+            timestamp_offset = int(shard.xpath("/shard_metadata/file/program_start_offset/text()")[0])
+            out["Udsendelsestidspunkt"] = datetime.datetime.strptime(timestamp_from_filename, "%Y%m%d%H%M%S") + datetime.timedelta(0, timestamp_offset)
+
 
 #        core = ET.fromstring(core_body_text)
         else:
