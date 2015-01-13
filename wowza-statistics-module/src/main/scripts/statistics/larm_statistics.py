@@ -62,7 +62,7 @@ handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Userid", "UUID"]
+fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Genre", "Userid", "Shard UUID", "PBCore UUID"]
 # fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
 # "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
 # "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
@@ -113,7 +113,7 @@ for record in cur:
         continue
     else:
         ids_seen[id] = event  # only key matters.
-        out = {"Timestamp": ts, "Userid": userid}
+        out = {"Timestamp": ts, "Filename": filename, "Userid": userid}
         regexp_match = re_doms_id_from_url.search(filename)
         if regexp_match != None:
             doms_id = regexp_match.group(1)
@@ -121,10 +121,10 @@ for record in cur:
             if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
                 continue
 
-            out["UUID"] = doms_id
+            out["Shard UUID"] = doms_id
 
             if doms_id in doms_ids_seen:
-                (ext_body_text, url_shard_metadata) = doms_ids_seen[doms_id]
+                (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid) = doms_ids_seen[doms_id]
             else:
                 url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
                 #url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
@@ -138,10 +138,24 @@ for record in cur:
                 shard_metadata_text = shard_metadata.read()
                 shard_metadata.close()
 
-            doms_ids_seen[doms_id] = (ext_body_text, url_shard_metadata)
+                riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
+                url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
+                risearch_body = opener.open(url_risearch)
+                risearch_text =  risearch_body.read()
+                risearch_body.close()
+                risearch_text_firstelement = string.split(risearch_text, ">")[0]
+                pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
+                url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
+                pbcore_metadata = opener.open(url_pbcore_metadata)
+                pbcore_metadata_xml = pbcore_metadata.read()
+                pbcore_metadata.close
+
+                doms_ids_seen[doms_id] = (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid)
+
+            out["PBCore UUID"] = pbcore_uuid
 
             namespaces = {
-                      #"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+                      "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
                       "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                       "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
 
@@ -153,6 +167,11 @@ for record in cur:
             shard = ET.fromstring(shard_metadata_text)
             out["Filename"] = (shard.xpath("/shard_metadata/file/file_name/text()")[0])
             out["Kanal"] = string.split(shard.xpath("/shard_metadata/file/file_name/text()")[0], "_")[2]
+
+            pbcore = ET.fromstring(pbcore_metadata_xml)
+            out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(
+                    encoding)
 
 #        core = ET.fromstring(core_body_text)
         else:
