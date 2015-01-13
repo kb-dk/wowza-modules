@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2.4
 
 # NO-272 streamingstatistik for larm.fm.
 
@@ -7,13 +7,10 @@ import ConfigParser
 import psycopg2
 import csv
 import datetime
-#import simplejson
-#import os
 import re
 import sys
 import time
 import cgi
-import cgitb
 import urllib2
 import string
 
@@ -46,9 +43,6 @@ else:
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
 end_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(end_str + " 10:00", '%Y-%m-%d %H:%M')))
 
-# generate dates. note:  range(0,1) -> [0] hence the +1
-dates = [start_date + datetime.timedelta(days=x) for x in range(0, (end_date - start_date).days + 1)]
-
 # prepare urllib2
 username = config.get("cgi", "username")
 password = config.get("cgi", "password")
@@ -63,18 +57,12 @@ opener = urllib2.build_opener(handler)
 
 # Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Genre", "Userid", "Shard UUID", "PBCore UUID"]
-# fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
-# "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
-# "Udgiver", "Klient", "schacHomeOrganization", "eduPersonPrimaryAffiliation",
-#              "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
-#              "SBIPRoleMapper", "MediestreamFullAccess", "UUID", "URL"]
 
 print "Content-type: text/csv"
 print "Content-disposition: attachment; filename=larm_fm_stat-" + start_str + "-" + end_str + ".csv"
 print
 
 result_file = sys.stdout;  # open("out.csv", "wb")
-#result_file = open("out.csv", "wb")
 
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 # Inlined result_dict_writer.writeheader() - not present in 2.4.
@@ -83,7 +71,6 @@ header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
 doms_ids_seen = {}  # DOMS lookup cache, id is key
-urls_seen = {}  # PLAY event seen yet for this URL? (value is not important)
 
 larm_db_host = config.get("cgi", "larm_db_host")
 larm_db_name = config.get("cgi", "larm_db_name")
@@ -92,11 +79,8 @@ larm_db_password = config.get("cgi", "larm_db_password")
 
 conn = psycopg2.connect(host=larm_db_host, database=larm_db_name, user=larm_db_username, password=larm_db_password)
 cur = conn.cursor()
-query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= '%s' AND timestamp < '%s';" % (
-    start_date, end_date)
+query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= '%s' AND timestamp < '%s';" % (start_date, end_date)
 cur.execute(query)
-
-ids_seen = {}  # PLAY event seen yet for this URL? (value is not important)
 
 for record in cur:
     timestamp = record[1]
@@ -104,86 +88,73 @@ for record in cur:
     event = record[3]
     userid = record[4]
 
-    if (event != "PLAY"):
-        continue
+    out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid}
+    regexp_match = re_doms_id_from_url.search(filename)
+    if regexp_match != None:
+        doms_id = regexp_match.group(1)
+        # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
+        if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
+            continue
 
-    id = str(userid) + "#" + filename
+        out["Shard UUID"] = doms_id
 
-    if id in ids_seen:
-        continue
-    else:
-        ids_seen[id] = event  # only key matters.
-        out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid}
-        regexp_match = re_doms_id_from_url.search(filename)
-        if regexp_match != None:
-            doms_id = regexp_match.group(1)
-            # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
-            if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
-                continue
-
-            out["Shard UUID"] = doms_id
-
-            if doms_id in doms_ids_seen:
-                (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid) = doms_ids_seen[doms_id]
-            else:
-                url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
-                #url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
-                url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
-
-                ext_body = opener.open(url_ext)
-                ext_body_text = ext_body.read()
-                ext_body.close()
-
-                shard_metadata = opener.open(url_shard_metadata)
-                shard_metadata_text = shard_metadata.read()
-                shard_metadata.close()
-
-                riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
-                url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
-                risearch_body = opener.open(url_risearch)
-                risearch_text =  risearch_body.read()
-                risearch_body.close()
-                risearch_text_firstelement = string.split(risearch_text, ">")[0]
-                pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
-                url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
-                pbcore_metadata = opener.open(url_pbcore_metadata)
-                pbcore_metadata_xml = pbcore_metadata.read()
-                pbcore_metadata.close
-
-                doms_ids_seen[doms_id] = (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid)
-
-            out["PBCore UUID"] = pbcore_uuid
-
-            namespaces = {
-                      "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
-                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                      "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
-
-
-            # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
-            ext = ET.fromstring(ext_body_text)
-            out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
-
-            shard = ET.fromstring(shard_metadata_text)
-            filename_text = shard.xpath("/shard_metadata/file/file_name/text()")[0]
-            out["Filename"] = filename_text
-
-            filename_text_entries = string.split(filename_text, "_")
-            out["Kanal"] = filename_text_entries[2]
-            
-            timestamp_from_filename = filename_text_entries[4] #date format 20060109040501
-            timestamp_offset = int(shard.xpath("/shard_metadata/file/program_start_offset/text()")[0])
-            out["Udsendelsestidspunkt"] = datetime.datetime.strptime(timestamp_from_filename, "%Y%m%d%H%M%S") + datetime.timedelta(0, timestamp_offset)
-
-
-            pbcore = ET.fromstring(pbcore_metadata_xml)
-            out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-            out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(
-                    encoding)
-
-#        core = ET.fromstring(core_body_text)
+        if doms_id in doms_ids_seen:
+            (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid) = doms_ids_seen[doms_id]
         else:
-            out["Kanal"] = string.split(filename, "_")[2]
+            url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
+            url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
+
+            ext_body = opener.open(url_ext)
+            ext_body_text = ext_body.read()
+            ext_body.close()
+
+            shard_metadata = opener.open(url_shard_metadata)
+            shard_metadata_text = shard_metadata.read()
+            shard_metadata.close()
+
+            riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
+            url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
+            risearch_body = opener.open(url_risearch)
+            risearch_text = risearch_body.read()
+            risearch_body.close()
+            risearch_text_firstelement = string.split(risearch_text, ">")[0]
+            pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
+            url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
+            pbcore_metadata = opener.open(url_pbcore_metadata)
+            pbcore_metadata_xml = pbcore_metadata.read()
+            pbcore_metadata.close
+
+            doms_ids_seen[doms_id] = (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid)
+
+        out["PBCore UUID"] = pbcore_uuid
+
+        namespaces = {
+                  "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+                  "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                  "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+
+
+        # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
+        ext = ET.fromstring(ext_body_text)
+        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+
+        shard = ET.fromstring(shard_metadata_text)
+        filename_text = shard.xpath("/shard_metadata/file/file_name/text()")[0]
+        out["Filename"] = filename_text
+
+        filename_text_entries = string.split(filename_text, "_")
+        out["Kanal"] = filename_text_entries[2]
+            
+        timestamp_from_filename = filename_text_entries[4]  # date format 20060109040501
+        timestamp_offset = int(shard.xpath("/shard_metadata/file/program_start_offset/text()")[0])
+        out["Udsendelsestidspunkt"] = datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_filename, "%Y%m%d%H%M%S"))) + datetime.timedelta(0, timestamp_offset)
+
+        pbcore = ET.fromstring(pbcore_metadata_xml)
+        out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+
+    else:
+        out["Kanal"] = string.split(filename, "_")[2]
             
     result_dict_writer.writerow(out)
 
