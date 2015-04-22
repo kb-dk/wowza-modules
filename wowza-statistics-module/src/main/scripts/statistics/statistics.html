@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Streaming statistics</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="datepicker/css/datepicker.css" rel="stylesheet">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="input-group">
+            <input class="input-small" type="text" id="fromDate" placeholder="From date">
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="input-group">
+            <input class="input-small" type="text" id="toDate" placeholder="To date">
+          </div>
+        </div>
+        <div class="col-lg-1">
+          <div class="input-append">
+            <a class="btn btn-link" href="" target="_blank" id="getStatistics">Get statistics</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="datepicker/js/bootstrap-datepicker.js"></script>
+    <script>
+
+      var myBaseUrl = "statistics.py";
+
+      function updateLink() {
+        var url = myBaseUrl +  "?fromDate=" + $("#fromDate").val() + "&toDate=" + $("#toDate").val();
+        $("#getStatistics").attr("href", url);
+      }
+
+      $(document).ready(function(){
+        $("#fromDate").datepicker({format: "yyyy-mm-dd"});
+        $("#toDate").datepicker({format: "yyyy-mm-dd"});
+        $("#getStatistics").attr("href", myBaseUrl);
+        $("#getStatistics").click(function(event) {updateLink();});
+      }); 
+    </script>
+  </body>
+
+</html>
