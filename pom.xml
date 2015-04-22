@@ -16,7 +16,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
@@ -36,6 +36,7 @@
         <module>wowza-mediestream-vhost</module>
         <module>wowza-mcm-authorization-module</module>
         <module>wowza-mcm2-authorization-module</module>
+        <module>wowza-mcm3-authorization-module</module>
         <module>wowza-mcm-statistics-module</module>
         <module>wowza-db-statistics-module</module>
         <module>wowza-chaos-vhost</module>
@@ -314,6 +315,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>wowza-mcm2-authorization-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wowza-mcm3-authorization-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

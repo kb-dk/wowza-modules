@@ -21,20 +21,20 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Module that registers an action listener, which prevents playback if stream is not authenticated using MCM2.
+ * Module that registers an action listener, which prevents playback if stream is not authenticated using MCM3.
  */
-public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
+public class WowzaSessionAuthenticationMCM3ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
-    private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM2 Authentication";
+    private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM3 Authentication";
     private static final String PLUGIN_VERSION =
-            WowzaSessionAuthenticationMCM2ModuleBase.class.getPackage().getImplementationVersion();
-    private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
-    private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
+            WowzaSessionAuthenticationMCM3ModuleBase.class.getPackage().getImplementationVersion();
+    private static final String PROPERTY_MCM3_SERVER_URL_KEY = "GeneralMCM3ServerURL";
+    private static final String PROPERTY_MCM3_VALIDATION_METHOD = "ValidationMCM3ValidationMethod";
     /** The authenticator used for validating playback permissions. */
     private StreamAuthenticater streamAuthenticater;
 
-    public WowzaSessionAuthenticationMCM2ModuleBase() {
+    public WowzaSessionAuthenticationMCM3ModuleBase() {
         super();
     }
 
@@ -50,16 +50,15 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
             //Initialise the config reader
             ConfigReader cr;
             cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"),
-                                  PROPERTY_MCM2_SERVER_URL_KEY,
-                                  PROPERTY_MCM2_VALIDATION_METHOD);
+                                  PROPERTY_MCM3_SERVER_URL_KEY, PROPERTY_MCM3_VALIDATION_METHOD);
 
             //Read parameters
-            String validationMethodAtServer = cr.get(PROPERTY_MCM2_VALIDATION_METHOD);
-            String connectionUrlString = cr.get(PROPERTY_MCM2_SERVER_URL_KEY);
+            String validationMethodAtServer = cr.get(PROPERTY_MCM3_VALIDATION_METHOD);
+            String connectionUrlString = cr.get(PROPERTY_MCM3_SERVER_URL_KEY);
 
             //Initialise stream authenticator
             streamAuthenticater = new StreamAuthenticater(getLogger(),
-                                                          new MCM2SessionAndFilenameValidater(getLogger(), appInstance,
+                                                          new MCM3SessionAndFilenameValidater(getLogger(), appInstance,
                                                                                               connectionUrlString, validationMethodAtServer));
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);

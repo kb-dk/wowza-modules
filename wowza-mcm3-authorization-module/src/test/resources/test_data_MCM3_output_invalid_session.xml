@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><PortalResult Duration="151"><ModuleResults><ModuleResult Fullname="Portal" Duration="0" Count="1"><Results><Error FullName="Chaos.Portal.Core.Exceptions.InsufficientPermissionsException"><Message>No folders with access</Message></Error></Results></ModuleResult></ModuleResults></PortalResult>

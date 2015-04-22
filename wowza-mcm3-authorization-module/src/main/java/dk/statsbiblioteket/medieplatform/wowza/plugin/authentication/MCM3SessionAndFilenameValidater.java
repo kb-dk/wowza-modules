@@ -17,20 +17,20 @@ import java.net.URL;
 /**
  * Call MCM to see if session is valid and lookup object from the GUID.
  */
-public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValidater {
+public class MCM3SessionAndFilenameValidater extends MCMSessionAndFilenameValidater {
     /**
      * Reads server connection configuration from property-file. Property file
      * is expected to be at "<VHost_HOME>/<propertyFilePath>"
      *
      * Example of content in property file could be:
      *
-     * GeneralMCM2ServerURL=api.test.chaos-systems.com/
-     * ValidationMCM2ValidationMethod=Object/Get
+     * GeneralMCM3ServerURL=api.test.chaos-systems.com/
+     * ValidationMCM3ValidationMethod=Object/Get
      *
      * @throws FileNotFoundException if property file is not found
      * @throws IOException           if reading process failed
      */
-    public MCM2SessionAndFilenameValidater(WMSLogger logger, IApplicationInstance appInstance,
+    public MCM3SessionAndFilenameValidater(WMSLogger logger, IApplicationInstance appInstance,
                                            String connectionURLString, String validationMethodAtServer)
             throws FileNotFoundException, IOException {
         super();
@@ -39,25 +39,25 @@ public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValida
         this.validationMethodAtServer = validationMethodAtServer;
     }
 
-    public MCM2SessionAndFilenameValidater(WMSLogger logger, String connectionURLString,
+    public MCM3SessionAndFilenameValidater(WMSLogger logger, String connectionURLString,
                                            String validationMethodAtServer) {
         super(logger, connectionURLString, validationMethodAtServer);
     }
 
     /**
-     * Get session validation information from MCM2.
-     * @param sessionID MCM2 Session ID
-     * @param objectID MCM2 Object GUID
+     * Get session validation information from MCM3.
+     * @param sessionID MCM3 Session ID
+     * @param objectID MCM3 Object GUID
      * @return Object containing information about session validity and file names for GUID.
-     * @throws IOException On trouble connection to MCM2
-     * @throws MalformedURLException On bad URL connecting to MCM2
-     * @throws MCMOutputException On trouble reading MCM2 output.
+     * @throws IOException On trouble connection to MCM3
+     * @throws MalformedURLException On bad URL connecting to MCM3
+     * @throws MCMOutputException On trouble reading MCM3 output.
      */
     @Override
     protected MCMOReturnValueWrapper getInputFromMCM(String sessionID, String objectID)
             throws IOException, MalformedURLException, MCMOutputException {
         String urlStringToMCM = connectionURLString + "/" + validationMethodAtServer + "?" + "sessionGUID=" + sessionID
-                + "&" + "query=GUID:" + objectID + "&" + "includeFiles=true" + "&" + "pageSize=1";
+                + "&" + "objectGuids=" + objectID + "&" + "includeMetadata=true" + "&" + "includeFiles=true";
         InputStream in = null;
         try {
             in = new URL(urlStringToMCM).openConnection().getInputStream();
@@ -66,7 +66,7 @@ public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValida
                 InputStream inDebug = new URL(urlStringToMCM).openConnection().getInputStream();
                 logger.debug("Returned from MCM: " + StringAndTextUtil.convertStreamToString(inDebug));
             }
-            return new MCM2OReturnValueWrapper(logger, in);
+            return new MCM3OReturnValueWrapper(logger, in);
         } finally {
             if (in != null) {
                 in.close();

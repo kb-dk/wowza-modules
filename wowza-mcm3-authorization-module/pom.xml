@@ -8,18 +8,22 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wowza-mcm-authorization-module</artifactId>
+    <artifactId>wowza-mcm3-authorization-module</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mock</artifactId>
-            <scope>test</scope>
+            <artifactId>wowza-common</artifactId>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-common</artifactId>
+            <artifactId>wowza-mcm-authorization-module</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.statsbiblioteket.medieplatform</groupId>
+            <artifactId>content-resolver-lib</artifactId>
         </dependency>
 
         <dependency>

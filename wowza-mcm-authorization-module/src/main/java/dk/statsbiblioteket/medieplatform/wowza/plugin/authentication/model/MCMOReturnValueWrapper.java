@@ -84,13 +84,14 @@ public class MCMOReturnValueWrapper {
      * @return The value for that element.
      */
     protected String extractStringContent(Element docEle, String elementName) {
-        Element folderPathElement = null;
+        Element folderPathElement;
         NodeList nodelist = docEle.getElementsByTagName(elementName);
         if(nodelist != null && nodelist.getLength() > 0) {
             folderPathElement = (Element)nodelist.item(0);
+        } else {
+            return "";
         }
-        String stringContent = folderPathElement.getFirstChild().getNodeValue().trim();
-        return stringContent;
+        return folderPathElement.getFirstChild().getNodeValue().trim();
     }
 
     /**
