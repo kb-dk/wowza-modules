@@ -1,0 +1,42 @@
+<assembly>
+    <id>bundle</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>wowza_vhost_cosound/applications/lib</outputDirectory>
+            <directoryMode>0775</directoryMode>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <outputDirectory>wowza_vhost_cosound/applications/chaos</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_cosound/streamingContent</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_cosound/conf</outputDirectory>
+            <directory>src/main/config/wowza_vhost_cosound/conf</directory>
+            <directoryMode>0775</directoryMode>
+        </fileSet>
+    </fileSets>
+</assembly>
