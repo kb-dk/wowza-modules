@@ -40,6 +40,7 @@
         <module>wowza-mcm-statistics-module</module>
         <module>wowza-db-statistics-module</module>
         <module>wowza-chaos-vhost</module>
+        <module>wowza-cosound-vhost</module>
     </modules>
 
     <licenses>
