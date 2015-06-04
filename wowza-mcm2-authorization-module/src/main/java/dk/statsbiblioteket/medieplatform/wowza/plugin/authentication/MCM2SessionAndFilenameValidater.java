@@ -60,12 +60,12 @@ public class MCM2SessionAndFilenameValidater extends MCMSessionAndFilenameValida
                 + "&" + "query=GUID:" + objectID + "&" + "includeFiles=true" + "&" + "pageSize=1";
         InputStream in = null;
         try {
-            in = new URL(urlStringToMCM).openConnection().getInputStream();
             if (logger.isDebugEnabled()) {
                 logger.debug("MCM URL:" + urlStringToMCM);
                 InputStream inDebug = new URL(urlStringToMCM).openConnection().getInputStream();
                 logger.debug("Returned from MCM: " + StringAndTextUtil.convertStreamToString(inDebug));
             }
+            in = new URL(urlStringToMCM).openConnection().getInputStream();
             return new MCM2OReturnValueWrapper(logger, in);
         } finally {
             if (in != null) {

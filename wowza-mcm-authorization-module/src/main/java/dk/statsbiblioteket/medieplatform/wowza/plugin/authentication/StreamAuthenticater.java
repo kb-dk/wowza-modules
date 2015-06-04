@@ -10,7 +10,6 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.Sessi
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -55,6 +54,7 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
         if (!isAuthorized) {
             wmsLogger.warn("User not allowed to get content streamed.", stream);
             stream.getClient().setShutdownClient(true);
+            stream.getClient().shutdownClient();
         }
     }
 
@@ -106,6 +106,8 @@ class StreamAuthenticater  implements IMediaStreamActionNotify2 {
                 wmsLogger.error(e.getStackTrace());
             } catch (MCMOutputException e) {
                 wmsLogger.error("Could not read MCM output. " + e.toString());
+                wmsLogger.error(e.getStackTrace());
+            } catch (RuntimeException e) {
                 wmsLogger.error(e.getStackTrace());
             }
         } else {
