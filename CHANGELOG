@@ -1,3 +1,10 @@
+3.5
+Add wowza vhost for cosound
+Add statistics analysis module
+Fix bug where clients do not accept af shutdown of stream
+Avoid harmless NPE that clutters log
+
+
 3.4
 Upgrade to Wowza 4.0.3
 Switching to reading plugin version from jar manifest.
