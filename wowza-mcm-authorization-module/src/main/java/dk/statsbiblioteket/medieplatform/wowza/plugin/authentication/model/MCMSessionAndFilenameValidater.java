@@ -88,30 +88,40 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
      * @return True, of requested filename with path removed is contained in MCM filenames, false otherwise.
      */
     protected boolean validateFilerequestWithMCMResult(String requestedPathAndFilename, List<String> mcmFilenames) {
-        // Default with unix style path separator
-        String filename = getFilenameUsingSeparator(requestedPathAndFilename, "/");
-        boolean filenameEquals = mcmFilenames.contains(filename);
-        if (!filenameEquals) {
-            // Try with windows style path separator
-            filename = getFilenameUsingSeparator(requestedPathAndFilename, "\\");
-            filenameEquals = mcmFilenames.contains(filename);
+        boolean filenameEquals  = false;
+        for (String f : mcmFilenames) {
+            if (f.equals(requestedPathAndFilename) || cleanFilename(f).equals(cleanFilename(requestedPathAndFilename))) {
+                filenameEquals = true;
+                break;
+            }
         }
-        logger.debug("Stream file   : " + filename);
+        logger.debug("Stream file   : " + requestedPathAndFilename);
         logger.debug("MCM filenames : " + mcmFilenames);
         return filenameEquals;
     }
 
     /**
-     * Extract a filename from a path with given separator.
-     * @param requestedPathAndFilename The path.
-     * @param separator The separator to use.
-     * @return The filename extracted.
+     * Remove leading directories and trailing extension from a filename.
+     * <p/>
+     * This means:
+     * <ul>
+     *     <li>c:\test\file.mp3 -> file</li>
+     *     <li>/usr/local/file.flv -> file</li>
+     * </ul>
+     *
+     * @param f The file to clean
+     * @return The file with leading directories and trailing extension removed.
      */
-    protected String getFilenameUsingSeparator(String requestedPathAndFilename, String separator) {
-        int sep = requestedPathAndFilename.lastIndexOf(separator);
-        String filename = requestedPathAndFilename.substring(sep + 1);
-        logger.debug("Path separator: " + separator);
-        return filename;
+    protected String cleanFilename(String f) {
+        // Remove leading directories (unix style)
+        f = f.substring(f.lastIndexOf("/") + 1);
+        // Remove leading directories (windows style)
+        f = f.substring(f.lastIndexOf("\\") + 1);
+        // Remove trailing extension
+        if (f.contains(".")) {
+            f = f.substring(0, f.lastIndexOf('.'));
+        }
+        return f;
     }
 
     /**
