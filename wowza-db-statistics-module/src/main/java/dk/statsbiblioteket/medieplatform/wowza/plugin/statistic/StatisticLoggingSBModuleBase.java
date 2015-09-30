@@ -162,6 +162,12 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
 
         String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
         String mcmObjectID;
+        String wayfAttr;
+        try {
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            wayfAttr = "";
+        }
         try {
             mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
@@ -176,7 +182,8 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
                 sessionIDPair.getObjectSessionID(),
                 0L,
                 0L,
-                StreamingStatLogEntry.Event.PLAY);
+                StreamingStatLogEntry.Event.PLAY,
+                wayfAttr);
         eventLogger.logEvent(logEntry);
     }
 
@@ -191,6 +198,12 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
 
         String queryString = String.valueOf(ihttpStreamerSession.getQueryStr());
         String mcmObjectID;
+        String wayfAttr;
+        try {
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+        } catch (IllegallyFormattedQueryStringException e) {
+            wayfAttr = "";
+        }
         try {
             mcmObjectID = StringAndTextUtil.extractValueFromQueryStringAndKey("ObjectID", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
@@ -205,7 +218,8 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
                 sessionIDPair.getObjectSessionID(),
                 0L,
                 0L,
-                StreamingStatLogEntry.Event.STOP);
+                StreamingStatLogEntry.Event.STOP,
+                wayfAttr);
         eventLogger.logEvent(logEntry);
     }
 }

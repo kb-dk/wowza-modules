@@ -1,3 +1,9 @@
+3.7
+Log WAYF attributes in CHAOS targets
+
+Existing databases using logging from CHAOS needs to have their databases updated using the following SQL:
+  ALTER TABLE events ADD COLUMN wayf_attr VARCHAR DEFAULT ''
+
 3.6
 Fix issue where newest versions of Wowza and CHAOS disagree on filenames during authorization
 

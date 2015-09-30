@@ -150,7 +150,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
             String query = "INSERT INTO events VALUES (" + logEntry.getEventID() + ", " + "'"
                     + logEntry.getTimestampAsString() + "', " + "'" + logEntry.getStreamName() + "', " + "'"
                     + logEntry.getEvent() + "', " + logEntry.getUserID() + ", " + logEntry.getStartedAt() + ", "
-                    + logEntry.getEndedAt() + ");";
+                    + logEntry.getEndedAt() + "," + "'" + logEntry.getWayfAttr() + "'" + ");";
             logger.info("Executing query: " + query);
             stmt.executeUpdate(query);
             logger.info("Creating event: " + query);
@@ -232,9 +232,10 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
                 String eventType = rs.getString("event_type");
                 long startedAt = rs.getLong("started_at");
                 long endedAt = rs.getLong("ended_at");
+                String wayfAttr = rs.getString("wayf_attr");
                 logEntry = new StreamingStatLogEntry(logger, eventID, timestamp, streamName, userID, mcmSessionID,
                                                      mcmObjectSessionID, startedAt, endedAt,
-                                                     StreamingStatLogEntry.getEventFromString(eventType));
+                                                     StreamingStatLogEntry.getEventFromString(eventType), wayfAttr);
             }
             logger.debug("Resulting log entry: " + logEntry);
         } catch (SQLException e) {
@@ -265,10 +266,11 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
                 String eventType = rs.getString("event_type");
                 long startedAt = rs.getLong("started_at");
                 long endedAt = rs.getLong("ended_at");
+                String wayfAttr = rs.getString("wayf_attr");
                 StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, eventID, timestamp, streamName,
                                                                            userID, mcmSessionID, mcmObjectSessionID,
                                                                            startedAt, endedAt, StreamingStatLogEntry
-                        .getEventFromString(eventType));
+                        .getEventFromString(eventType), wayfAttr);
                 logEntries.add(logEntry);
                 logger.debug("Resulting log entry: " + logEntry);
             }
