@@ -21,20 +21,20 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Module that registers an action listener, which prevents playback if stream is not authenticated using MCM2.
+ * Module that registers an action listener, which prevents playback if stream is not authenticated using Chaos V6.
  */
-public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
+public class WowzaSessionAuthenticationChaosV6ModuleBase extends ModuleBase
              implements IModuleOnApp, IModuleOnConnect, IModuleOnStream, IModuleOnCall, IModuleOnHTTPSession {
 
-    private static final String PLUGIN_NAME = "CHAOS Wowza plugin - MCM2 Authentication";
+    private static final String PLUGIN_NAME = "CHAOS Wowza plugin - ChaosV6 Authentication";
     private static final String PLUGIN_VERSION =
-            WowzaSessionAuthenticationMCM2ModuleBase.class.getPackage().getImplementationVersion();
-    private static final String PROPERTY_MCM2_SERVER_URL_KEY = "GeneralMCM2ServerURL";
-    private static final String PROPERTY_MCM2_VALIDATION_METHOD = "ValidationMCM2ValidationMethod";
+            WowzaSessionAuthenticationChaosV6ModuleBase.class.getPackage().getImplementationVersion();
+    private static final String PROPERTY_CHAOSV6_SERVER_URL_KEY = "GeneralChaosV6ServerURL";
+    private static final String PROPERTY_CHAOSV6_VALIDATION_METHOD = "ValidationChaosV6ValidationMethod";
     /** The authenticator used for validating playback permissions. */
     private StreamAuthenticater streamAuthenticater;
 
-    public WowzaSessionAuthenticationMCM2ModuleBase() {
+    public WowzaSessionAuthenticationChaosV6ModuleBase() {
         super();
     }
 
@@ -50,17 +50,21 @@ public class WowzaSessionAuthenticationMCM2ModuleBase extends ModuleBase
             //Initialise the config reader
             ConfigReader cr;
             cr = new ConfigReader(new File(vhostDir + "/conf/" + appName + "/wowza-modules.properties"),
-                                  PROPERTY_MCM2_SERVER_URL_KEY,
-                                  PROPERTY_MCM2_VALIDATION_METHOD);
+                                  PROPERTY_CHAOSV6_SERVER_URL_KEY, PROPERTY_CHAOSV6_VALIDATION_METHOD);
 
             //Read parameters
-            String validationMethodAtServer = cr.get(PROPERTY_MCM2_VALIDATION_METHOD);
-            String connectionUrlString = cr.get(PROPERTY_MCM2_SERVER_URL_KEY);
+            String validationMethodAtServer = cr.get(PROPERTY_CHAOSV6_VALIDATION_METHOD);
+            String connectionUrlString = cr.get(PROPERTY_CHAOSV6_SERVER_URL_KEY);
 
             //Initialise stream authenticator
             streamAuthenticater = new StreamAuthenticater(getLogger(),
-                                                          new MCM2SessionAndFilenameValidater(getLogger(), appInstance,
-                                                                                              connectionUrlString, validationMethodAtServer));
+                                                          new ChaosV6SessionAndFilenameValidater(getLogger(),
+                                                                                                 connectionUrlString,
+                                                                                                 validationMethodAtServer,
+                                                                                                 new ChaosV6API(
+                                                                                                         connectionUrlString,
+                                                                                                         validationMethodAtServer,
+                                                                                                         getLogger())));
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize StreamingDatabaseEventLogger.", e);
         }

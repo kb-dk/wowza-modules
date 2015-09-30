@@ -13,14 +13,14 @@ wowza-statistics-module
   Log events from wowza to a simple text file. Also logs information from ticket.
 
 wowza-mcm-authorization-module
-  Given a query parameter, check that it as a valid MCM session. This module is deprecated. Use MCM2 module instead.
-  Some classes are used by wowza-mcm2-authorization-module
+  Given a query parameter, check that it as a valid MCM session. This module is deprecated. Use MCM3 module instead.
+  Some classes are used by wowza-mcm3-authorization-module
 
-wowza-mcm2-authorization-module
-  Given a query parameter, check that it as a valid MCM2 session
+wowza-mcm3-authorization-module
+  Given a query parameter, check that it as a valid MCM3 session
 
 wowza-mcm-statistics-module
-  Log events from wowza to MCM. This module is deprecated, statistics logging is not supported in MCM2. Some classes
+  Log events from wowza to MCM. This module is deprecated, statistics logging is not supported in MCM3. Some classes
   are used by wowza-db-statistics-module.
 
 wowza-db-statistics-module
@@ -40,9 +40,10 @@ conf/Vhost.xml should probably be updated with correct port numbers
 
 wowza-chaos-vhost
 
-Two complete VHosts that contain configuration and the modules
- * wowza-content-resolver-module (only in one VHost)
- * wowza-mcm2-authorization-module
+Six complete VHosts that contain configuration and the modules
+ * wowza-content-resolver-module (only in three VHost)
+ * wowza-mcm3-authorization-module (only in two VHosts)
+ * wowza-chaosv6-authorization-module (in the remaining four VHosts)
  * wowza-db-statistics-module
 Example configuration can be found in conf/chaos/wowza-modules.properties
 The streamingContent directory in the VHost should point to the content to be served.

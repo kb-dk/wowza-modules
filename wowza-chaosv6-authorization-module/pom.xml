@@ -8,7 +8,7 @@
         <version>3.7-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wowza-mcm2-authorization-module</artifactId>
+    <artifactId>wowza-chaosv6-authorization-module</artifactId>
 
     <dependencies>
         <dependency>
@@ -84,9 +84,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>1.8.0.10</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
