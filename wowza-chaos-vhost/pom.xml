@@ -51,12 +51,12 @@
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mcm2-authorization-module</artifactId>
+            <artifactId>wowza-mcm3-authorization-module</artifactId>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mcm3-authorization-module</artifactId>
+            <artifactId>wowza-chaosv6-authorization-module</artifactId>
         </dependency>
 
         <dependency>

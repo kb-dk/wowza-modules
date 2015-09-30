@@ -208,8 +208,8 @@
 			</Module> 
             <Module>
                 <Name>Chaos-Authentication</Name>
-                <Description>Statsbiblioteket Chaos MCM2 authentication module</Description>
-                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.WowzaSessionAuthenticationMCM2ModuleBase</Class>
+                <Description>Statsbiblioteket Chaos MCM3 authentication module</Description>
+                <Class>dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.WowzaSessionAuthenticationChaosV6ModuleBase</Class>
             </Module>
             <Module>
                 <Name>wowza-content-resolver</Name>
