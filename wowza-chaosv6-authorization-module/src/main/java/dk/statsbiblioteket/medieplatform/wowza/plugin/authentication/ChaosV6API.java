@@ -40,7 +40,7 @@ public class ChaosV6API {
     public InputStream larmValidateSession(String sessionID, String objectID, String filePath)
             throws IOException, MalformedURLException, MCMOutputException {
         String urlStringToCHAOS = this.connectionURLString + "/" + this.validationMethodAtServer + "?" + "sessionGUID=" + sessionID
-                + "&" + "objectId=" + objectID + "&" + "filPath=" + URLEncoder.encode(filePath, "UTF-8");
+                + "&" + "objectId=" + objectID + "&" + "filePath=" + URLEncoder.encode(filePath, "UTF-8");
 
         InputStream in;
         if (logger.isDebugEnabled()) {
