@@ -31,13 +31,13 @@
             <scope>runtime</scope>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_stage/applications/lib</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/applications/lib</outputDirectory>
             <directoryMode>0775</directoryMode>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <scope>runtime</scope>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stage/applications/lib</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/applications/lib</outputDirectory>
             <directoryMode>0775</directoryMode>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <scope>runtime</scope>
@@ -139,7 +139,7 @@
         </fileSet>
 
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_stage/applications/chaos</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/applications/chaos</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -148,7 +148,7 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_stage/streamingContent</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -157,12 +157,12 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_stage/conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_chaos_chaosv6_stage/conf</directory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/conf</outputDirectory>
+            <directory>src/main/config/wowza_vhost_chaos_chaosv6_stageapi/conf</directory>
             <directoryMode>0775</directoryMode>
         </fileSet>
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stage/applications/chaos</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/applications/chaos</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -171,7 +171,7 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stage/streamingContent</outputDirectory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -180,8 +180,8 @@
             </excludes>
         </fileSet>
         <fileSet>
-            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stage/conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_chaos_chaosv6_doms_stage/conf</directory>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/conf</outputDirectory>
+            <directory>src/main/config/wowza_vhost_chaos_chaosv6_doms_stageapi/conf</directory>
             <directoryMode>0775</directoryMode>
         </fileSet>
     </fileSets>
