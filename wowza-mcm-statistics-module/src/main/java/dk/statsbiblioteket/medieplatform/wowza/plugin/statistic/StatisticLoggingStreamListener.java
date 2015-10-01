@@ -155,7 +155,7 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
     private String getWayfAttributes(IMediaStream stream) {
         String wayfAttr;
         try {
-            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", stream.getClient().getQueryStr());
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", stream.getClient().getQueryStr());
             wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
