@@ -35,8 +35,8 @@
         <module>wowza-mock</module>
         <module>wowza-mediestream-vhost</module>
         <module>wowza-mcm-authorization-module</module>
-        <module>wowza-mcm2-authorization-module</module>
         <module>wowza-mcm3-authorization-module</module>
+        <module>wowza-chaosv6-authorization-module</module>
         <module>wowza-mcm-statistics-module</module>
         <module>wowza-db-statistics-module</module>
         <module>wowza-chaos-vhost</module>
@@ -315,13 +315,13 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wowza-mcm2-authorization-module</artifactId>
+                <artifactId>wowza-mcm3-authorization-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wowza-mcm3-authorization-module</artifactId>
+                <artifactId>wowza-chaosv6-authorization-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -462,6 +462,13 @@
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>9.0-801.jdbc4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper for a response from MCM2. Will update the state of the return value from the response ML document.
+ * Wrapper for a response from MCM. Will update the state of the return value from the response ML document.
  */
 public class MCMOReturnValueWrapper {
 

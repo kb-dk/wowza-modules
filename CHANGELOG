@@ -1,4 +1,5 @@
 3.7
+New API for CHAOS platform
 Log WAYF attributes in CHAOS targets
 
 Existing databases using logging from CHAOS needs to have their databases updated using the following SQL:
