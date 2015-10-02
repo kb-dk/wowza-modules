@@ -60,6 +60,7 @@ namespaces = {
     "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
     "PB": "http://doms.statsbiblioteket.dk/types/program_broadcast/0/1/#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "fedora": "http://www.fedora.info/definitions/1/0/access/",
     "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
 
 # Prepare output CSV:
@@ -124,7 +125,7 @@ for record in cur:
             except:
                 pbcore_uuid = doms_id
 
-            url_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PROGRAM_BROADCAST/content"
+            url_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PROGRAM_BROADCAST/content"
             metadata = opener.open(url_metadata)
             metadata_text = metadata.read()
             metadata.close()
@@ -134,14 +135,17 @@ for record in cur:
             ext_body_text = ext_body.read()
             ext_body.close()
 
-            ext = ET.fromstring(ext_body_text)
-            file_uuid = (ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces) or [""])[0].split("/", 1)
-            url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
-            file_body = opener.open(url_ext)
-            file_body_text = file_body.read()
-            file_body.close()
-            file = ET.fromstring(file_body_text)
-            filename_text = file.xpath("fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0]
+            try:
+                ext = ET.fromstring(ext_body_text)
+                file_uuid = ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces)[0].split(":")[2]
+                url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
+                file_body = opener.open(url_file)
+                file_body_text = file_body.read()
+                file_body.close()
+                file = ET.fromstring(file_body_text)
+                filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
+            except:
+                filename_text = "Unknown file"
 
             url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
             pbcore_metadata = opener.open(url_pbcore_metadata)
@@ -159,10 +163,10 @@ for record in cur:
         out["Filename"] = filename_text
 
         program_broadcast = ET.fromstring(metadata_text)
-        channel_text = program_broadcast.xpath("/PB:programBroadcast/PB:channelId/text()")[0]
+        channel_text = program_broadcast.xpath("/PB:programBroadcast/PB:channelId/text()", namespaces=namespaces)[0]
         out["Kanal"] = channel_text
             
-        timestamp_text = program_broadcast.xpath("/PB:programBroadcast/PB:timeStart/text()")[0] # date format 2005-12-13T12:00:00.000+01:00
+        timestamp_text = program_broadcast.xpath("/PB:programBroadcast/PB:timeStart/text()", namespaces=namespaces)[0] # date format 2005-12-13T12:00:00.000+01:00
         out["Udsendelsestidspunkt"] = timestamp_text
 
         pbcore = ET.fromstring(pbcore_metadata_xml)
