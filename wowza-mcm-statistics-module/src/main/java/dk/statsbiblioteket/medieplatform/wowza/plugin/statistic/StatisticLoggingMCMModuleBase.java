@@ -206,7 +206,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
 
         String wayfAttr;
         try {
-            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
             wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
@@ -259,7 +259,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
 
         String wayfAttr;
         try {
-            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
             wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
