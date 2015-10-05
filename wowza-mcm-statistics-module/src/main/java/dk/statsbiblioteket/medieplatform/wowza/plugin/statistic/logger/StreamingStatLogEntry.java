@@ -26,7 +26,7 @@ public class StreamingStatLogEntry {
     private String mcmObjectSessionID;
     private long startedAt;
     private long endedAt;
-
+    private String wayfAttr;
 
     /**
      * This constructor is used when creating a log entry.
@@ -41,8 +41,10 @@ public class StreamingStatLogEntry {
      * @param startedAt Time in stream when event started.
      * @param endedAt Time in stream when event ended.
      * @param event Event that happened.
+     * @param wayfAttr Wayf attributes
      */
-    public StreamingStatLogEntry(WMSLogger logger, String streamName, int clientID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt, Event event) {
+    public StreamingStatLogEntry(WMSLogger logger, String streamName, int clientID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt, Event event,
+                                 String wayfAttr) {
         this.logger = logger;
         this.timestamp = new Date();
         this.eventID = -1; // unknown until saved in db
@@ -53,6 +55,7 @@ public class StreamingStatLogEntry {
         this.mcmObjectSessionID = mcmObjectSessionID;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
+        this.wayfAttr = wayfAttr;
         this.logger.debug("Created log entry object: " + this.toString());
     }
 
@@ -60,8 +63,7 @@ public class StreamingStatLogEntry {
      * This constructor is used when reading a log entry from database.
      *
      * Note the eventID is first set just before the log entry is persisted
-     *
-     * @param logger Wowza logger for logging what is going on.
+     *  @param logger Wowza logger for logging what is going on.
      * @param eventID ID of event logged.
      * @param timestamp Time of event.
      * @param streamName Name of stream this is an entry for
@@ -71,9 +73,11 @@ public class StreamingStatLogEntry {
      * @param startedAt Time in stream when event started.
      * @param endedAt Time in stream when event ended.
      * @param event Event that happened.
+     * @param wayfAttr WAYF attributes.
      */
-    public StreamingStatLogEntry(WMSLogger logger, long eventID, Date timestamp, String streamName, int userID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt, Event event) {
-        this(logger, streamName, userID, mcmSessionID, mcmObjectSessionID, startedAt, endedAt, event);
+    public StreamingStatLogEntry(WMSLogger logger, long eventID, Date timestamp, String streamName, int userID, String mcmSessionID, String mcmObjectSessionID, long startedAt, long endedAt,
+                                 Event event, String wayfAttr) {
+        this(logger, streamName, userID, mcmSessionID, mcmObjectSessionID, startedAt, endedAt, event, wayfAttr);
         this.eventID = eventID;
         this.timestamp = timestamp;
     }
@@ -157,6 +161,14 @@ public class StreamingStatLogEntry {
         this.endedAt = endedAt;
     }
 
+    public String getWayfAttr() {
+        return wayfAttr;
+    }
+
+    public void setWayfAttr(String wayfAttr) {
+        this.wayfAttr = wayfAttr;
+    }
+
     public static Event getEventFromString(String eventString) {
         Event result = null;
         if (Event.PLAY.toString().equals(eventString)) {
@@ -184,6 +196,6 @@ public class StreamingStatLogEntry {
                 + eventID + ", streamName=" + streamName + ", event=" + event
                 + ", userID=" + userID + ", mcmSessionID=" + mcmSessionID
                 + ", mcmObjectSessionID=" + mcmObjectSessionID + ", startedAt="
-                + startedAt + ", endedAt=" + endedAt + "]";
+                + startedAt + ", endedAt=" + endedAt + ", wayfAttr=" + wayfAttr + "]";
     }
 }

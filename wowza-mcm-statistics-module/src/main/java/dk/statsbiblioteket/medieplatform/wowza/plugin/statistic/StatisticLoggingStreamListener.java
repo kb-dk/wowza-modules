@@ -13,6 +13,7 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormatt
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -75,14 +76,16 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         logger.debug("Event triggered [onPlay]: " + stream.getName() + " - " + playStart + ", " + playLen + ", " + playReset); 
         long startedAt = Math.max((long) playStart, 0);
         long endedAt = startedAt;
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, 
+        String wayfAttr = getWayfAttributes(stream);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger,
                 streamName, 
                 clientID,
                 sessionIDPair.getSessionID(),
                 sessionIDPair.getObjectSessionID(),
                 startedAt,
                 endedAt,
-                Event.PLAY);
+                Event.PLAY,
+                wayfAttr);
         streamingEventLogger.logEvent(logEntry);
         this.lastStartTime = new Date();
         this.lastStartLocation = startedAt;
@@ -104,7 +107,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
      */
     @Override
     public void onPause(IMediaStream stream, boolean isPause, double location) {
-        logger.debug("Event triggered [onPause]: " + stream.getName() + " - " + isPause + ", " + location); 
+        logger.debug("Event triggered [onPause]: " + stream.getName() + " - " + isPause + ", " + location);
+        String wayfAttr = getWayfAttributes(stream);
         if (isPause && wasPlaying()) {
             // Play paused (and was playing). Case 1 and 2.
             Event event = Event.PAUSE;
@@ -118,7 +122,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
                     sessionIDPair.getObjectSessionID(),
                     startedAt,
                     endedAt,
-                    event);
+                    event,
+                    wayfAttr);
             logger.debug("LogEntry (onPause): " + logEntry);
             streamingEventLogger.logEvent(logEntry);
             this.lastStartTime = null;
@@ -136,7 +141,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
                     sessionIDPair.getObjectSessionID(),
                     startedAt,
                     endedAt,
-                    event);
+                    event,
+                    wayfAttr);
             logger.debug("LogEntry (onPause): " + logEntry);
             streamingEventLogger.logEvent(logEntry);
             this.lastStartTime = new Date();
@@ -146,6 +152,16 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         // Will eventually result in Case 3, 4 or STOP event.
     }
 
+    private String getWayfAttributes(IMediaStream stream) {
+        String wayfAttr;
+        try {
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", stream.getClient().getQueryStr());
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+        } catch (IllegallyFormattedQueryStringException e) {
+            wayfAttr = "";
+        }
+        return wayfAttr;
+    }
 
     /** See {@link #onPause(IMediaStream, boolean, double)}  */
     @Override
@@ -160,7 +176,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
      */
     @Override
     public void onSeek(IMediaStream stream, double location) {
-        logger.debug("Event triggered [onSeek]: " + stream.getName() + " - " + location); 
+        logger.debug("Event triggered [onSeek]: " + stream.getName() + " - " + location);
+        String wayfAttr = getWayfAttributes(stream);
         if (((long) location == 0) && wasPlaying()) {
             // In a rewind event. No pause events are triggered relating to this event.
             Date now = new Date();
@@ -174,7 +191,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
                     sessionIDPair.getObjectSessionID(),
                     startedAt,
                     endedAt,
-                    Event.REWIND);
+                    Event.REWIND,
+                    wayfAttr);
             streamingEventLogger.logEvent(logEntry);
             this.lastStartTime = new Date();
             this.lastStartLocation = (long) location;
@@ -188,7 +206,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
                     sessionIDPair.getObjectSessionID(),
                     startedAt,
                     endedAt,
-                    Event.SEEK);
+                    Event.SEEK,
+                    wayfAttr);
             streamingEventLogger.logEvent(logEntry);
             if (stream.isPlaying()) {
                 this.lastStartTime = new Date();
@@ -209,6 +228,7 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         logger.debug("Event triggered [onStop]: " + stream.getName() + " - "); 
         long startedAt;
         long endedAt;
+        String wayfAttr = getWayfAttributes(stream);
         if (wasPlaying()) {
             Date now = new Date();
             long playDuration = now.getTime() - this.lastStartTime.getTime();
@@ -226,7 +246,8 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
                 sessionIDPair.getObjectSessionID(),
                 startedAt,
                 endedAt,
-                Event.STOP);
+                Event.STOP,
+                wayfAttr);
         streamingEventLogger.logEvent(logEntry);
         this.lastStartTime = null;
         this.lastStartLocation = -1;

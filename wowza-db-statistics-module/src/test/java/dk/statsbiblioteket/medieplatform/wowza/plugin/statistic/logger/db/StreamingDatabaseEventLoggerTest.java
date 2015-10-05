@@ -75,6 +75,7 @@ public class StreamingDatabaseEventLoggerTest {
             "user_id INTEGER, " +
             "started_at INTEGER, " +
             "ended_at INTEGER, " +
+            "wayf_attr VARCHAR, " +
             "PRIMARY KEY (event_id))";
         stmt2.executeUpdate(query);
         Statement stmt1 = connection.createStatement();
@@ -104,7 +105,7 @@ public class StreamingDatabaseEventLoggerTest {
     @Test
     public void testStatiticsLoggingSBModuleBaseDBConnectionForTestPurpose() throws SQLException {
         Statement stmt1 = connection.createStatement();
-        stmt1.executeUpdate("INSERT INTO events VALUES (2, '2011-02-23 10:56:30.654', 'sample2.mp4', '" + Event.PLAY + "', 1, 0, 3000);");
+        stmt1.executeUpdate("INSERT INTO events VALUES (2, '2011-02-23 10:56:30.654', 'sample2.mp4', '" + Event.PLAY + "', 1, 0, 3000, '');");
         //stmt1.executeQuery("INSERT INTO events VALUES (2, 1, '2011-02-23 22:56:30', 'slut');");
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM events WHERE event_id = 2");
@@ -135,7 +136,7 @@ public class StreamingDatabaseEventLoggerTest {
         String streamName = "sample.mp4";
         String mcmSessionID = "abcdef";
         String mcmObjectSessionID = "xyz";
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY, "");
         streamingEventLogger.logEvent(logEntry);
         // Fetch event information in db
         String eventHappensAfterThisDate = sdf.format(dateBeforeConnection);
@@ -173,7 +174,7 @@ public class StreamingDatabaseEventLoggerTest {
         String streamName = "sample.mp4";
         String mcmSessionID = "abcdef";
         String mcmObjectSessionID = "xyz";
-        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY);
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY, "");
         streamingEventLogger.logEvent(logEntry);
         long maxAfterUpdate = getMaxEventID();
         Assert.assertEquals("Test that the new log entry is 1 larger that previous max", maxPriorToUpdate+1, maxAfterUpdate);

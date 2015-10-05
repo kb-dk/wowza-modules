@@ -3,6 +3,8 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
+
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
@@ -202,6 +204,14 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
             //Not turned off, so ignore
         }
 
+        String wayfAttr;
+        try {
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+        } catch (IllegallyFormattedQueryStringException e) {
+            wayfAttr = "";
+        }
+
         // Get session and object ID
         String sessionID;
         String objectID;
@@ -222,7 +232,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
                                                                    ihttpStreamerSession.getPlayStart(),
                                                                    ihttpStreamerSession.getPlayDuration()
                                                                            - ihttpStreamerSession.getPlayStart(),
-                                                                   StreamingStatLogEntry.Event.PLAY);
+                                                                   StreamingStatLogEntry.Event.PLAY, wayfAttr);
         StreamingMCMEventLogger.getInstance().logEvent(logEntry);
     }
 
@@ -247,6 +257,14 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
             //Not turned off, so ignore
         }
 
+        String wayfAttr;
+        try {
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+        } catch (IllegallyFormattedQueryStringException e) {
+            wayfAttr = "";
+        }
+
         // Get object ID
         String objectID;
         try {
@@ -265,7 +283,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
                                                                    ihttpStreamerSession.getPlayStart(),
                                                                    ihttpStreamerSession.getPlayDuration()
                                                                            - ihttpStreamerSession.getPlayStart(),
-                                                                   StreamingStatLogEntry.Event.STOP);
+                                                                   StreamingStatLogEntry.Event.STOP, wayfAttr);
         StreamingMCMEventLogger.getInstance().logEvent(logEntry);
     }
 }

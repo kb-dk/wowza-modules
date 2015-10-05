@@ -55,8 +55,16 @@ password_mgr.add_password(None, top_level_url, username, password)
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
+# prepare xpath
+namespaces = {
+    "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+    "PB": "http://doms.statsbiblioteket.dk/types/program_broadcast/0/1/#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "fedora": "http://www.fedora.info/definitions/1/0/access/",
+    "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+
 # Prepare output CSV:
-fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Genre", "Userid", "Shard UUID", "PBCore UUID"]
+fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Genre", "Userid", "Shard UUID", "PBCore UUID", "Wayf-attr"]
 
 print "Content-type: text/csv"
 print "Content-disposition: attachment; filename=larm_fm_stat-" + start_str + "-" + end_str + ".csv"
@@ -87,8 +95,9 @@ for record in cur:
     filename = record[2]
     event = record[3]
     userid = record[4]
+    wayfattr = record[7]
 
-    out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid}
+    out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid, "Wayf-attr": wayfattr}
     regexp_match = re_doms_id_from_url.search(filename)
     if regexp_match != None:
         doms_id = regexp_match.group(1)
@@ -99,55 +108,66 @@ for record in cur:
         out["Shard UUID"] = doms_id
 
         if doms_id in doms_ids_seen:
-            (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid) = doms_ids_seen[doms_id]
+            (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text) = doms_ids_seen[doms_id]
         else:
-            url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
-            url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
+            try:
+                url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
+                shard_metadata = opener.open(url_shard_metadata)
+                shard_metadata.read()
+                shard_metadata.close()
+                riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
+                url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
+                risearch_body = opener.open(url_risearch)
+                risearch_text = risearch_body.read()
+                risearch_body.close()
+                risearch_text_firstelement = string.split(risearch_text, ">")[0]
+                pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
+            except:
+                pbcore_uuid = doms_id
 
+            url_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PROGRAM_BROADCAST/content"
+            metadata = opener.open(url_metadata)
+            metadata_text = metadata.read()
+            metadata.close()
+
+            url_ext = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/RELS-EXT/content"
             ext_body = opener.open(url_ext)
             ext_body_text = ext_body.read()
             ext_body.close()
 
-            shard_metadata = opener.open(url_shard_metadata)
-            shard_metadata_text = shard_metadata.read()
-            shard_metadata.close()
+            try:
+                ext = ET.fromstring(ext_body_text)
+                file_uuid = ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces)[0].split(":")[2]
+                url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
+                file_body = opener.open(url_file)
+                file_body_text = file_body.read()
+                file_body.close()
+                file = ET.fromstring(file_body_text)
+                filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
+            except:
+                filename_text = "Unknown file"
 
-            riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
-            url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
-            risearch_body = opener.open(url_risearch)
-            risearch_text = risearch_body.read()
-            risearch_body.close()
-            risearch_text_firstelement = string.split(risearch_text, ">")[0]
-            pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
             url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
             pbcore_metadata = opener.open(url_pbcore_metadata)
             pbcore_metadata_xml = pbcore_metadata.read()
-            pbcore_metadata.close
+            pbcore_metadata.close()
 
-            doms_ids_seen[doms_id] = (ext_body_text, shard_metadata_text, pbcore_metadata_xml, pbcore_uuid)
+            doms_ids_seen[doms_id] = (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text)
 
         out["PBCore UUID"] = pbcore_uuid
-
-        namespaces = {
-                  "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
-                  "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                  "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
-
 
         # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
         ext = ET.fromstring(ext_body_text)
         out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-        shard = ET.fromstring(shard_metadata_text)
-        filename_text = shard.xpath("/shard_metadata/file/file_name/text()")[0]
         out["Filename"] = filename_text
 
-        filename_text_entries = string.split(filename_text, "_")
-        out["Kanal"] = filename_text_entries[2]
+        program_broadcast = ET.fromstring(metadata_text)
+        channel_text = program_broadcast.xpath("/PB:programBroadcast/PB:channelId/text()", namespaces=namespaces)[0]
+        out["Kanal"] = channel_text
             
-        timestamp_from_filename = filename_text_entries[4]  # date format 20060109040501
-        timestamp_offset = int(shard.xpath("/shard_metadata/file/program_start_offset/text()")[0])
-        out["Udsendelsestidspunkt"] = datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_filename, "%Y%m%d%H%M%S"))) + datetime.timedelta(0, timestamp_offset)
+        timestamp_text = program_broadcast.xpath("/PB:programBroadcast/PB:timeStart/text()", namespaces=namespaces)[0] # date format 2005-12-13T12:00:00.000+01:00
+        out["Udsendelsestidspunkt"] = timestamp_text
 
         pbcore = ET.fromstring(pbcore_metadata_xml)
         out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
