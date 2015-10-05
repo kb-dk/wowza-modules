@@ -55,15 +55,9 @@ public class ChaosV6SessionAndFilenameValidater extends MCMSessionAndFilenameVal
                     "WARNING: At least one of the arguments is null: " + "(sessionID=" + sessionID + ", objectID="
                             + objectID + ", filename=" + filenameAndPath + ")");
         }
-        InputStream in = null;
         boolean isAllowedToStream;
-        try {
-            in = chaosV6API.larmValidateSession(sessionID, objectID, filenameAndPath);
+        try (InputStream in = chaosV6API.larmValidateSession(sessionID, objectID, filenameAndPath)) {
             isAllowedToStream = parseResult(in);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
         }
         if (!isAllowedToStream) {
             logger.warn("CHAOS validation. Did not validate right to play file.");
