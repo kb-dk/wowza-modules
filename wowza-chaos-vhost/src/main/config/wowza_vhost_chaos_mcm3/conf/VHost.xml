@@ -68,7 +68,7 @@
 				<Type>Streaming</Type>
 				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>440</Port>
+				<Port>439</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
 				<SSLConfig>
 					<KeyStorePath>${com.wowza.wms.context.VHostConfigHome}/conf/keystore.jks</KeyStorePath>
