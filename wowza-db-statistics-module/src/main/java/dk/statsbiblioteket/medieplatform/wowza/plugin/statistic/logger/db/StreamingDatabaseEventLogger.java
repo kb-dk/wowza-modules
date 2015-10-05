@@ -217,29 +217,9 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     @Override
     public StreamingStatLogEntry getLogEntryLatest() {
         StreamingStatLogEntry logEntry = null;
-        try {
-            String mcmSessionID = null;
-            String mcmObjectSessionID = null;
-            Statement stmt = dbConnection.createStatement();
-            String queryString = "SELECT * FROM events ORDER BY event_id DESC LIMIT 1";
-            logger.info("Executing query: " + queryString);
-            ResultSet rs = stmt.executeQuery(queryString);
-            if (rs.next()) {
-                long eventID = rs.getLong("event_id");
-                Date timestamp = rs.getTimestamp("timestamp");
-                int userID = rs.getInt("user_id");
-                String streamName = rs.getString("stream_name");
-                String eventType = rs.getString("event_type");
-                long startedAt = rs.getLong("started_at");
-                long endedAt = rs.getLong("ended_at");
-                String wayfAttr = rs.getString("wayf_attr");
-                logEntry = new StreamingStatLogEntry(logger, eventID, timestamp, streamName, userID, mcmSessionID,
-                                                     mcmObjectSessionID, startedAt, endedAt,
-                                                     StreamingStatLogEntry.getEventFromString(eventType), wayfAttr);
-            }
-            logger.debug("Resulting log entry: " + logEntry);
-        } catch (SQLException e) {
-            throw new RuntimeException("Could not retrieve latest logged event.", e);
+        List<StreamingStatLogEntry> logEntryLatest = getLogEntryLatest(1);
+        if (!logEntryLatest.isEmpty()) {
+            logEntry = logEntryLatest.get(0);
         }
         return logEntry;
     }
