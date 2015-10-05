@@ -164,7 +164,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         String mcmObjectID;
         String wayfAttr;
         try {
-            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }
@@ -200,7 +200,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         String mcmObjectID;
         String wayfAttr;
         try {
-            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("waifAttr", queryString);
+            wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }
