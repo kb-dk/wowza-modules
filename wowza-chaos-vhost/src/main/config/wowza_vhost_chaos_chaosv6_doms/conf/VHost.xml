@@ -119,7 +119,7 @@
 				<Type>Admin</Type>
 				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>8087</Port>
+				<Port>9546</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
