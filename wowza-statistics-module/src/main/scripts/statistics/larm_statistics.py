@@ -174,8 +174,11 @@ for record in cur:
         out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
     else:
-        out["Kanal"] = string.split(filename, "_")[2]
-            
+        try:
+            out["Kanal"] = string.split(filename, "_")[2]
+        except:
+            out["Kanal"] = "Ukendt"
+
     result_dict_writer.writerow(out)
 
 conn.close()
