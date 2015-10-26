@@ -1,5 +1,8 @@
 20151026:
-Handle case where file isn't a doms ID but also doesnøt have an embedded channel in the name.
+LARM:
+* Handle case where file isn't a doms ID but also doesn't have an embedded channel in the name.
+Mediestream:
+* Handle case where sent attributes are 'None'
 
 20151008:
 Only changes for LARM statistics.

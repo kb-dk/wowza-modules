@@ -64,7 +64,7 @@ password_mgr.add_password(None, top_level_url, username, password)
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
 
-            
+
 # Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
               "Genre", "Titel (reklamefilm)", "Alternativ titel", "Dato", "Reklamefilmstype",
@@ -81,7 +81,7 @@ result_file = sys.stdout; # open("out.csv", "wb")
 
 result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 # Inlined result_dict_writer.writeheader() - not present in 2.4.
-# Writes out a row where each column name has been put in the corresponding column 
+# Writes out a row where each column name has been put in the corresponding column
 header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
@@ -90,7 +90,7 @@ urls_seen = {} # PLAY event seen yet for this URL? (value is not important)
 
 for date in dates:
     log_file_name = log_file_pattern % date.strftime("%Y-%m-%d")
-    
+
     # Silently skip non-existing logfiles.
     if os.path.isfile(log_file_name) == False:
         continue
@@ -106,7 +106,7 @@ for date in dates:
         ts = line["Timestamp"]
 
         # Ditte + Mogens rule - we only look at the very first event with the type "PLAY" for each URL.
-        
+
         if (event != "PLAY"):
             continue
 
@@ -115,10 +115,10 @@ for date in dates:
 	else:
 	    urls_seen[url] = ts # only key matters.
 
-	# Ok.  Now slowly build row to write in "out"           
- 
+	# Ok.  Now slowly build row to write in "out"
+
         out = { "Timestamp": ts, "URL": url} # add more below
-        
+
         regexp_match = re_doms_id_from_url.search(url)
         if regexp_match == None:
             print "No UUID in URL: " + url + ", line skipped"
@@ -128,31 +128,31 @@ for date in dates:
 
 	# big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
 	if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
-		continue        
+		continue
 
 	out["UUID"] = doms_id
-        
+
         if doms_id in doms_ids_seen:
             (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
         else:
             url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
             url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
-            
+
             ext_body = opener.open(url_ext)
             ext_body_text = ext_body.read()
-	    ext_body.close()		
-	
+	    ext_body.close()
+
 
             core_body = opener.open(url_core)
             core_body_text = core_body.read()
 	    core_body.close()
-            
+
             doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
 
         namespaces = { "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
                        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                        "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
-        
+
        	ext = ET.fromstring(ext_body_text)
 
        	# The (get_list() or [""])[0] construct returns the empty string if the first list is empty
@@ -166,7 +166,7 @@ for date in dates:
        	out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
        	out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
        	out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-    
+
        	# Reklamefilm
        	out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
        	out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
@@ -176,7 +176,10 @@ for date in dates:
        	out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
-        creds = simplejson.loads(attr)
+        if attr:
+            creds = simplejson.loads(attr)
+        else:
+            creds = []
   
         for cred in ["schacHomeOrganization", "eduPersonPrimaryAffiliation",
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
