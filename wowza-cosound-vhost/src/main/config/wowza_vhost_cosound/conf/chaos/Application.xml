@@ -38,6 +38,10 @@
 			<LiveStreamPacketizers></LiveStreamPacketizers>
 			<!-- Properties defined here will override any properties defined in conf/Streams.xml for any streams types loaded by this application -->
 			<Properties>
+				<Property>
+					<Name>seekTarget</Name>
+					<Value>enhanced</Value>
+				</Property>
 			</Properties>
 		</Streams>
 		<Transcoder>
@@ -209,6 +213,11 @@
 		<HTTPStreamer>
 			<!-- Properties defined here will override any properties defined in conf/HTTPStreamers.xml for any HTTPStreamer loaded by this applications -->
 			<Properties>
+				<Property>
+					<Name>cupertinoChunkDurationTarget</Name>
+					<Value>30000</Value>
+					<Type>Integer</Type>
+				</Property>
 			</Properties>
 		</HTTPStreamer>
 		<Manager>
