@@ -198,6 +198,16 @@
 			</Properties>
 		</StreamRecorder> 
 			<Properties>
+				<Property>
+					<Name>calculateMoreAccurateFrameSize</Name>
+					<Value>true</Value>
+					<Type>Boolean</Type>
+				</Property>
+				<Property>
+					<Name>calculateMoreAccurateFrameWindow</Name>
+					<Value>200</Value>
+					<Type>Integer</Type>
+				</Property>
 			</Properties>
 		</MediaReader>
 		<MediaWriter>
