@@ -99,4 +99,18 @@ public class TicketCheckerTest {
         assertTrue("Expected success", result);
     }
 
+    @Test
+    public void testWrongProgramId() {
+        // Setup
+        Ticket ticket = ticketToolMock.issueTicket(goodIP, "anotherprogram", new ArrayList<Property>());
+        String queryString = QUERY_STRING + ticket.getId();
+
+        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
+        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+        TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
+        // Test
+        boolean result = ticketChecker.checkTicket(stream, stream.getClient());
+        // Validate
+        assertFalse("Expected not to be allowed", result);
+    }
 }
