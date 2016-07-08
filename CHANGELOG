@@ -1,3 +1,6 @@
+3.3.1
+Fix mediestream ticket checker to check tickets on streaming play event, since stream name cannot be checked before that point.
+
 3.3
 Upgrade to Wowza 3.6.2
 Fix NPE when trying to escape semicolon in log lines
