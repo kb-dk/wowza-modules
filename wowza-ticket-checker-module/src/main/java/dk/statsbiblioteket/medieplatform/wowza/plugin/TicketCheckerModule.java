@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import com.wowza.wms.amf.AMFDataList;
 import com.wowza.wms.application.IApplicationInstance;
+import com.wowza.wms.application.WMSProperties;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
 import com.wowza.wms.module.IModuleOnApp;
@@ -13,9 +14,14 @@ import com.wowza.wms.module.IModuleOnStream;
 import com.wowza.wms.module.ModuleBase;
 import com.wowza.wms.request.RequestFunction;
 import com.wowza.wms.stream.IMediaStream;
+import com.wowza.wms.stream.IMediaStreamActionNotify;
 import com.wowza.wms.stream.IMediaStreamNotify;
+
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class handles events that happen during streaming. Also sets up the file
@@ -29,6 +35,7 @@ public class TicketCheckerModule extends ModuleBase
     private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
     private static final String PLUGIN_VERSION = TicketCheckerModule.class.getPackage().getImplementationVersion();
     private TicketChecker ticketChecker;
+    private StreamAuthenticator streamAuthenticator;
 
     public TicketCheckerModule() {
         super();
@@ -60,6 +67,9 @@ public class TicketCheckerModule extends ModuleBase
             String presentationType = cr.get("presentationType", "Stream");
 
             ticketChecker = new TicketChecker(presentationType, ticketTool);
+
+            // Initialise stream authenticator
+            streamAuthenticator = new StreamAuthenticator(ticketChecker);
         } catch (IOException e) {
             getLogger().error("An IO error occured.", e);
             throw new RuntimeException("An IO error occured.", e);
@@ -75,23 +85,45 @@ public class TicketCheckerModule extends ModuleBase
     }
 
 
-    /** Check ticket to see if streaming is allowed. Otherwise report failure. */
+    /** Check ticket to see if streaming is allowed. Otherwise report failure.
+     * Also add a listener to make sure we recheck the ticket once we have the stream name.
+     *
+     * @param stream The stream being created.
+     * */
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        if (stream.getClient() != null) {
-            if (!ticketChecker.checkTicket(stream, stream.getClient())) {
-                sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
-                sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
-                stream.getClient().setShutdownClient(true);
-                stream.getClient().shutdownClient();
-            }
+        if (!ticketChecker.checkTicket(stream)) {
+            sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
+            sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
+            stream.getClient().setShutdownClient(true);
+            stream.getClient().shutdownClient();
+            return;
         }
+        WMSProperties props = stream.getProperties();
+        synchronized(props) {
+            props.put(STREAM_ACTION_NOTIFIER, streamAuthenticator);
+        }
+        stream.addClientListener(streamAuthenticator);
     }
 
-    /*Mainly here to remember that we can hook this method*/
+    /**
+     * Remove the listener once we are done streaming. Note that we can't be sure the stream authenticator in the given
+     * stream is the same stream authenticator that is stored in this objects, since applications are loaded and
+     * unloaded while the stream is active.
+     *
+     * @param stream The stream being destroyed.
+     */
     @Override
     public void onStreamDestroy(IMediaStream stream) {
-        // Do nothing.
+        WMSProperties props = stream.getProperties();
+        IMediaStreamActionNotify thisStreamAuthenticator;
+        synchronized(props) {
+            thisStreamAuthenticator = (IMediaStreamActionNotify) props.get(STREAM_ACTION_NOTIFIER);
+        }
+        if (thisStreamAuthenticator != null) {
+            stream.removeClientListener(thisStreamAuthenticator);
+            props.remove(STREAM_ACTION_NOTIFIER);
+        }
     }
 
     /*Mainly here to remember that we can hook this method*/
