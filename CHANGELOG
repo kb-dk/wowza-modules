@@ -1,3 +1,6 @@
+3.8
+Fix mediestream ticket checker to check tickets on streaming play event, since stream name cannot be checked before that point.
+
 3.7
 New API for CHAOS platform
 Code now requires Java 8
