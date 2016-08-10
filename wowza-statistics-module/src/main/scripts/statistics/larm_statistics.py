@@ -32,12 +32,12 @@ re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 if "fromDate" in parameters:
     start_str = parameters["fromDate"].value  # "2013-06-15"
 else:
-    start_str = "2014-01-03"
+    start_str = "2016-08-03"
 
 if "toDate" in parameters:
     end_str = parameters["toDate"].value
 else:
-    end_str = "2014-01-06"
+    end_str = "2016-08-06"
 
 # http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
