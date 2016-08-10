@@ -3,6 +3,7 @@
 # NO-272 streamingstatistik for larm.fm.
 
 from lxml import etree as ET
+from sets import Set
 import ConfigParser
 import psycopg2
 import csv
@@ -79,6 +80,7 @@ header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
 doms_ids_seen = {}  # DOMS lookup cache, id is key
+seen = Set() # Already reported combinations of same filename,user,date are ignored
 
 larm_db_host = config.get("cgi", "larm_db_host")
 larm_db_name = config.get("cgi", "larm_db_name")
@@ -96,6 +98,10 @@ for record in cur:
     event = record[3]
     userid = record[4]
     wayfattr = record[7]
+    if wayfattr != '':
+        if (filename,wayfattr,timestamp.date()) in seen:
+            continue
+        seen.add((filename,wayfattr,timestamp.date()))
 
     out = {"Timestamp": timestamp, "Filename": filename, "Userid": userid, "Wayf-attr": wayfattr}
     regexp_match = re_doms_id_from_url.search(filename)
