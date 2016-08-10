@@ -181,7 +181,7 @@ for record in cur:
 
     else:
         try:
-            out["Kanal"] = string.split(filename, "_")[2]
+            out["Kanal"] = string.split(string.split(filename, "/")[-1], "_")[0]
         except:
             out["Kanal"] = "Ukendt"
 
