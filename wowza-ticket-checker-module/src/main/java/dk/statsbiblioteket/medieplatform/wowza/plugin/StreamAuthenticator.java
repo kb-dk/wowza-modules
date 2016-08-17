@@ -33,7 +33,7 @@ class StreamAuthenticator extends MediaStreamActionNotify3Base {
      */
     public void onPlay(IMediaStream stream, String streamName, double playStart,
             double playLen, int playReset) {
-        if (!ticketChecker.checkTicket(stream)) {
+        if (!ticketChecker.checkTicket(stream, stream.getClient())) {
             stream.getClient().rejectConnection("Streaming not allowed");
             stream.sendStreamNotFound("Streaming not allowed");
             stream.getClient().setShutdownClient(true);

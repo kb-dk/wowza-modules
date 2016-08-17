@@ -20,9 +20,6 @@ import com.wowza.wms.stream.IMediaStreamNotify;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketTool;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * This class handles events that happen during streaming. Also sets up the file
  * mapper that is needed for identifying the file to be played.
@@ -34,6 +31,7 @@ public class TicketCheckerModule extends ModuleBase
 
     private static final String PLUGIN_NAME = "Wowza Ticket Checker Plugin";
     private static final String PLUGIN_VERSION = TicketCheckerModule.class.getPackage().getImplementationVersion();
+    private static final String STREAM_ACTION_NOTIFIER = "streamActionNotifier";
     private TicketChecker ticketChecker;
     private StreamAuthenticator streamAuthenticator;
 
@@ -92,7 +90,7 @@ public class TicketCheckerModule extends ModuleBase
      * */
     @Override
     public void onStreamCreate(IMediaStream stream) {
-        if (!ticketChecker.checkTicket(stream)) {
+        if (!ticketChecker.checkTicket(stream, stream.getClient())) {
             sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
             sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
             stream.getClient().setShutdownClient(true);
