@@ -175,6 +175,9 @@
 		<HTTPStreamer>
 			<!-- Properties defined here will override any properties defined in conf/HTTPStreamers.xml for any HTTPStreamer loaded by this applications -->
 			<Properties>
+                                <Name>cupertinoPacketizeAllStreamsAsTS</Name>
+                                <Value>true</Value>
+                                <Type>Boolean</Type>
 			</Properties>
 		</HTTPStreamer>
 		<Manager>
