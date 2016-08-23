@@ -207,6 +207,18 @@
 				<Properties>
 				</Properties>
 			</HTTPStreamerAdapter>
+			<HTTPStreamerAdapter>
+				<ID>tsstreaming</ID>
+				<Name>tsstreaming</Name>
+				<Properties>
+				</Properties>
+			</HTTPStreamerAdapter>
+			<HTTPStreamerAdapter>
+				<ID>webmstreaming</ID>
+				<Name>webmstreaming</Name>
+				<Properties>
+				</Properties>
+			</HTTPStreamerAdapter>
 		</HTTPStreamerAdapters>
 
 		<!-- When set to zero, thread pool configuration is done in Server.xml -->
@@ -268,7 +280,7 @@
 			<DatagramConfiguration>
 				<Incoming>
 					<ReuseAddress>true</ReuseAddress>
-					<ReceiveBufferSize>1024000</ReceiveBufferSize>
+					<ReceiveBufferSize>2048000</ReceiveBufferSize>
 					<SendBufferSize>65000</SendBufferSize>
 					<!-- <MulticastBindToAddress>true</MulticastBindToAddress> -->
 					<!-- <MulticastInterfaceAddress>192.168.1.22</MulticastInterfaceAddress> -->
@@ -279,7 +291,7 @@
 				<Outgoing>
 					<ReuseAddress>true</ReuseAddress>
 					<ReceiveBufferSize>65000</ReceiveBufferSize>
-					<SendBufferSize>65000</SendBufferSize>
+					<SendBufferSize>256000</SendBufferSize>
 					<!-- <MulticastBindToAddress>true</MulticastBindToAddress> -->
 					<!-- <MulticastInterfaceAddress>192.168.1.22</MulticastInterfaceAddress> -->
 					<!-- <TrafficClass>0</TrafficClass> -->

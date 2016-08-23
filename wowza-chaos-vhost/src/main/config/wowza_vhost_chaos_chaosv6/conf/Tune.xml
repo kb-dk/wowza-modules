@@ -19,7 +19,7 @@
 
 			or specify custom GC settings directly (ex: <GarbageCollector>-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:NewSize=512m</GarbageCollector>)
 		-->
-		<GarbageCollector>${com.wowza.wms.TuningGarbageCollectorConcurrentDefault}</GarbageCollector>
+		<GarbageCollector>${com.wowza.wms.TuningGarbageCollectorG1Default}</GarbageCollector>
 
 		<!-- 
 			VM Options - other VM startup options

@@ -13,7 +13,7 @@
 		<MaximumStorageDirDepth>25</MaximumStorageDirDepth>
 		-->
 		<Connections>
-            <AutoAccept>false</AutoAccept>
+			<AutoAccept>false</AutoAccept>
 			<AllowDomains></AllowDomains>
 		</Connections>
 		<!--
@@ -22,14 +22,14 @@
 			${com.wowza.wms.AppHome} - Application home directory
 			${com.wowza.wms.ConfigHome} - Configuration home directory
 			${com.wowza.wms.context.VHost} - Virtual host name
-			${com.wowza.wms.context.VHostConfigHome} - Virtual host config directory
+			${com.wowza.wms.context.VHostConfigHome} - Virtual host home directory
 			${com.wowza.wms.context.Application} - Application name
 			${com.wowza.wms.context.ApplicationInstance} - Application instance name
 			
 		-->
 		<Streams>
 			<StreamType>default</StreamType>
-            <StorageDir>${com.wowza.wms.context.VHostConfigHome}/streamingContent</StorageDir>
+			<StorageDir>${com.wowza.wms.context.VHostConfigHome}/streamingContent</StorageDir>
 			<KeyDir>${com.wowza.wms.context.VHostConfigHome}/keys</KeyDir>
 			<!-- LiveStreamPacketizers (separate with commas): cupertinostreamingpacketizer, smoothstreamingpacketizer, sanjosestreamingpacketizer, mpegdashstreamingpacketizer, cupertinostreamingrepeater, smoothstreamingrepeater, sanjosestreamingrepeater, mpegdashstreamingrepeater, dvrstreamingpacketizer, dvrstreamingrepeater -->
 			<LiveStreamPacketizers></LiveStreamPacketizers>
@@ -108,7 +108,7 @@
 			<!-- RTP/Authentication/[type]Methods defined in Authentication.xml. Default setup includes; none, basic, digest -->
 			<Authentication>
 				<PublishMethod>block</PublishMethod>
-                <PlayMethod>digest</PlayMethod>
+				<PlayMethod>digest</PlayMethod>
 			</Authentication>
 			<!-- RTP/AVSyncMethod. Valid values are: senderreport, systemclock, rtptimecode -->
 			<AVSyncMethod>senderreport</AVSyncMethod>
