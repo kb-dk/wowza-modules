@@ -22,7 +22,7 @@
 			${com.wowza.wms.AppHome} - Application home directory
 			${com.wowza.wms.ConfigHome} - Configuration home directory
 			${com.wowza.wms.context.VHost} - Virtual host name
-			${com.wowza.wms.context.VHostConfigHome} - Virtual host config directory
+			${com.wowza.wms.context.VHostConfigHome} - Virtual host home directory
 			${com.wowza.wms.context.Application} - Application name
 			${com.wowza.wms.context.ApplicationInstance} - Application instance name
 			
