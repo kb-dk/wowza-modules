@@ -160,6 +160,16 @@
 		<MediaReader>
 			<!-- Properties defined here will override any properties defined in conf/MediaReaders.xml for any MediaReaders loaded by this applications -->
 			<Properties>
+				<Property>
+					<Name>calculateMoreAccurateFrameSize</Name>
+					<Value>true</Value>
+					<Type>Boolean</Type>
+				</Property>
+				<Property>
+					<Name>calculateMoreAccurateFrameWindow</Name>
+					<Value>2147483648</Value>
+					<Type>Integer</Type>
+				</Property>
 			</Properties>
 		</MediaReader>
 		<MediaWriter>
