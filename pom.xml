@@ -240,6 +240,34 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Install Wmsserver wms-transcoder library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-transcoder</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-transcoder.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmsserver wms-rest library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-rest</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-rest.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Install WowzaServerAddOnCollection</id>
                         <phase>validate</phase>
                         <goals>
@@ -407,6 +435,18 @@
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-stream-publish</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-transcoder</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-rest</artifactId>
                 <version>${wms.version}</version>
             </dependency>
 
