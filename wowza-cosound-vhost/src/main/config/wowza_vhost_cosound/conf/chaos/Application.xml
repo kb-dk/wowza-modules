@@ -171,7 +171,7 @@
 				</Property>
 				<Property>
 					<Name>calculateMoreAccurateFrameWindow</Name>
-					<Value>200</Value>
+					<Value>2147483648</Value>
 					<Type>Integer</Type>
 				</Property>
 			</Properties>
