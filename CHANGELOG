@@ -1,7 +1,8 @@
-3.8
+4.0
+Upgrade to Wowza 4.4.1 on all VHosts.
 Fix mediestream ticket checker to check tickets on streaming play event, since stream name cannot be checked before that point.
-Better post processing of LARM statistics - don't repeat streams and better channel handling
-Use newest postgres driver
+Better post processing of LARM statistics - don't repeat streams and better channel handling. Ignore streams of only a few seconds.
+Use newest postgres driver.
 
 3.7
 New API for CHAOS platform
