@@ -52,6 +52,11 @@
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-content-resolver-module</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-plugin-collection</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

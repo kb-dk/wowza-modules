@@ -229,7 +229,7 @@
             <Module>
             	<Name>ModuleLimitStreamViewers</Name>
             	<Description>Limit connects to an Application</Description>
-            	<Class>com.wowza.wms.plugin.collection.module.ModuleLimitConnectionsToApplication</Class>
+            	<Class>com.wowza.wms.plugin.collection.module.ModuleLimitStreamViewers</Class>
             </Module>
 		</Modules>
 		<!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
