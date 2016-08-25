@@ -90,6 +90,10 @@ public class TicketCheckerModule extends ModuleBase
      * */
     @Override
     public void onStreamCreate(IMediaStream stream) {
+        if (stream.getClient() == null) {
+            //Not an RTMP stream. Authentication done on HTTP connect.
+            return;
+        }
         if (!ticketChecker.checkTicket(stream, stream.getClient())) {
             sendClientOnStatusError(stream.getClient(), "NetConnection.Connect.Rejected", "Streaming not allowed");
             sendStreamOnStatusError(stream, "NetStream.Play.Failed", "Streaming not allowed");
