@@ -235,7 +235,7 @@
 		<!-- Properties defined here will be added to the IApplication.getProperties() and IApplicationInstance.getProperties() collections -->
 		<Properties>
             <Property>
-            	<Name>maxApplicationConnections</Name>
+            	<Name>limitStreamViewersMaxViewers</Name>
             	<Value>1000</Value>
             	<Type>Integer</Type>
             </Property>
