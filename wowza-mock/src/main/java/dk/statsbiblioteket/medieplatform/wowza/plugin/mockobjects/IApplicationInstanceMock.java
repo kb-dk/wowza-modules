@@ -9,6 +9,7 @@ import com.wowza.wms.client.ConnectionCounterSimple;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.client.IClientNotify;
 import com.wowza.wms.dvr.DvrApplicationContext;
+import com.wowza.wms.dvr.DvrApplicationConverterContext;
 import com.wowza.wms.dvr.IDvrStreamManager;
 import com.wowza.wms.httpstreamer.model.IHTTPSessionNotify;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerApplicationContext;
@@ -1324,6 +1325,12 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     }
 
     @Override
+    public DvrApplicationConverterContext getDvrConverter() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public ILiveStreamDvrRecorderControl getLiveStreamDvrRecorderControl() {
         // TODO Auto-generated method stub
         return null;
@@ -1560,6 +1567,64 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     public WMSProperties getStreamRecorderProperties() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean isLive() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public com.wowza.wms.sourcecontrol.ISourceControlSession getSourceControlSession(String s) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<com.wowza.wms.sourcecontrol.ISourceControlSession> getSourceControlSessions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addSourceControlSession(String s,
+                                        com.wowza.wms.sourcecontrol.ISourceControlSession iSourceControlSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeSourceControlSession(String s) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addSourceControlSessionListener(
+            com.wowza.wms.sourcecontrol.ISourceControlSessionNotify iSourceControlSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void removeSourceControlSessionListener(
+            com.wowza.wms.sourcecontrol.ISourceControlSessionNotify iSourceControlSessionNotify) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifySourceControlSessionCreate(String s,
+                                                 com.wowza.wms.sourcecontrol.ISourceControlSession iSourceControlSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void notifySourceControlSessionDestroy(String s,
+                                                  com.wowza.wms.sourcecontrol.ISourceControlSession iSourceControlSession) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getSourceControlSessionCount() {
+        return 0;
     }
 
     @Override

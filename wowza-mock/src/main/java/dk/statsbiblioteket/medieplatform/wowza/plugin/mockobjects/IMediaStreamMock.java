@@ -1401,27 +1401,88 @@ public class IMediaStreamMock implements IMediaStream {
 
     @Override
     public void addLivePacketListener(IMediaStreamLivePacketNotify iMediaStreamLivePacketNotify) {
-
+        // TODO Auto-generated method stub
     }
 
     @Override
     public void removeLivePacketListener(IMediaStreamLivePacketNotify iMediaStreamLivePacketNotify) {
-
+        // TODO Auto-generated method stub
     }
 
     @Override
     public void notifyLivePacket(AMFPacket amfPacket) {
-
+        // TODO Auto-generated method stub
     }
 
     @Override
     public boolean isPublisherStream() {
+        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void setPublisherStream(boolean b) {
+        // TODO Auto-generated method stub
+    }
 
+    @Override
+    public long getPublishFrameCountVideo() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public long getPublishFrameCountAudio() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public long getPublishFrameCountData() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPublishBitrateVideo() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getPublishFramerateVideo() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int[] getPublishKeyFrameIntervalsVideo() {
+        // TODO Auto-generated method stub
+        return new int[0];
+    }
+
+    @Override
+    public int getPublishBitrateAudio() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPublishBitrateVideo(int i) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getPublishFramerateVideo(int i) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getPublishBitrateAudio(int i) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

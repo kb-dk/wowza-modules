@@ -64,6 +64,18 @@
         </dependency>
 
         <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-transcoder</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-rest</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
         </dependency>

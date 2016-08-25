@@ -542,6 +542,18 @@ public class IClientMock implements IClient {
     }
 
     @Override
+    public boolean isAcceptConnectionSendClientId() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setAcceptConnectionSendClientId(boolean b) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void rejectConnection() {
         // TODO Auto-generated method stub
 

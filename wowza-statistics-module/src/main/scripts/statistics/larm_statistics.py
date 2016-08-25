@@ -98,6 +98,15 @@ for record in cur:
     event = record[3]
     userid = record[4]
     wayfattr = record[7]
+
+    cur2 = conn.cursor()
+    query2 = "SELECT * FROM events WHERE event_type = 'STOP' AND timestamp >= '%s' AND timestamp < '%s' AND stream_name = '%s' AND wayf_attr = '%s';" % (timestamp, timestamp + datetime.timedelta(0,2), filename, wayfattr)
+    cur2.execute(query2)
+
+    allfiles = cur2.fetchall()
+    if (len(allfiles)!=0):
+        continue
+
     if wayfattr != '':
         if (filename,wayfattr,timestamp.date()) in seen:
             continue
