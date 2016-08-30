@@ -89,8 +89,8 @@ larm_db_password = config.get("cgi", "larm_db_password")
 
 conn = psycopg2.connect(host=larm_db_host, database=larm_db_name, user=larm_db_username, password=larm_db_password)
 cur = conn.cursor()
-query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= '%s' AND timestamp < '%s';" % (start_date, end_date)
-cur.execute(query)
+query = "SELECT * FROM events WHERE event_type = 'PLAY' AND timestamp >= %s AND timestamp < %s;"
+cur.execute(query,(start_date.date(), end_date.date()))
 
 for record in cur:
     timestamp = record[1]
@@ -100,8 +100,8 @@ for record in cur:
     wayfattr = record[7]
 
     cur2 = conn.cursor()
-    query2 = "SELECT * FROM events WHERE event_type = 'STOP' AND timestamp >= '%s' AND timestamp < '%s' AND stream_name = '%s' AND wayf_attr = '%s';" % (timestamp, timestamp + datetime.timedelta(0,2), filename, wayfattr)
-    cur2.execute(query2)
+    query2 = "SELECT * FROM events WHERE event_type = 'STOP' AND timestamp >= %s AND timestamp < %s AND stream_name = %s AND wayf_attr = %s;"
+    cur2.execute(query2, (timestamp, timestamp + datetime.timedelta(0,2), filename, wayfattr))
 
     allfiles = cur2.fetchall()
     if (len(allfiles)!=0):
