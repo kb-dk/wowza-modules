@@ -1,3 +1,8 @@
+20160830:
+LARM:
+
+* Fix horrible, horrible sql injection bug
+
 20160826:
 LARM:
 
