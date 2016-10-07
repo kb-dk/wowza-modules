@@ -180,6 +180,11 @@
 					<Value>true</Value>
 					<Type>Boolean</Type>
 				</Property>
+				<Property>
+					<Name>cupertinoCORSHeadersEnabled</Name>
+					<Value>true</Value>
+					<Type>Boolean</Type>
+				</Property>
 			</Properties>
 		</HTTPStreamer>
 		<Manager>
