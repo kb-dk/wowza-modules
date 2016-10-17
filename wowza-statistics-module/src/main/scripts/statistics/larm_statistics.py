@@ -141,7 +141,11 @@ for record in cur:
                 risearch_text = readUrl(doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery)
                 risearch_text_firstelement = string.split(risearch_text, ">")[0]
                 pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
-            except:
+            except urllib2.HTTPError, e:
+                e.read() #Read the error message so the connection can close
+                e.close() #And close the connection explicitly
+                pbcore_uuid = doms_id
+            except: #Catch all terms
                 pbcore_uuid = doms_id
 
             metadata_text = readUrl(
@@ -157,6 +161,10 @@ for record in cur:
 
                 file = ET.fromstring(file_body_text)
                 filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
+            except urllib2.HTTPError, e:
+                e.read()  # Read the error message so the connection can close
+                e.close()  # And close the connection explicitly
+                filename_text = "Unknown file"
             except:
                 filename_text = "Unknown file"
 
