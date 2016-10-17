@@ -15,6 +15,16 @@ import cgi
 import urllib2
 import string
 
+def readUrl(url=None):
+    opened = opener.open(url)
+    try:
+        text = opened.read()
+        return text
+    finally:
+        opened.close()
+
+
+
 config_file_name = "../../larm-statistics.py.cfg"
 
 #cgitb.enable()  # web page feedback in case of problems
@@ -50,11 +60,11 @@ password = config.get("cgi", "password")
 
 # https://docs.python.org/2/howto/urllib2.html#id6
 password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-top_level_url = doms_url
-password_mgr.add_password(None, top_level_url, username, password)
+password_mgr.add_password(None, doms_url, username, password)
 
 handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 opener = urllib2.build_opener(handler)
+
 
 # prepare xpath
 namespaces = {
@@ -126,46 +136,32 @@ for record in cur:
             (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text) = doms_ids_seen[doms_id]
         else:
             try:
-                url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
-                shard_metadata = opener.open(url_shard_metadata)
-                shard_metadata.read()
-                shard_metadata.close()
+                readUrl(doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content")
                 riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
-                url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
-                risearch_body = opener.open(url_risearch)
-                risearch_text = risearch_body.read()
-                risearch_body.close()
+                risearch_text = readUrl(doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery)
                 risearch_text_firstelement = string.split(risearch_text, ">")[0]
                 pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
             except:
                 pbcore_uuid = doms_id
 
-            url_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PROGRAM_BROADCAST/content"
-            metadata = opener.open(url_metadata)
-            metadata_text = metadata.read()
-            metadata.close()
+            metadata_text = readUrl(
+                doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PROGRAM_BROADCAST/content")
 
-            url_ext = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/RELS-EXT/content"
-            ext_body = opener.open(url_ext)
-            ext_body_text = ext_body.read()
-            ext_body.close()
+            ext_body_text = readUrl(doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/RELS-EXT/content")
 
             try:
                 ext = ET.fromstring(ext_body_text)
                 file_uuid = ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces)[0].split(":")[2]
-                url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
-                file_body = opener.open(url_file)
-                file_body_text = file_body.read()
-                file_body.close()
+
+                file_body_text = readUrl(doms_url + "objects/uuid%3A" + file_uuid + "?format=xml")
+
                 file = ET.fromstring(file_body_text)
                 filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
             except:
                 filename_text = "Unknown file"
 
-            url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
-            pbcore_metadata = opener.open(url_pbcore_metadata)
-            pbcore_metadata_xml = pbcore_metadata.read()
-            pbcore_metadata.close()
+            pbcore_metadata_xml = readUrl(doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content")
+
 
             doms_ids_seen[doms_id] = (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text)
 
