@@ -1,3 +1,8 @@
+20161018:
+LARM:
+
+* Fix connection exhaustion on failed http requests
+
 20160830:
 LARM:
 
