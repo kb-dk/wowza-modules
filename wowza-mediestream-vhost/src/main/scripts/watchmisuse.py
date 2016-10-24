@@ -29,10 +29,10 @@ try:
             user = attributes.get('eduPersonPrincipalName')
             if user:
                 user = str(user)
+                count.setdefault(user, 0)
+                maxcount.setdefault(user, 0)
                 if action == 'PLAY':
-                    count.setdefault(user, 0)
                     count[user] = count[user]+1;
-                    maxcount.setdefault(user, 0)
                     maxcount[user] = max(count[user], maxcount[user])
                 elif action == 'STOP':
                     count[user] = count[user]-1;
