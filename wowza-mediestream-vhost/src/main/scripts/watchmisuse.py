@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.6
 
 # Script that parses a log file from wowza and reports by mail users having streamed more than a given amount of streams
 # Usage:
@@ -21,9 +21,11 @@ try:
             if firstline:
                 firstline = 0
                 continue
-            parts = line.split(';')
+            parts = line.split(';',3)
             action = parts[1]
             attributes = json.loads(parts[3])
+            if attributes is None:
+                continue
             user = attributes.get('eduPersonPrincipalName')
             if user:
                 user = str(user)
