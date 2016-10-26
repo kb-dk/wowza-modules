@@ -1,3 +1,6 @@
+4.1
+Fix SQL injection bug in LARM statistics logging
+
 4.0
 Upgrade to Wowza 4.4.1 on all VHosts.
 Fix mediestream ticket checker to check tickets on streaming play event, since stream name cannot be checked before that point.
