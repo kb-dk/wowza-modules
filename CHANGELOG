@@ -1,3 +1,7 @@
+4.1
+Upgrade to Wowza 4.5.0 on Mediestream VHost
+Add application "mediestreamapple" to Mediestream VHost that does not packetize as transport stream
+
 4.0
 Upgrade to Wowza 4.4.1 on all VHosts.
 Fix mediestream ticket checker to check tickets on streaming play event, since stream name cannot be checked before that point.
