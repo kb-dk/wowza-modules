@@ -11,9 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -146,13 +148,18 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
         try {
             logEntry.setEventID(getNextEventID());
             logger.info("Next event id: " + logEntry.getEventID());
-            Statement stmt = dbConnection.createStatement();
-            String query = "INSERT INTO events VALUES (" + logEntry.getEventID() + ", " + "'"
-                    + logEntry.getTimestampAsString() + "', " + "'" + logEntry.getStreamName() + "', " + "'"
-                    + logEntry.getEvent() + "', " + logEntry.getUserID() + ", " + logEntry.getStartedAt() + ", "
-                    + logEntry.getEndedAt() + "," + "'" + logEntry.getWayfAttr() + "'" + ");";
+            String query = "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            stmt.setLong(1, logEntry.getEventID());
+            stmt.setTimestamp(2, new Timestamp(logEntry.getTimestamp().getTime()));
+            stmt.setString(3, logEntry.getStreamName());
+            stmt.setString(4, logEntry.getEvent().toString());
+            stmt.setInt(5, logEntry.getUserID());
+            stmt.setLong(6, logEntry.getStartedAt());
+            stmt.setLong(7, logEntry.getEndedAt());
+            stmt.setString(8, logEntry.getWayfAttr());
             logger.info("Executing query: " + query);
-            stmt.executeUpdate(query);
+            stmt.executeUpdate();
             logger.info("Creating event: " + query);
         } catch (SQLException e) {
             logger.error(
