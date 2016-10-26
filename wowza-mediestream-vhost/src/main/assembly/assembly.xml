@@ -24,6 +24,15 @@
                 <exclude>*</exclude>
             </excludes>
         </fileSet>
+        <fileSet>
+            <outputDirectory>applications/mediestreamapple</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
         <!-- Te reenable previews, remove this commenting -->
         <!--fileSet>
             <outputDirectory>applications/mediestream_preview</outputDirectory>
