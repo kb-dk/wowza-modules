@@ -1,5 +1,6 @@
 4.1
 Fix SQL injection bug in LARM statistics logging
+Upgrade to Wowza 4.5.0 on chaos and cosound VHosts.
 
 4.0
 Upgrade to Wowza 4.4.1 on all VHosts.
