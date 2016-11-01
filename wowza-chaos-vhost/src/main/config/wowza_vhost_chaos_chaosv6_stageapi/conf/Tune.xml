@@ -14,8 +14,8 @@
 		<!--
 			GarbageCollector
 
-			${com.wowza.wms.TuningGarbageCollectorConcurrentDefault} - Concurrent Collector (recommended)
-			${com.wowza.wms.TuningGarbageCollectorG1Default} - G1 (Garbage First) Collector
+			${com.wowza.wms.TuningGarbageCollectorConcurrentDefault} - Concurrent Collector
+			${com.wowza.wms.TuningGarbageCollectorG1Default} - G1 (Garbage First) Collector (recommended)
 
 			or specify custom GC settings directly (ex: <GarbageCollector>-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:NewSize=512m</GarbageCollector>)
 		-->
