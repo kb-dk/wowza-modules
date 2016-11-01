@@ -1,6 +1,7 @@
 4.1
-Upgrade to Wowza 4.5.0 on Mediestream VHost
+Upgrade to Wowza 4.5.0 on all VHosts.
 Add application "mediestreamapple" to Mediestream VHost that does not packetize as transport stream
+Fix SQL injection bug in LARM statistics logging
 
 4.0
 Upgrade to Wowza 4.4.1 on all VHosts.

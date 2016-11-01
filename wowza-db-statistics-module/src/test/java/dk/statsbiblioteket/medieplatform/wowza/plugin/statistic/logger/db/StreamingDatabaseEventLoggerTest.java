@@ -206,4 +206,41 @@ public class StreamingDatabaseEventLoggerTest {
         return eventID;
     }
 
+    /**
+     * Test that a play event is registered in the database as an event even with weird characters.
+     *
+     * @throws SQLException
+     * @throws ParseException
+     */
+    @Test
+    public void testStatisticLoggingSBMediaStreamActionNotify2TestOnPlayWeirdCharacters() throws SQLException, ParseException {
+        // Establish connection
+        Date dateBeforeConnection = new Date();
+        int clientID = 3;
+        String streamName = "Don't do this.mp4";
+        String mcmSessionID = "abcdef";
+        String mcmObjectSessionID = "xyz";
+        StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY, "");
+        streamingEventLogger.logEvent(logEntry);
+        // Fetch event information in db
+        String eventHappensAfterThisDate = sdf.format(dateBeforeConnection);
+        Statement stmt = connection.createStatement();
+        String queryString = "SELECT * FROM events WHERE timestamp >= '" + eventHappensAfterThisDate + "'";
+        logger.info("[TEST] Executing query: " + queryString);
+        ResultSet rs = stmt.executeQuery(queryString);
+        rs.next();
+        long eventID = rs.getLong("event_id");
+        int userID = rs.getInt("user_id");
+        Date timestamp = rs.getTimestamp("timestamp");
+        String event = rs.getString("event_type");
+
+        logger.debug("Log entry: " + logEntry);
+        logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
+        Assert.assertEquals("Result is:", logEntry.getEventID(), eventID);
+        Assert.assertEquals("Result is:", clientID, userID);
+        Assert.assertEquals("Result is:", logEntry.getTimestamp(), timestamp);
+        Assert.assertEquals("Result is:", Event.PLAY.toString(), event);
+    }
+
+
 }

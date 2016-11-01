@@ -10,8 +10,6 @@ import java.util.Date;
  */
 public class StreamingStatLogEntry {
 
-    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private WMSLogger logger;
     
     public enum Event{PLAY, PAUSE, PAUSE_RESUME, STOP, SEEK, REWIND};
@@ -84,10 +82,6 @@ public class StreamingStatLogEntry {
 
     public Date getTimestamp() {
         return timestamp;
-    }
-
-    public String getTimestampAsString() {
-        return sdf.format(timestamp);
     }
 
     public void setTimestamp(Date timestamp) {

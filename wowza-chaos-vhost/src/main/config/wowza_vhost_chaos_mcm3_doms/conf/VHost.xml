@@ -74,6 +74,7 @@
 					<KeyStorePath>${com.wowza.wms.context.VHostConfigHome}/conf/keystore.jks</KeyStorePath>
 					<KeyStorePassword>[password]</KeyStorePassword>
 					<KeyStoreType>JKS</KeyStoreType>
+					<DomainToKeyStoreMapPath></DomainToKeyStoreMapPath>
 					<SSLProtocol>TLS</SSLProtocol>
 					<Algorithm>SunX509</Algorithm>
 					<CipherSuites></CipherSuites>
@@ -312,6 +313,21 @@
 				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
 			</MulticastOutgoing>
 		</RTP>
+		<HTTPProvider>
+			<KeepAliveTimeout>2000</KeepAliveTimeout>
+			<KillConnectionTimeout>10000</KillConnectionTimeout>
+			<SlowConnectionBitrate>64000</SlowConnectionBitrate>
+			<IdleFrequency>250</IdleFrequency>
+		</HTTPProvider>
+		<WebSocket>
+			<MaximumMessageSize>512k</MaximumMessageSize>
+			<PacketFragmentationSize>0</PacketFragmentationSize>
+			<MaskOutgoingMessages>false</MaskOutgoingMessages>
+			<IdleFrequency>250</IdleFrequency>
+			<ValidationFrequency>20000</ValidationFrequency>
+			<MaximumPendingWriteBytes>0</MaximumPendingWriteBytes>
+			<PingTimeout>12000</PingTimeout>
+		</WebSocket>
 		<Application>
 			<ApplicationTimeout>60000</ApplicationTimeout>
 			<PingTimeout>12000</PingTimeout>

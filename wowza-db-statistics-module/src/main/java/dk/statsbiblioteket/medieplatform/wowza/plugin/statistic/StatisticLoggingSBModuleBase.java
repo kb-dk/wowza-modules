@@ -30,8 +30,6 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
     private static final String PLUGIN_NAME = "CHAOS Wowza plugin - Statistics SB";
     private static final String PLUGIN_VERSION = StatisticLoggingSBModuleBase.class.getPackage().getImplementationVersion();
 
-    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     private static final String PROPERTY_STATISTICS_LOGGING_JDBC_DRIVER = "StatisticsLoggingJDBCDriver";
     private static final String PROPERTY_STATISTICS_LOGGING_DB_CONNECTION_URL = "StatisticsLoggingDBConnectionURL";
     private static final String PROPERTY_STATISTICS_LOGGING_DBUSER = "StatisticsLoggingDBUser";
