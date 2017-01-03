@@ -31,8 +31,8 @@ config.read(config_file_name)
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
-# Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f (optionally trailed by a ".fileending")
-re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\.[a-zA-Z0-9]*)?$")
+# Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f trailed by a ".fileending" or EOL)
+re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)|$)")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
