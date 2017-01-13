@@ -36,14 +36,14 @@ re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
-	start_str = parameters["fromDate"].value # "2013-06-15"
+        start_str = parameters["fromDate"].value # "2013-06-15"
 else:
-	start_str = "2014-09-01"
+        start_str = "2014-09-01"
 
 if "toDate" in parameters:
-	end_str = parameters["toDate"].value
+        end_str = parameters["toDate"].value
 else:
-	end_str = "2014-12-01"
+        end_str = "2014-12-01"
 
 # http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
@@ -112,10 +112,10 @@ for date in dates:
 
         if url in urls_seen:
             continue
-	else:
-	    urls_seen[url] = ts # only key matters.
+        else:
+            urls_seen[url] = ts # only key matters.
 
-	# Ok.  Now slowly build row to write in "out"
+        # Ok.  Now slowly build row to write in "out"
 
         out = { "Timestamp": ts, "URL": url} # add more below
 
@@ -126,11 +126,11 @@ for date in dates:
 
         doms_id = regexp_match.group(1)
 
-	# big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
-	if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
-		continue
+        # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
+        if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
+                continue
 
-	out["UUID"] = doms_id
+        out["UUID"] = doms_id
 
         if doms_id in doms_ids_seen:
             (ext_body_text, core_body_text) = doms_ids_seen[doms_id]
@@ -140,12 +140,12 @@ for date in dates:
 
             ext_body = opener.open(url_ext)
             ext_body_text = ext_body.read()
-	    ext_body.close()
+            ext_body.close()
 
 
             core_body = opener.open(url_core)
             core_body_text = core_body.read()
-	    core_body.close()
+            core_body.close()
 
             doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
 
@@ -153,27 +153,27 @@ for date in dates:
                        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                        "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
 
-       	ext = ET.fromstring(ext_body_text)
+               ext = ET.fromstring(ext_body_text)
 
-       	# The (get_list() or [""])[0] construct returns the empty string if the first list is empty
+               # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-       	out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+               out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-       	core = ET.fromstring(core_body_text)
+               core = ET.fromstring(core_body_text)
 
-	# Radio/TV collection
-       	out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        # Radio/TV collection
+               out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
-       	# Reklamefilm
-       	out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-       	out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               # Reklamefilm
+               out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+               out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
         if attr:
