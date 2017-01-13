@@ -164,12 +164,12 @@ public class StreamingStatisticsModule extends ModuleBase
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {
         streamingEventLogger.logUserEventPlay(ihttpStreamerSession.getQueryStr(),
-                                              ihttpStreamerSession.getUri());
+                                              ihttpStreamerSession.getUri() + "?" + ihttpStreamerSession.getQueryStr());
     }
 
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {
         streamingEventLogger.logUserEventStop(ihttpStreamerSession.getQueryStr(),
-                                              ihttpStreamerSession.getUri());
+                                              ihttpStreamerSession.getUri() + "?" + ihttpStreamerSession.getQueryStr());
     }
 }
