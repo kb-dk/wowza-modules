@@ -26,13 +26,13 @@ import java.util.List;
 public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     /** The used logger. */
     private final WMSLogger logger;
+    private Connection testConnection;
     private String jdbcDriverString;
     private String dbConnectionURLString;
     private String dbUser;
     private String dbPassword;
 
     private static StreamingDatabaseEventLogger instance = null;
-    private static Connection dbConnection = null;
     private int session = 0;
 
     /**
@@ -47,23 +47,48 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     private StreamingDatabaseEventLogger(WMSLogger logger, String jdbcDriverString, String dbConnectionURLString,
                                          String dbUser, String dbPassword) {
         this.logger = logger;
-        if (dbConnection == null) {
-            this.jdbcDriverString = jdbcDriverString;
-            this.dbConnectionURLString = dbConnectionURLString;
-            this.dbUser = dbUser;
-            this.dbPassword = dbPassword;
-            dbConnection = getNewConnection(this.logger, this.jdbcDriverString, this.dbConnectionURLString, this.dbUser,
-                                            this.dbPassword);
-            logger.info("Created connection: " + dbConnection);
-        }
+        this.jdbcDriverString = jdbcDriverString;
+        this.dbConnectionURLString = dbConnectionURLString;
+        this.dbUser = dbUser;
+        this.dbPassword = dbPassword;
         this.logger.info("Statistics logger " + this.getClass().getName() + " has been created.");
+    }
+
+    /**
+     * Make a connection to the database.
+     * @return A database connection.
+     */
+    private Connection getDBConnection() {
+        if (testConnection != null) {
+            return testConnection;
+        }
+        try {
+            synchronized (StreamingDatabaseEventLogger.class) {
+                try {
+                    Class.forName(this.jdbcDriverString);
+                } catch (ClassNotFoundException e) {
+                    this.logger.error("Could not find the JDBC driver! - " + this.jdbcDriverString, e);
+                    throw new RuntimeException("Could not find the JDBC driver! - " + this.jdbcDriverString, e);
+                }
+                Connection dbConnection = DriverManager.getConnection(this.dbConnectionURLString, this.dbUser, this.dbPassword);
+                logger.info("Created connection: " + dbConnection);
+                return dbConnection;
+            }
+        } catch (SQLException sqle) {
+            this.logger
+                    .error("Could not connect to db with the connection string: " + this.dbConnectionURLString + ", username: " + this.dbUser
+                                   + ", password: " + this.dbPassword, sqle);
+            throw new RuntimeException(
+                    "Could not connect to db with the connection string: " + this.dbConnectionURLString + ", username: " + this.dbUser
+                            + ", password: " + this.dbPassword, sqle);
+        }
     }
 
     /** TEST constructor!!! initalises database in alternative fashion. */
     private StreamingDatabaseEventLogger(WMSLogger logger, Connection connection) {
         super();
+        this.testConnection = connection;
         this.logger = logger;
-        StreamingDatabaseEventLogger.dbConnection = connection;
         this.logger.info("Statistics logger " + this.getClass().getName() + " has been created. "
                                  + "ONLY FOR TEST PURPOSE! DB-connection not established in a safe way.");
     }
@@ -145,11 +170,10 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      * @param logEntry The log entry to add.
      */
     private synchronized void logEventInDB(StreamingStatLogEntry logEntry) {
-        try {
+        String query = "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        try (PreparedStatement stmt = getDBConnection().prepareStatement(query)) {
             logEntry.setEventID(getNextEventID());
             logger.info("Next event id: " + logEntry.getEventID());
-            String query = "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement stmt = dbConnection.prepareStatement(query);
             stmt.setLong(1, logEntry.getEventID());
             stmt.setTimestamp(2, new Timestamp(logEntry.getTimestamp().getTime()));
             stmt.setString(3, logEntry.getStreamName());
@@ -163,8 +187,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
             logger.info("Creating event: " + query);
         } catch (SQLException e) {
             logger.error(
-                    "An SQL exception occured during onConnect call. " + "Connection was: " + dbConnection.toString(),
-                    e);
+                    "An SQL exception occured during onConnect call.", e);
         }
     }
 
@@ -174,47 +197,18 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      * @throws SQLException on database trouble.
      */
     protected synchronized int getNextEventID() throws SQLException {
-        Statement stmt = dbConnection.createStatement();
-        String queryString = "SELECT MAX(event_id) as max_event_id FROM events";
-        logger.info("[TEST] Executing query: " + queryString);
-        ResultSet rs = stmt.executeQuery(queryString);
-        rs.next();
-        int eventID = rs.getInt("max_event_id");
-        return eventID + 1;
+        try (Statement stmt = getDBConnection().createStatement()) {
+            String queryString = "SELECT MAX(event_id) as max_event_id FROM events";
+            logger.info("[TEST] Executing query: " + queryString);
+            ResultSet rs = stmt.executeQuery(queryString);
+            rs.next();
+            int eventID = rs.getInt("max_event_id");
+            return eventID + 1;
+        }
         /*
                  ResultSet resultSet = stmt.getGeneratedKeys();
                  resultSet.getLong("event_id");
                  */
-    }
-
-    /**
-     * Make a connection to the database.
-     * @param logger The Wowza logger
-     * @param jdbcDriver The JDBC driver to use.
-     * @param connectionURL The connection URL
-     * @param user DB user
-     * @param password DB password.
-     * @return A database connection.
-     */
-    protected synchronized static Connection getNewConnection(WMSLogger logger, String jdbcDriver, String connectionURL,
-                                                              String user, String password) {
-        try {
-            Class.forName(jdbcDriver);
-        } catch (ClassNotFoundException e) {
-            logger.error("Could not find the JDBC driver! - " + jdbcDriver, e);
-            throw new RuntimeException("Could not find the JDBC driver! - " + jdbcDriver, e);
-        }
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(connectionURL, user, password);
-        } catch (SQLException sqle) {
-            logger.error("Could not connect to db with the connection string: " + connectionURL + ", username: " + user
-                                 + ", password: " + password, sqle);
-            throw new RuntimeException(
-                    "Could not connect to db with the connection string: " + connectionURL + ", username: " + user
-                            + ", password: " + password, sqle);
-        }
-        return conn;
     }
 
     /**
@@ -238,10 +232,9 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      */
     public List<StreamingStatLogEntry> getLogEntryLatest(int numberOfEntries) {
         List<StreamingStatLogEntry> logEntries = new ArrayList<StreamingStatLogEntry>();
-        try {
+        try (Statement stmt = getDBConnection().createStatement()) {
             String mcmSessionID = null;
             String mcmObjectSessionID = null;
-            Statement stmt = dbConnection.createStatement();
             String queryString = "SELECT * FROM events ORDER BY event_id DESC LIMIT " + numberOfEntries;
             logger.info("Executing query: " + queryString);
             ResultSet rs = stmt.executeQuery(queryString);
