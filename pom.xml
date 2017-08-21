@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <wms.version>4.5.0</wms.version>
+        <wms.version>4.7.1</wms.version>
         <wms.basedir>/usr/local/WowzaStreamingEngine-${wms.version}</wms.basedir>
         <wmsaddoncollection.version>4.0</wmsaddoncollection.version>
         <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection-${wmsaddoncollection.version}</wmsaddoncollection.basedir>
@@ -282,6 +282,34 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Install Wmsserver wms-pushpublish library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-pushpublish</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-pushpublish.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Install Wmsserver wms-webrtc library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <groupId>com.wms</groupId>
+                            <artifactId>wms-webrtc</artifactId>
+                            <version>${wms.version}</version>
+                            <file>${wms.basedir}/lib/wms-webrtc.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Install WowzaServerAddOnCollection</id>
                         <phase>validate</phase>
                         <goals>
@@ -467,6 +495,18 @@
             <dependency>
                 <groupId>com.wms</groupId>
                 <artifactId>wms-sourcecontrol</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-pushpublish</artifactId>
+                <version>${wms.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wms</groupId>
+                <artifactId>wms-webrtc</artifactId>
                 <version>${wms.version}</version>
             </dependency>
 

@@ -76,6 +76,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-pushpublish</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
         </dependency>

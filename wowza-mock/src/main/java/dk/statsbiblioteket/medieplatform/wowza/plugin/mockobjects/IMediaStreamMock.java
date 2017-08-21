@@ -1485,4 +1485,14 @@ public class IMediaStreamMock implements IMediaStream {
         return 0;
     }
 
+    @Override
+    public long getPublishFrameCounts(long[] longs) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public long getPublishFrameCountVideoKey() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
