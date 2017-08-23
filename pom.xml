@@ -16,7 +16,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>4.3-SNAPSHOT</version>
+    <version>4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
