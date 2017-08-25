@@ -26,15 +26,17 @@ public class ChaosV6SessionAndFilenameValidater extends MCMSessionAndFilenameVal
 
     /**
      * Reads server connection configuration from property-file. Property file
-     * is expected to be at "<VHost_HOME>/<propertyFilePath>"
+     * is expected to be at "&lt;VHost_HOME&gt;/&lt;propertyFilePath&gt;"
      *
      * Example of content in property file could be:
      *
      * GeneralChaosV6ServerURL=http://api.stage.larm.fm/v6
      * ValidationChaosV6ValidationMethod=LarmFile/CanAccess
      *
-     * @throws FileNotFoundException if property file is not found
-     * @throws IOException           if reading process failed
+     * @param logger the logger
+     * @param connectionURLString connectionurl
+     * @param validationMethodAtServer validation method
+     * @param chaosV6API chaosv6api
      */
     public ChaosV6SessionAndFilenameValidater(WMSLogger logger, String connectionURLString,
                                               String validationMethodAtServer, ChaosV6API chaosV6API) {

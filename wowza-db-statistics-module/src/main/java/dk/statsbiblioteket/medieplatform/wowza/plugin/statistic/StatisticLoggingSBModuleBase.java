@@ -78,7 +78,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
 
     /**
      * On App Stop nothing special is done.
-     * @param appInstance
+     * @param appInstance appinstance
      */
     @Override
     public void onAppStop(IApplicationInstance appInstance) {
@@ -133,7 +133,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
 
     /**
      * On stream destruction, remove the action listener that logs events.
-     * @param stream
+     * @param stream stream
      */
     @Override
     public void onStreamDestroy(IMediaStream stream) {

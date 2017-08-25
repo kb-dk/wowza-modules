@@ -157,7 +157,7 @@ public class WowzaSessionAuthenticationMCM3ModuleBase extends ModuleBase
 
     /**
      * For HTTP connections, immediately accept or reject the connection, based on the authenticator.
-     * @param ihttpStreamerSession
+     * @param ihttpStreamerSession IHTTPStreamerSession
      */
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {

@@ -101,6 +101,8 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
      *
      * @param logger The WMS logger.
      * @param connection The database connection.
+     * @throws java.io.FileNotFoundException FileNotFoundException 
+     * @throws IOException IOException 
      */
     public static synchronized void createInstanceForTestPurpose(WMSLogger logger, Connection connection)
             throws FileNotFoundException, IOException {
@@ -116,6 +118,13 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     /**
      * Creates the singleton objects. Is robust for multiple concurrent requests for create.
      * Only the first request for create, actually creates the object.
+     * @param logger logger 
+     * @param jdbcDriverString jdbcDriverString
+     * @param dbConnectionURLString dbConnectionURLString 
+     * @param dbUser dbUser
+     * @param dbPassword dbPassword 
+     * @throws java.io.FileNotFoundException FileNotFoundException
+     * @throws java.io.IOException IOException
      */
     public static synchronized void createInstance(WMSLogger logger, String jdbcDriverString,
                                                    String dbConnectionURLString, String dbUser, String dbPassword)
@@ -152,7 +161,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
 
     /**
      * Log an event in the database.
-     * @param logEntry
+     * @param logEntry logentry
      */
     @Override
     public void logEvent(StreamingStatLogEntry logEntry) {
@@ -213,7 +222,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
 
     /**
      * Return the newest log event from database.
-     * @return
+     * @return StreamingStatLogEntry
      */
     @Override
     public StreamingStatLogEntry getLogEntryLatest() {
@@ -228,7 +237,7 @@ public class StreamingDatabaseEventLogger implements StreamingEventLoggerIF {
     /**
      * Return the newest numberOfEntries log event from database.
      * @param numberOfEntries The number of log events to return.
-     * @return
+     * @return List&lt;StreamingStatLogEntry&gt;
      */
     public List<StreamingStatLogEntry> getLogEntryLatest(int numberOfEntries) {
         List<StreamingStatLogEntry> logEntries = new ArrayList<StreamingStatLogEntry>();

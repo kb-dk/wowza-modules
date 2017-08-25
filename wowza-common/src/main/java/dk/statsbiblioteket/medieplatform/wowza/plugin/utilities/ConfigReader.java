@@ -53,10 +53,11 @@ public class ConfigReader {
     public String get(String key) {
         return properties.getProperty(key);
     }
-
+    
     /**
      * Read property.
      * @param key The property key.
+     * @param defaultValue the default value if the property is not found
      * @return The property value, or defaultValue if key is not set.
      */
     public String get(String key, String defaultValue) {

@@ -95,11 +95,11 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
      * Log pause event.
      * State: Playing
      *  Case 1: Event pausing in client results in: onPause(stream, true, location)
-     *  Case 2: Event seeking in client results in: onPause(stream, true, location) - > onPause(stream, false, location) - > onSeek
+     *  Case 2: Event seeking in client results in: onPause(stream, true, location) - &gt; onPause(stream, false, location) - &gt; onSeek
      *   
      * State: Paused
-     *  Case 3: Event resume in client results in: onPause(stream, true, location) - > onSeek
-     *  Case 4: Event seeking in client results in: onPause(stream, false, location) - > onSeek
+     *  Case 3: Event resume in client results in: onPause(stream, true, location) - &gt; onSeek
+     *  Case 4: Event seeking in client results in: onPause(stream, false, location) - &gt; onSeek
      *
      * @param stream Stream that was paused.
      * @param isPause whether it was a pause event.

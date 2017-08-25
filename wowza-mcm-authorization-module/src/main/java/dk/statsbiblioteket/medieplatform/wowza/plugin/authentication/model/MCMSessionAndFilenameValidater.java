@@ -34,6 +34,10 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
      *
      * urlString: "http://web.server00.geckon.com/portal/api/portalservice.svc"
      * method: "Object_Get"
+     * 
+     * @param logger The logger
+     * @param connectionURLString the connection url string
+     * @param validationMethodAtServer validation method
      */
     public MCMSessionAndFilenameValidater(WMSLogger logger, String connectionURLString,
                                           String validationMethodAtServer) {
@@ -102,13 +106,13 @@ public class MCMSessionAndFilenameValidater implements SessionAndFilenameValidat
 
     /**
      * Remove leading directories and trailing extension from a filename.
-     * <p/>
+     * <p>
      * This means:
      * <ul>
-     *     <li>c:\test\file.mp3 -> file</li>
-     *     <li>/usr/local/file.flv -> file</li>
+     *     <li>c:\test\file.mp3 -&gt; file</li>
+     *     <li>/usr/local/file.flv -&gt; file</li>
      * </ul>
-     *
+     * 
      * @param f The file to clean
      * @return The file with leading directories and trailing extension removed.
      */

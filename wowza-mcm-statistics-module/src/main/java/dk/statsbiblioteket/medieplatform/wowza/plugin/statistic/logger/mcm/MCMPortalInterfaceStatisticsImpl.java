@@ -54,6 +54,22 @@ public class MCMPortalInterfaceStatisticsImpl implements MCMPortalInterfaceStati
     /**
      * Creates the singleton objects. Is robust for multiple concurrent requests for create.
      * Only the first request for create, actually creates the object.
+     * @param logger logger 
+     * @param vHostHomeDirPath vHostHomeDirPath
+     * @param mcmConnectionURLString mcmConnectionURLString
+     * @param mcmStatisticsMethodCreateStatSession mcmStatisticsMethodCreateStatSession 
+     * @param clientSettingID clientSettingID
+     * @param repositoryID repositoryID
+     * @param mcmStatisticsMethodCreateStatObjectSession mcmStatisticsMethodCreateStatObjectSession
+     * @param objectTypeID objectTypeID
+     * @param channelTypeID channelTypeID
+     * @param channelIdentifier channelIdentifier
+     * @param objectTitle objectTitle
+     * @param eventTypeID eventTypeID
+     * @param objectCollectionID objectCollectionID
+     * @param mcmStatisticsMethodCreateDurationSession mcmStatisticsMethodCreateDurationSession
+     * @throws java.io.FileNotFoundException FileNotFoundException
+     * @throws IOException IOException
      */
     public static synchronized void createInstance(WMSLogger logger, String vHostHomeDirPath,
                                                    String mcmConnectionURLString,

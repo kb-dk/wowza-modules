@@ -142,7 +142,7 @@ public class WowzaSessionAuthenticationModuleBase extends ModuleBase
 
     /**
      * For HTTP connections, immediately accept or reject the connection, based on the authenticator.
-     * @param ihttpStreamerSession
+     * @param ihttpStreamerSession the http streamer session
      */
     @Override
     public void onHTTPSessionCreate(IHTTPStreamerSession ihttpStreamerSession) {

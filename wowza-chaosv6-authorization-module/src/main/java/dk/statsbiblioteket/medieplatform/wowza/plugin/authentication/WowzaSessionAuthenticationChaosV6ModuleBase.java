@@ -162,7 +162,7 @@ public class WowzaSessionAuthenticationChaosV6ModuleBase extends ModuleBase
 
     /**
      * For HTTP connections, immediately accept or reject the connection, based on the authenticator.
-     * @param ihttpStreamerSession
+     * @param ihttpStreamerSession http streamer session
      */
     @Override
     public void onHTTPSessionDestroy(IHTTPStreamerSession ihttpStreamerSession) {

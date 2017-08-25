@@ -36,6 +36,7 @@ public class ChaosV6API {
      *
      * @throws IOException On trouble connection to CHAOS
      * @throws MalformedURLException On bad URL connecting to CHAOS
+     * @throws dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.model.MCMOutputException error
      */
     public InputStream larmValidateSession(String sessionID, String objectID, String filePath)
             throws IOException, MalformedURLException, MCMOutputException {

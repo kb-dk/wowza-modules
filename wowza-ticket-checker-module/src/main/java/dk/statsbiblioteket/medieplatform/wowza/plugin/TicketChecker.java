@@ -29,8 +29,11 @@ public class TicketChecker {
     /**
      * Check if a stream is allowed to play
      *
+     * @param stream the stream to check
+     * @param client the client trying to play the stream
      * @return true if allowed, false otherwise.
-     */
+     * @see #checkTicket(java.lang.String, java.lang.String, java.lang.String) 
+    */
     public boolean checkTicket(IMediaStream stream, IClient client) {
         if (client == null) {
             logger.debug("No client, returning ", stream);
@@ -42,7 +45,11 @@ public class TicketChecker {
     /**
      * Check if a stream is allowed to play
      *
+     * Extracts streamname, query string and client ip from the http session
+     * 
+     * @param httpSession The http session
      * @return true if allowed, false otherwise.
+     * @see #checkTicket(java.lang.String, java.lang.String, java.lang.String) 
      */
     public boolean checkTicket(IHTTPStreamerSession httpSession) {
         return checkTicket(httpSession.getStreamName(), httpSession.getQueryStr(), httpSession.getIpAddress());

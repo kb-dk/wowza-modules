@@ -20,13 +20,17 @@ import java.net.URL;
 public class MCM3SessionAndFilenameValidater extends MCMSessionAndFilenameValidater {
     /**
      * Reads server connection configuration from property-file. Property file
-     * is expected to be at "<VHost_HOME>/<propertyFilePath>"
+     * is expected to be at "&lt;VHost_HOME&gt;/&lt;propertyFilePath&gt;"
      *
      * Example of content in property file could be:
      *
      * GeneralMCM3ServerURL=api.test.chaos-systems.com/
      * ValidationMCM3ValidationMethod=Object/Get
      *
+     * @param logger the logger
+     * @param appInstance  ignored
+     * @param connectionURLString chaos media content manager service url
+     * @param validationMethodAtServer name of the validate method in the chaos media content manager service
      * @throws FileNotFoundException if property file is not found
      * @throws IOException           if reading process failed
      */
