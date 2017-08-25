@@ -43,8 +43,8 @@ public class TicketChecker {
     }
 
     /**
-     * Check if a stream is allowed to play
-     *
+     * Check if a stream is allowed to play.
+     * <p>
      * Extracts streamname, query string and client ip from the http session
      * 
      * @param httpSession The http session
