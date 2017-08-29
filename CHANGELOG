@@ -1,7 +1,5 @@
-4.3
-Upgrade to Wowza 4.7.1 on all VHosts
-
 4.2
+Upgrade to Wowza 4.7.1 on all VHosts
 Reinitilize database connection on each database access
 Log query string in logged urls
 Update README
