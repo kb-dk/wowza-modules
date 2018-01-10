@@ -110,15 +110,6 @@ for date in dates:
         if (event != "PLAY"):
             continue
 
-        if url in urls_seen:
-            continue
-        else:
-            urls_seen[url] = ts # only key matters.
-
-        # Ok.  Now slowly build row to write in "out"
-
-        out = { "Timestamp": ts, "URL": url} # add more below
-
         regexp_match = re_doms_id_from_url.search(url)
         if regexp_match == None:
             print "No UUID in URL: " + url + ", line skipped"
@@ -129,6 +120,15 @@ for date in dates:
         # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
         if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
                 continue
+
+        if doms_id+attr in urls_seen:
+            continue
+	else:
+	    urls_seen[doms_id+attr] = ts # only key matters.
+
+	# Ok.  Now slowly build row to write in "out"
+
+        out = { "Timestamp": ts, "URL": url} # add more below
 
         out["UUID"] = doms_id
 
