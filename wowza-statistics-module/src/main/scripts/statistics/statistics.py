@@ -129,10 +129,10 @@ for date in dates:
 
         if doms_id+attr in urls_seen:
             continue
-	else:
-	    urls_seen[doms_id+attr] = ts # only key matters.
+        else:
+            urls_seen[doms_id+attr] = ts # only key matters.
 
-	# Ok.  Now slowly build row to write in "out"
+        # Ok.  Now slowly build row to write in "out"
 
         out = { "Timestamp": ts, "URL": url} # add more below
 
