@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python2.7
 
 # Jira issue NO-154.  Enrich mediastream player log with DOMS meta data.
 
@@ -6,7 +6,10 @@ from lxml import etree as ET
 import ConfigParser
 import csv
 import datetime
-import simplejson
+try:
+    import simplejson
+except ImportError:
+    import json as simplejson
 import os
 import re
 import sys
@@ -108,6 +111,9 @@ for date in dates:
         # Ditte + Mogens rule - we only look at the very first event with the type "PLAY" for each URL.
 
         if (event != "PLAY"):
+            continue
+
+        if (attr == 'null'):
             continue
 
         regexp_match = re_doms_id_from_url.search(url)
