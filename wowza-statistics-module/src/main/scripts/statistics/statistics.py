@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python2.7
 
 # Jira issue NO-154.  Enrich mediastream player log with DOMS meta data.
 
@@ -6,7 +6,10 @@ from lxml import etree as ET
 import ConfigParser
 import csv
 import datetime
-import simplejson
+try:
+    import simplejson
+except ImportError:
+    import json as simplejson
 import os
 import re
 import sys
@@ -31,8 +34,8 @@ config.read(config_file_name)
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
-# Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f trailed by a ".fileending" or EOL)
-re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)|$)")
+# Example: A colon, a uuid e.g. d68a0380-012a-4cd8-8e5b-37adf6c2d47f trailed by a ".fileending", a /, or EOL)
+re_doms_id_from_url = re.compile("(?::)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)|/|$)")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
@@ -110,14 +113,8 @@ for date in dates:
         if (event != "PLAY"):
             continue
 
-        if url in urls_seen:
+        if (attr == 'null'):
             continue
-        else:
-            urls_seen[url] = ts # only key matters.
-
-        # Ok.  Now slowly build row to write in "out"
-
-        out = { "Timestamp": ts, "URL": url} # add more below
 
         regexp_match = re_doms_id_from_url.search(url)
         if regexp_match == None:
@@ -129,6 +126,15 @@ for date in dates:
         # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
         if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
                 continue
+
+        if doms_id+attr in urls_seen:
+            continue
+        else:
+            urls_seen[doms_id+attr] = ts # only key matters.
+
+        # Ok.  Now slowly build row to write in "out"
+
+        out = { "Timestamp": ts, "URL": url} # add more below
 
         out["UUID"] = doms_id
 
