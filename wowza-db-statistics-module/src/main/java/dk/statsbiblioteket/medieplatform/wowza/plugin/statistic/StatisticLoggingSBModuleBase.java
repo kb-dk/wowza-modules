@@ -20,6 +20,7 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUti
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 
 /**
  * Module that logs events to a database.
@@ -163,6 +164,9 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         String wayfAttr;
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
+            if(!wayfAttr.startsWith("{")){
+                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+            }
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }
@@ -199,6 +203,9 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         String wayfAttr;
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
+            if(!wayfAttr.startsWith("{")){
+                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+            }
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }
