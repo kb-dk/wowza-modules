@@ -25,6 +25,8 @@
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>content-resolver-lib</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
         </dependency>
 
         <dependency>
