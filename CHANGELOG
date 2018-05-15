@@ -1,3 +1,6 @@
+4.4
+Fixed backwards compatibility with old wowza-modules.properties
+
 4.3
 Upgrade to Wowza 4.7.4 on all VHosts
 Base64 decode wayfAttr (if encoded) 
