@@ -83,10 +83,10 @@ public class ContentResolverModule extends ModuleBase
      * @param topdir The storagedir for this appInstance
      * @return ContentResolver
      */
-    private ContentResolver getContentResolver(ConfigReader cr, String topdir) {
+    protected ContentResolver getContentResolver(ConfigReader cr, String topdir) {
         String[] contentresolvernames = {""};
         String cs = cr.get("contentResolverNames");
-        if (cs != null || !cs.isEmpty()) {
+        if (cs != null && !cs.isEmpty()) {
             //this wowza instance is configured for more content providers
             contentresolvernames = cs.split(",");
             List<ContentResolver> contentResolvers = Arrays.stream(contentresolvernames)
@@ -115,8 +115,8 @@ public class ContentResolverModule extends ModuleBase
      * @param topdir The storagedir for this appInstance
      * @return ContentResolver
      */
-    private ContentResolver getContentResolver(ConfigReader cr, String topdir, String contentProviderName) {
-        File baseDirectory = new File(topdir + File.separator + cr.get(contentProviderName + "subdirectory"),"").getAbsoluteFile();
+    protected ContentResolver getContentResolver(ConfigReader cr, String topdir, String contentProviderName) {
+        File baseDirectory = new File(topdir + File.separator + cr.get(contentProviderName + "subdirectory","")).getAbsoluteFile();
         int characterDirs = Integer.parseInt(cr.get(contentProviderName + "characterDirs", "4"));
         int characterDirsWidth = Integer.parseInt(cr.get(contentProviderName + "characterDirsWidth", "0"));
         String filenameRegexPattern = cr

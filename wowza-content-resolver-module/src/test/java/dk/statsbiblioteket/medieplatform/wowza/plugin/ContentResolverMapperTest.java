@@ -5,21 +5,25 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.*;
 
 import java.io.File;
 import java.io.IOException;
+import static junit.framework.Assert.assertNotNull;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests the content resolver mapper.
@@ -74,6 +78,40 @@ public class ContentResolverMapperTest {
         assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
                      result.getAbsolutePath());
     }
+
+    @Test
+    public void testGetContentResolver() throws IOException {
+        // Setup environment
+        ContentResolverModule cm = new ContentResolverModule();
+        ConfigReader cr = mock(ConfigReader.class);
+        when(cr.get("subdirectory","")).thenReturn("");
+        when(cr.get("characterDirs","4")).thenReturn("4");
+        when(cr.get("characterDirsWidth","0")).thenReturn("0");
+        when(cr.get("filenameRegexPattern", "missing-filename-regex-pattern-in-property-file")).thenReturn("missing-filename-regex-pattern-in-property-file");
+        ContentResolver contentResolver = cm.getContentResolver(cr, storageDir);
+        assertNotNull(contentResolver);
+        
+        when(cr.get("contentResolverNames")).thenReturn("name1");
+        when(cr.get("name1.subdirectory","")).thenReturn("subdir");
+        when(cr.get("name1.characterDirs","4")).thenReturn("5");
+        when(cr.get("name1.characterDirsWidth","0")).thenReturn("2");
+        when(cr.get("name1.filenameRegexPattern", "missing-filename-regex-pattern-in-property-file")).thenReturn("missing-filename-regex-pattern-in-property-file");
+        ContentResolver contentResolver2 = cm.getContentResolver(cr, storageDir);
+        assertNotNull(contentResolver2);
+        
+        
+/*
+                new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
+                "%s\\.flv", "file://" + storageDir + "/%s");
+        ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
+        // Run test
+        File result = contentResolverMapper.streamToFileForRead(stream);
+        // Validate result
+        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
+                result.getAbsolutePath());
+*/
+    }
+
 
     @Test
     public void testGetFileToStreamSucces() {
