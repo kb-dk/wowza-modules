@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <wms.version>4.7.1</wms.version>
+        <wms.version>4.7.4</wms.version>
         <wms.basedir>/usr/local/WowzaStreamingEngine-${wms.version}</wms.basedir>
         <wmsaddoncollection.version>4.0</wmsaddoncollection.version>
         <wmsaddoncollection.basedir>/usr/local/WowzaServerAddOnCollection-${wmsaddoncollection.version}</wmsaddoncollection.basedir>
@@ -16,7 +16,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>wowza-modules</artifactId>
-    <version>4.3-SNAPSHOT</version>
+    <version>4.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Wowza plugins for Statsbiblioteket media platform</description>
@@ -93,6 +93,15 @@
             <email>mss@statsbiblioteket.dk</email>
             <organization>The State and University Library, Denmark</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Gustav Sverre Kampp</name>
+            <email>gsk@kb.dk</email>
+            <organization>The Royal Danish Library, Denmark</organization>
+            <organizationUrl>http://www.kb.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -417,7 +426,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.medieplatform</groupId>
                 <artifactId>content-resolver-lib</artifactId>
-                <version>0.2</version>
+                <version>1.2</version>
             </dependency>
 
             <dependency>

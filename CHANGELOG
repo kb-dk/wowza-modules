@@ -1,3 +1,10 @@
+4.4
+Fixed backwards compatibility with old wowza-modules.properties
+
+4.3
+Upgrade to Wowza 4.7.4 on all VHosts
+Base64 decode wayfAttr (if encoded) 
+
 4.2
 Upgrade to Wowza 4.7.1 on all VHosts
 Reinitilize database connection on each database access
