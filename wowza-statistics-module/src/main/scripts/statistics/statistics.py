@@ -19,8 +19,8 @@ import cgitb
 import urllib2
 
 # 
-
-config_file_name = "../../statistics.py.cfg"
+#config_file_name = "../../statistics.py.cfg"
+config_file_name = "/home/lfm/PycharmProjects/wowza-modules/wowza-statistics-module/src/main/statistics.py.cfg-carme"
 
 # -----
 
@@ -35,18 +35,20 @@ config.read(config_file_name)
 doms_url = config.get("cgi", "doms_url") # .../fedora/
 
 # Example: A colon, a uuid e.g. d68a0380-012a-4cd8-8e5b-37adf6c2d47f trailed by a ".fileending", a /, or EOL)
-re_doms_id_from_url = re.compile("(?::)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)|/|$)")
+re_doms_id_from_url = re.compile("(?::)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)*|/|$)")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
         start_str = parameters["fromDate"].value # "2013-06-15"
 else:
-        start_str = "2014-09-01"
+        start_str = "2013-06-17"
+#        start_str = "2018-09-19"
 
 if "toDate" in parameters:
         end_str = parameters["toDate"].value
 else:
-        end_str = "2014-12-01"
+        end_str = "2013-06-18"
+#        end_str = "2018-09-20"
 
 # http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
@@ -159,34 +161,34 @@ for date in dates:
                        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                        "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
 
-               ext = ET.fromstring(ext_body_text)
+        ext = ET.fromstring(ext_body_text)
 
-               # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
+        # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-               out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-               core = ET.fromstring(core_body_text)
+        core = ET.fromstring(core_body_text)
 
         # Radio/TV collection
-               out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
-               # Reklamefilm
-               out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-               out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        # Reklamefilm
+        out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
         # credentials
         if attr:
             creds = simplejson.loads(attr)
         else:
             creds = []
-  
+
         for cred in ["schacHomeOrganization", "eduPersonPrimaryAffiliation",
               "eduPersonScopedAffiliation", "eduPersonPrincipalName", "eduPersonTargetedID",
               "SBIPRoleMapper", "MediestreamFullAccess"]:
@@ -197,5 +199,5 @@ for date in dates:
                 out[cred] = ""
 
         result_dict_writer.writerow(out)
-        
+
     log_file.close()
