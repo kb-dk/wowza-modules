@@ -17,10 +17,10 @@ import time
 import cgi
 import cgitb
 import urllib2
+import requests
 
-# 
-#config_file_name = "../../statistics.py.cfg"
-config_file_name = "/home/lfm/PycharmProjects/wowza-modules/wowza-statistics-module/src/main/statistics.py.cfg-carme"
+#
+config_file_name = "../../statistics.py.cfg"
 
 # -----
 
@@ -33,22 +33,23 @@ config = ConfigParser.SafeConfigParser()
 config.read(config_file_name)
 
 doms_url = config.get("cgi", "doms_url") # .../fedora/
+pvica_url = config.get("cgi", "pvica_url") # kuana
+solr_idx_url = config.get("cgi", "solr_idx_url") # solr
 
 # Example: A colon, a uuid e.g. d68a0380-012a-4cd8-8e5b-37adf6c2d47f trailed by a ".fileending", a /, or EOL)
 re_doms_id_from_url = re.compile("(?::)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)*|/|$)")
+re_DelivUnitRef_from_solr = re.compile("(?::)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$)")
 
 log_file_pattern = config.get("cgi", "log_file_pattern")
 if "fromDate" in parameters:
         start_str = parameters["fromDate"].value # "2013-06-15"
 else:
-        start_str = "2013-06-17"
-#        start_str = "2018-09-19"
+        start_str = "2018-06-18"
 
 if "toDate" in parameters:
         end_str = parameters["toDate"].value
 else:
-        end_str = "2013-06-18"
-#        end_str = "2018-09-20"
+        end_str = "2018-09-20"
 
 # http://stackoverflow.com/a/2997846/53897 - 10:00 is to avoid timezone issues in general.
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
@@ -60,6 +61,10 @@ dates = [start_date + datetime.timedelta(days = x) for x in range(0,(end_date - 
 # prepare urllib2
 username = config.get("cgi", "username")
 password = config.get("cgi", "password")
+
+# prepare requests
+kuanausername = config.get("cgi", "kuanausername")
+kuanapassword = config.get("cgi", "kuanapassword")
 
 # https://docs.python.org/2/howto/urllib2.html#id6
 password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
@@ -90,7 +95,7 @@ result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
-doms_ids_seen = {} # DOMS lookup cache, id is key
+doms_ids_seen = {} # DOMS/KUANA lookup cache, id is key
 urls_seen = {} # PLAY event seen yet for this URL? (value is not important)
 
 for date in dates:
@@ -124,10 +129,11 @@ for date in dates:
             continue
 
         doms_id = regexp_match.group(1)
+        solr_authid = regexp_match.group(1)
 
         # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
         if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
-                continue
+            continue
 
         if doms_id+attr in urls_seen:
             continue
@@ -145,43 +151,142 @@ for date in dates:
         else:
             url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
             url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
+            notdoms = None
+            try:
+                ext_body = opener.open(url_ext)
+                ext_body_text = ext_body.read()
+                ext_body.close()
 
-            ext_body = opener.open(url_ext)
-            ext_body_text = ext_body.read()
-            ext_body.close()
+                core_body = opener.open(url_core)
+                core_body_text = core_body.read()
+                core_body.close()
+            except urllib2.HTTPError as notdoms:
+                ext_body_text = None
+                pass
 
-
-            core_body = opener.open(url_core)
-            core_body_text = core_body.read()
-            core_body.close()
+            # If no match in doms get recordID for the corresponding UUID from solr and
+            # search for kuana pbcore - use solr:recordID as kuana:DeliverableUnitRef
+            if notdoms:
+                url_solr = solr_idx_url + "select?indent=on&q=authID:%22" + solr_authid + "%22&wt=xml" # TODO open for fw in prod
+                solr_body_text = requests.get(url_solr).content
+                solr = ET.fromstring(solr_body_text)
+                recordID = solr.xpath("string(/response/result[@name = 'response'][@numFound = '1']/doc/str[@name = 'recordID'])")
+                try:
+                    DeliverableUnitRef = re_DelivUnitRef_from_solr.search(recordID).group(1)
+                    url_core = pvica_url + "api/entity/deliverableUnits/" + DeliverableUnitRef
+                    core_body_text = requests.get(url_core, auth=(kuanausername, kuanapassword)).content
+                    ext_body_text = None
+                except:
+                    core_body_text = None
 
             doms_ids_seen[doms_id] = (ext_body_text, core_body_text)
 
-        namespaces = { "pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
-                       "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                       "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+        namespaces = {"pb": "http://www.pbcore.org/PBCore/PBCoreNamespace.html",
+                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                      "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#",
+                      "pv": "http://www.tessella.com/XIP/v4"
+                      }
 
-        ext = ET.fromstring(ext_body_text)
+        # if doms match is found - run xpath on found doms ext and (pb)core
+        if ext_body_text:
+            ext = ET.fromstring(ext_body_text)
 
-        # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
+            # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
 
-        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+            out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-        core = ET.fromstring(core_body_text)
+            core = ET.fromstring(core_body_text)
+            # Radio/TV collection
+            out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
-        # Radio/TV collection
-        out["Titel (radio/tv)"] = (core.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Kanal"] = (core.xpath("./pb:pbcorePublisher[pb:publisherRole/text() = 'kanalnavn']/pb:publisher/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Udsendelsestidspunkt"] = (core.xpath("./pb:pbcoreInstantiation/pb:pbcoreDateAvailable/pb:dateAvailableStart/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Genre"] = (core.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            # Reklamefilm
+            out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
 
-        # Reklamefilm
-        out["Titel (reklamefilm)"] = (core.xpath("./pb:pbcoreTitle[not(pb:titleType)]/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Alternativ titel"] = (core.xpath("./pb:pbcoreTitle[pb:titleType='alternative']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Dato"] = (core.xpath("./pb:pbcoreInstantiation/pb:dateIssued/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Reklamefilmstype"] = (core.xpath("./pb:pbcoreAssetType/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Udgiver"] = (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Producer']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Klient"] =  (core.xpath("./pb:pbcoreCreator[pb:creatorRole='Client']/pb:creator/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        # if ext_body_text is None, a doms match is not found - run xpath on found kuana (pb)core
+        elif core_body_text:
+            # Radio/TV collection
+            core = ET.fromstring(core_body_text)
+            out["Titel (radio/tv)"] = (core.xpath("string("
+                                                  "/pv:XIP"
+                                                  "/pv:DeliverableUnits"
+                                                  "/pv:DeliverableUnit[@status = 'same']"
+                                                  "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                  "/pb:PBCoreDescriptionDocument"
+                                                  "/pb:pbcoreTitle[pb:titleType = 'titel']"
+                                                  "/pb:title"
+                                                  ")", namespaces=namespaces) or "").encode(encoding)
+            out["Kanal"] = (core.xpath("string("
+                                      "/pv:XIP"
+                                      "/pv:DeliverableUnits"
+                                      "/pv:DeliverableUnit[@status = 'same']"
+                                      "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                      "/pb:PBCoreDescriptionDocument"
+                                      "/pb:pbcorePublisher[pb:publisherRole = 'kanalnavn']"
+                                      "/pb:publisher"
+                                      ")", namespaces=namespaces) or "").encode(encoding)
+            out["Udsendelsestidspunkt"] = (core.xpath("string("
+                                                     "/pv:XIP"
+                                                     "/pv:DeliverableUnits"
+                                                     "/pv:DeliverableUnit[@status = 'same']"
+                                                     "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                     "/pb:PBCoreDescriptionDocument"
+                                                     "/pb:pbcoreInstantiation"
+                                                     "/pb:pbcoreDateAvailable"
+                                                     "/pb:dateAvailableStart"
+                                                     ")", namespaces=namespaces) or "").encode(encoding)
+            out["Type"] = (core.xpath("string("
+                                                     "/pv:XIP"
+                                                     "/pv:DeliverableUnits"
+                                                     "/pv:DeliverableUnit[@status = 'same']"
+                                                     "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                     "/pb:PBCoreDescriptionDocument"
+                                                     "/pb:pbcoreInstantiation"
+                                                     "/pb:formatLocation"
+                                                     ")", namespaces=namespaces) or "").encode(encoding)
+            out["Genre"] = (core.xpath("string("
+                                       "/pv:XIP"
+                                       "/pv:DeliverableUnits"
+                                       "/pv:DeliverableUnit[@status = 'same']"
+                                       "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                       "/pb:PBCoreDescriptionDocument"
+                                       "/pb:pbcoreGenre"
+                                       "/pb:genre[starts-with(.,'hovedgenre')]"
+                                       ")", namespaces=namespaces) or "").encode(encoding)
+
+            # Reklamefilm (not yet in Kuana at the this time)
+            # In Kuana PB core we are missing placeholders for tags:
+            # pb:dateIssued, pb:pbcoreAssetType, pbcoreCreator[pb:creatorRole='Producer'], pbcoreCreator[pb:creatorRole='Client']
+            out["Titel (reklamefilm)"] = (core.xpath("string("
+                                                 "/pv:XIP"
+                                                 "/pv:DeliverableUnits"
+                                                 "/pv:DeliverableUnit[@status = 'same']"
+                                                 "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                 "/pb:PBCoreDescriptionDocument"
+                                                 "/pb:pbcoreTitle[not(pb:titleType)]"
+                                                 "/pb:title"
+                                                 ")", namespaces=namespaces) or "").encode(encoding)
+            out["Alternativ titel"] = (core.xpath("string("
+                                                 "/pv:XIP"
+                                                 "/pv:DeliverableUnits"
+                                                 "/pv:DeliverableUnit[@status = 'same']"
+                                                 "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                 "/pb:PBCoreDescriptionDocument"
+                                                 "/pb:pbcoreTitle[pb:titleType='alternative']"
+                                                 "/pb:title"
+                                                 ")", namespaces=namespaces) or "").encode(encoding)
+
+        # if no uuid match is found in doms or solr/kuana give us a notice
+        else:
+            out["Type"] = "Not in DOMS or SOLR: "+doms_id
+            # continue
 
         # credentials
         if attr:
