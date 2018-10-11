@@ -16,7 +16,6 @@ import sys
 import time
 import cgi
 import cgitb
-import urllib2
 import requests
 
 #
@@ -58,22 +57,11 @@ end_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(end_str + "
 # generate dates. note:  range(0,1) -> [0] hence the +1
 dates = [start_date + datetime.timedelta(days = x) for x in range(0,(end_date - start_date).days + 1)]
 
-# prepare urllib2
+# prepare requests
 username = config.get("cgi", "username")
 password = config.get("cgi", "password")
-
-# prepare requests
 kuanausername = config.get("cgi", "kuanausername")
 kuanapassword = config.get("cgi", "kuanapassword")
-
-# https://docs.python.org/2/howto/urllib2.html#id6
-password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-top_level_url = doms_url
-password_mgr.add_password(None, top_level_url, username, password)
-
-handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-opener = urllib2.build_opener(handler)
-
 
 # Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt",
@@ -152,22 +140,22 @@ for date in dates:
             url_core = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/PBCORE/content"
             url_ext = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/RELS-EXT/content"
             notdoms = None
-            try:
-                ext_body = opener.open(url_ext)
-                ext_body_text = ext_body.read()
-                ext_body.close()
 
-                core_body = opener.open(url_core)
-                core_body_text = core_body.read()
-                core_body.close()
-            except urllib2.HTTPError as notdoms:
+            try:
+                ext_body = requests.get(url_ext, auth=(username, password))
+                ext_body_text = ext_body.content
+                ext_body.raise_for_status() # raise exception if error 4xx/5xx
+
+                core_body = requests.get(url_core, auth=(username, password))
+                core_body_text = core_body.content
+            # set notdoms to something - trigger for kuana search
+            except requests.exceptions.RequestException as notdoms:
                 ext_body_text = None
-                pass
 
             # If no match in doms get recordID for the corresponding UUID from solr and
             # search for kuana pbcore - use solr:recordID as kuana:DeliverableUnitRef
             if notdoms:
-                url_solr = solr_idx_url + "select?indent=on&q=authID:%22" + solr_authid + "%22&wt=xml" # TODO open for fw in prod
+                url_solr = solr_idx_url + "select?indent=on&q=authID:%22" + solr_authid + "%22&wt=xml"
                 solr_body_text = requests.get(url_solr).content
                 solr = ET.fromstring(solr_body_text)
                 recordID = solr.xpath("string(/response/result[@name = 'response'][@numFound = '1']/doc/str[@name = 'recordID'])")
