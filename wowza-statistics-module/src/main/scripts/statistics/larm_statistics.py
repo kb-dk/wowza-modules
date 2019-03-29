@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python2.7
 
 # NO-272 streamingstatistik for larm.fm.
 
@@ -12,7 +12,7 @@ import re
 import sys
 import time
 import cgi
-import urllib2
+import requests
 import string
 
 config_file_name = "../../larm-statistics.py.cfg"
@@ -26,9 +26,13 @@ config = ConfigParser.SafeConfigParser()
 config.read(config_file_name)
 
 doms_url = config.get("cgi", "doms_url")  # .../fedora/
+pvica_url = config.get("cgi", "pvica_url") # kuana
+solr_idx_url = config.get("cgi", "solr_idx_url") # solr
 
 # Example: d68a0380-012a-4cd8-8e5b-37adf6c2d47f (optionally trailed by a ".fileending")
-re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(\.[a-zA-Z0-9]*)?$")
+re_doms_id_from_url = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})((\.[a-zA-Z0-9]*)*|/|$)")
+re_DelivUnitRef_from_solr = re.compile("([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$)")
+
 
 if "fromDate" in parameters:
     start_str = parameters["fromDate"].value  # "2013-06-15"
@@ -44,17 +48,12 @@ else:
 start_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(start_str + " 10:00", '%Y-%m-%d %H:%M')))
 end_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(end_str + " 10:00", '%Y-%m-%d %H:%M')))
 
-# prepare urllib2
+# prepare requests
 username = config.get("cgi", "username")
 password = config.get("cgi", "password")
 
-# https://docs.python.org/2/howto/urllib2.html#id6
-password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-top_level_url = doms_url
-password_mgr.add_password(None, top_level_url, username, password)
-
-handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-opener = urllib2.build_opener(handler)
+kuanausername = config.get("cgi", "kuanausername")
+kuanapassword = config.get("cgi", "kuanapassword")
 
 # prepare xpath
 namespaces = {
@@ -62,7 +61,9 @@ namespaces = {
     "PB": "http://doms.statsbiblioteket.dk/types/program_broadcast/0/1/#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "fedora": "http://www.fedora.info/definitions/1/0/access/",
-    "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#"}
+    "sb": "http://doms.statsbiblioteket.dk/relations/default/0/1/#",
+    "pv": "http://www.tessella.com/XIP/v4"
+}
 
 # Prepare output CSV:
 fieldnames = ["Timestamp", "Type", "Filename", "Titel (radio/tv)", "Kanal", "Udsendelsestidspunkt", "Genre", "Userid", "Shard UUID", "PBCore UUID", "Wayf-attr"]
@@ -79,7 +80,7 @@ result_dict_writer = csv.DictWriter(result_file, fieldnames, delimiter="\t")
 header = dict(zip(result_dict_writer.fieldnames, result_dict_writer.fieldnames))
 result_dict_writer.writerow(header)
 
-doms_ids_seen = {}  # DOMS lookup cache, id is key
+doms_ids_seen = {}  # DOMS/Kuana lookup cache, id is key
 seen = Set() # Already reported combinations of same filename,user,date are ignored
 
 larm_db_host = config.get("cgi", "larm_db_host")
@@ -116,6 +117,8 @@ for record in cur:
     regexp_match = re_doms_id_from_url.search(filename)
     if regexp_match != None:
         doms_id = regexp_match.group(1)
+        solr_authid = regexp_match.group(1)
+
         # big sister probes this, skip (Mogens: if anybody wants to view it, we'll live with it)
         if doms_id == "d68a0380-012a-4cd8-8e5b-37adf6c2d47f":
             continue
@@ -123,78 +126,141 @@ for record in cur:
         out["Shard UUID"] = doms_id
 
         if doms_id in doms_ids_seen:
-            (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text) = doms_ids_seen[doms_id]
+            (ext_body_text, metadata_text, core_body_text, pbcore_uuid, filename_text) = doms_ids_seen[doms_id]
         else:
-            try:
-                url_shard_metadata = doms_url + "objects/uuid%3A" + doms_id + "/datastreams/SHARD_METADATA/content"
-                shard_metadata = opener.open(url_shard_metadata)
-                shard_metadata.read()
-                shard_metadata.close()
-                riquery = "*+*+<info:fedora/uuid:" + doms_id + ">"
-                url_risearch = doms_url + "risearch?type=triples&lang=spo&format=N-Triples&query=" + riquery
-                risearch_body = opener.open(url_risearch)
-                risearch_text = risearch_body.read()
-                risearch_body.close()
-                risearch_text_firstelement = string.split(risearch_text, ">")[0]
-                pbcore_uuid = string.split(risearch_text_firstelement, ":")[2]
-            except urllib2.HTTPError, e:
-                e.read() #Read the error message so the connection can close
-                e.close() #And close the connection explicitly
-                pbcore_uuid = doms_id
-            except: #Catch all terms
-                pbcore_uuid = doms_id
+            pbcore_uuid = doms_id
 
             url_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PROGRAM_BROADCAST/content"
-            metadata = opener.open(url_metadata)
-            metadata_text = metadata.read()
-            metadata.close()
-
+            url_core = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
             url_ext = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/RELS-EXT/content"
-            ext_body = opener.open(url_ext)
-            ext_body_text = ext_body.read()
-            ext_body.close()
+            notdoms = None
 
             try:
-                ext = ET.fromstring(ext_body_text)
-                file_uuid = ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces)[0].split(":")[2]
-                url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
-                file_body = opener.open(url_file)
-                file_body_text = file_body.read()
-                file_body.close()
-                file = ET.fromstring(file_body_text)
-                filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
-            except urllib2.HTTPError, e:
-                e.read()  # Read the error message so the connection can close
-                e.close()  # And close the connection explicitly
-                filename_text = "Unknown file"
-            except:
-                filename_text = "Unknown file"
+                ext_body = requests.get(url_ext, auth=(username, password))
+                ext_body_text = ext_body.content
+                ext_body.raise_for_status() # raise exception if error 4xx/5xx
 
-            url_pbcore_metadata = doms_url + "objects/uuid%3A" + pbcore_uuid + "/datastreams/PBCORE/content"
-            pbcore_metadata = opener.open(url_pbcore_metadata)
-            pbcore_metadata_xml = pbcore_metadata.read()
-            pbcore_metadata.close()
+                metadata_body = requests.get(url_metadata, auth=(username, password))
+                metadata_text = metadata_body.content
+                metadata_body.raise_for_status() # raise exception if error 4xx/5xx
 
-            doms_ids_seen[doms_id] = (ext_body_text, metadata_text, pbcore_metadata_xml, pbcore_uuid, filename_text)
+                core_body = requests.get(url_core, auth=(username, password))
+                core_body_text = core_body.content
+                core_body.raise_for_status()
+
+                try:
+                    ext = ET.fromstring(ext_body_text)
+                    file_uuid = ext.xpath("./rdf:Description/sb:hasFile/@rdf:resource", namespaces=namespaces)[0].split(":")[2]
+                    url_file = doms_url + "objects/uuid%3A" + file_uuid + "?format=xml"
+                
+                    file_body = requests.get(url_file, auth=(username, password))
+                    file_body_text = file_body.content
+                    file_body.raise_for_status() # raise exception if error 4xx/5xx
+                    file = ET.fromstring(file_body_text)
+                    filename_text = file.xpath("/fedora:objectProfile/fedora:objLabel/text()", namespaces=namespaces)[0].split("/")[-1]
+                except:
+                    filename_text = "Unknown file"
+            # set notdoms to something - trigger for kuana search
+            except requests.exceptions.RequestException as notdoms:
+                ext_body_text = None
+
+            # If no match in doms get recordID for the corresponding UUID from solr and
+            # search for kuana pbcore - use solr:recordID as kuana:DeliverableUnitRef
+            if notdoms:
+                url_solr = solr_idx_url + "select?indent=on&q=authID:%22" + solr_authid + "%22&wt=xml"
+                solr_body_text = requests.get(url_solr).content
+                solr = ET.fromstring(solr_body_text)
+                recordID = solr.xpath("string(/response/result[@name = 'response'][@numFound = '1']/doc/str[@name = 'recordID'])")
+                try:
+                    DeliverableUnitRef = re_DelivUnitRef_from_solr.search(recordID).group(1)
+                    url_core = pvica_url + "api/entity/deliverableUnits/" + DeliverableUnitRef
+                    core_body_text = requests.get(url_core, auth=(kuanausername, kuanapassword)).content
+                    ext_body_text = None
+                    filename_text = "Unknown file"
+                except:
+                    core_body_text = None
+                    filename_text = "Unknown file"
+
+            doms_ids_seen[doms_id] = (ext_body_text, metadata_text, core_body_text, pbcore_uuid, filename_text)
 
         out["PBCore UUID"] = pbcore_uuid
 
         # The (get_list() or [""])[0] construct returns the empty string if the first list is empty
-        ext = ET.fromstring(ext_body_text)
-        out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
+        # if doms match is found - run xpath on found doms ext and (pb)core
+        if ext_body_text:
+            ext = ET.fromstring(ext_body_text)
+            out["Type"] = (ext.xpath("./rdf:Description/sb:isPartOfCollection/@rdf:resource", namespaces=namespaces) or [""])[0]
 
-        out["Filename"] = filename_text
+            out["Filename"] = filename_text
 
-        program_broadcast = ET.fromstring(metadata_text)
-        channel_text = program_broadcast.xpath("/PB:programBroadcast/PB:channelId/text()", namespaces=namespaces)[0]
-        out["Kanal"] = channel_text
+            program_broadcast = ET.fromstring(metadata_text)
+            channel_text = program_broadcast.xpath("/PB:programBroadcast/PB:channelId/text()", namespaces=namespaces)[0]
+            out["Kanal"] = channel_text
             
-        timestamp_text = program_broadcast.xpath("/PB:programBroadcast/PB:timeStart/text()", namespaces=namespaces)[0] # date format 2005-12-13T12:00:00.000+01:00
-        out["Udsendelsestidspunkt"] = timestamp_text
+            timestamp_text = program_broadcast.xpath("/PB:programBroadcast/PB:timeStart/text()", namespaces=namespaces)[0] # date format 2005-12-13T12:00:00.000+01:00
+            out["Udsendelsestidspunkt"] = timestamp_text
 
-        pbcore = ET.fromstring(pbcore_metadata_xml)
-        out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
-        out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            pbcore = ET.fromstring(core_body_text)
+            out["Titel (radio/tv)"] = (pbcore.xpath("./pb:pbcoreTitle[pb:titleType/text() = 'titel']/pb:title/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+            out["Genre"] = (pbcore.xpath("./pb:pbcoreGenre/pb:genre[starts-with(.,'hovedgenre')]/text()", namespaces=namespaces) or [""])[0].encode(encoding)
+        # if ext_body_text is None, a doms match is not found - run xpath on found kuana (pb)core
+        elif core_body_text:
+
+            # Radio/TV collection
+            core = ET.fromstring(core_body_text)
+            out["Titel (radio/tv)"] = (core.xpath("string("
+                                                  "/pv:XIP"
+                                                  "/pv:DeliverableUnits"
+                                                  "/pv:DeliverableUnit[@status = 'same']"
+                                                  "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                  "/pb:PBCoreDescriptionDocument"
+                                                  "/pb:pbcoreTitle[pb:titleType = 'titel']"
+                                                  "/pb:title"
+                                                  ")", namespaces=namespaces) or "").encode(encoding)
+            out["Kanal"] = (core.xpath("string("
+                                      "/pv:XIP"
+                                      "/pv:DeliverableUnits"
+                                      "/pv:DeliverableUnit[@status = 'same']"
+                                      "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                      "/pb:PBCoreDescriptionDocument"
+                                      "/pb:pbcorePublisher[pb:publisherRole = 'kanalnavn']"
+                                      "/pb:publisher"
+                                      ")", namespaces=namespaces) or "").encode(encoding)
+            out["Udsendelsestidspunkt"] = (core.xpath("string("
+                                                     "/pv:XIP"
+                                                     "/pv:DeliverableUnits"
+                                                     "/pv:DeliverableUnit[@status = 'same']"
+                                                     "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                     "/pb:PBCoreDescriptionDocument"
+                                                     "/pb:pbcoreInstantiation"
+                                                     "/pb:pbcoreDateAvailable"
+                                                     "/pb:dateAvailableStart"
+                                                     ")", namespaces=namespaces) or "").encode(encoding)
+            out["Type"] = (core.xpath("string("
+                                                     "/pv:XIP"
+                                                     "/pv:DeliverableUnits"
+                                                     "/pv:DeliverableUnit[@status = 'same']"
+                                                     "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                                     "/pb:PBCoreDescriptionDocument"
+                                                     "/pb:pbcoreInstantiation"
+                                                     "/pb:formatLocation"
+                                                     ")", namespaces=namespaces) or "").encode(encoding)
+            out["Genre"] = (core.xpath("string("
+                                       "/pv:XIP"
+                                       "/pv:DeliverableUnits"
+                                       "/pv:DeliverableUnit[@status = 'same']"
+                                       "/pv:Metadata[@schemaURI = 'http://www.pbcore.org/PBCore/PBCoreNamespace.html']"
+                                       "/pb:PBCoreDescriptionDocument"
+                                       "/pb:pbcoreGenre"
+                                       "/pb:genre[starts-with(.,'hovedgenre')]"
+                                       ")", namespaces=namespaces) or "").encode(encoding)
+
+        # if no uuid match is found in doms or solr/kuana give us a notice
+        else:
+            out["Type"] = "Not in DOMS or SOLR: "+doms_id
+            # continue
+
+
 
     else:
         try:

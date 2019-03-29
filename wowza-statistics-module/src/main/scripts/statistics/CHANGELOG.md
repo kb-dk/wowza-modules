@@ -1,3 +1,8 @@
+20190329:
+LARM:
+Added support for calls to solr/pvica for empty returns from doms
+Uses requests-module for rest calls to pvica and solr
+
 20181004:
 Mediestream
 Added support for calls to solr/pvica for empty returns from doms
