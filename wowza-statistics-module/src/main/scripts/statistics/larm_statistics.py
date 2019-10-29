@@ -163,6 +163,7 @@ for record in cur:
             # set notdoms to something - trigger for kuana search
             except requests.exceptions.RequestException as notdoms:
                 ext_body_text = None
+		metadata_text = None
 
             # If no match in doms get recordID for the corresponding UUID from solr and
             # search for kuana pbcore - use solr:recordID as kuana:DeliverableUnitRef
