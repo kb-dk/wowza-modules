@@ -1,3 +1,8 @@
+4.5
+Support SSL in configuration [applied as hotfix]
+Update python statistics to support preservica [applied as hotfix]
+Use newer version of content resolver library, that doesn't stat every file during directory scan
+
 4.4
 Fixed backwards compatibility with old wowza-modules.properties
 
