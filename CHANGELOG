@@ -1,3 +1,6 @@
+4.6
+New content resolver in 4.5 had a resource leak. New content resolver depency that fixes this leak.
+
 4.5
 Support SSL in configuration [applied as hotfix]
 Update python statistics to support preservica [applied as hotfix]

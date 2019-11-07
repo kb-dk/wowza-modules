@@ -426,7 +426,7 @@
             <dependency>
                 <groupId>dk.statsbiblioteket.medieplatform</groupId>
                 <artifactId>content-resolver-lib</artifactId>
-                <version>1.3</version>
+                <version>1.4</version>
             </dependency>
 
             <dependency>
