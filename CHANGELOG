@@ -1,3 +1,6 @@
+4.7
+[Hotfix] Support https streaming in CHAOS VHosts
+
 4.6
 New content resolver in 4.5 had a resource leak. New content resolver depency that fixes this leak.
 
