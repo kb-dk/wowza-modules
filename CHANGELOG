@@ -1,4 +1,5 @@
 4.7
+[Hotfix] Add an extra application for CHAOS VHosts (like we already have in Mediestream VHost), which enables a packatized version of mp3 streams, which will play on non-apple devices
 [Hotfix] Support https streaming in CHAOS VHosts
 
 4.6
