@@ -55,6 +55,15 @@
             </excludes>
         </fileSet>
         <fileSet>
+            <outputDirectory>wowza_vhost_chaos_mcm3/applications/chaosnonapple</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
             <outputDirectory>wowza_vhost_chaos_mcm3/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
@@ -70,6 +79,15 @@
         </fileSet>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_mcm3_doms/applications/chaos</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_mcm3_doms/applications/chaosnonapple</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -101,6 +119,15 @@
             </excludes>
         </fileSet>
         <fileSet>
+            <outputDirectory>wowza_vhost_chaos_chaosv6/applications/chaosnonapple</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
             <outputDirectory>wowza_vhost_chaos_chaosv6/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
@@ -116,6 +143,15 @@
         </fileSet>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_chaosv6_doms/applications/chaos</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms/applications/chaosnonapple</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
@@ -148,6 +184,15 @@
             </excludes>
         </fileSet>
         <fileSet>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/applications/chaosnonapple</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
             <outputDirectory>wowza_vhost_chaos_chaosv6_stageapi/streamingContent</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
@@ -163,6 +208,15 @@
         </fileSet>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/applications/chaos</outputDirectory>
+            <directory>src/main/assembly</directory>
+            <directoryMode>0775</directoryMode>
+            <excludes>
+                <!-- Create empty directory -->
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>wowza_vhost_chaos_chaosv6_doms_stageapi/applications/chaosnonapple</outputDirectory>
             <directory>src/main/assembly</directory>
             <directoryMode>0775</directoryMode>
             <excludes>
