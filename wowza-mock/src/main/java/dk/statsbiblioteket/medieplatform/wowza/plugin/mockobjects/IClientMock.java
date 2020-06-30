@@ -797,4 +797,16 @@ public class IClientMock implements IClient {
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public String getForwardedIP() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setForwardedIP(String arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

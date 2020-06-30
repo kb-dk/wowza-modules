@@ -11,9 +11,12 @@ import com.wowza.wms.client.IClientNotify;
 import com.wowza.wms.dvr.DvrApplicationContext;
 import com.wowza.wms.dvr.DvrApplicationConverterContext;
 import com.wowza.wms.dvr.IDvrStreamManager;
+import com.wowza.wms.dvr.IDvrStreamStore;
+import com.wowza.wms.dvr.converter.IDvrConverterActionNotify;
 import com.wowza.wms.httpstreamer.model.IHTTPSessionNotify;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerApplicationContext;
 import com.wowza.wms.httpstreamer.model.IHTTPStreamerSession;
+import com.wowza.wms.mediacaster.IMediaCaster;
 import com.wowza.wms.mediacaster.IMediaCasterNotify;
 import com.wowza.wms.mediacaster.IMediaCasterNotify2;
 import com.wowza.wms.mediacaster.IMediaCasterValidateMediaCaster;
@@ -47,6 +50,9 @@ import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoderNotify;
 import com.wowza.wms.stream.livetranscoder.LiveStreamTranscoderApplicationContext;
 import com.wowza.wms.stream.publish.Publisher;
 import com.wowza.wms.vhost.IVHost;
+import com.wowza.wms.webrtc.model.WebRTCSession;
+import com.wowza.wms.websocket.model.IWebSocketSession;
+
 import edu.emory.mathcs.backport.java.util.concurrent.locks.WMSReadWriteLock;
 
 import java.io.File;
@@ -1702,6 +1708,144 @@ public class IApplicationInstanceMock implements IApplicationInstance {
     @Override
     public Map<String, Integer> getWebRTCSessionCountsByName() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addDvrConverterListener(IDvrConverterActionNotify arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public WMSProperties getWebRTCProperties() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isRepeaterAppType() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void notifyDvrConverterConversionComplete(IDvrStreamStore arg0, File arg1) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterConnectFailure(IMediaCaster arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterConnectStart(IMediaCaster arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterConnectSuccess(IMediaCaster arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterSetSourceStream(IMediaCaster arg0, IMediaStream arg1) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterStreamStart(IMediaCaster arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void notifyMediaCasterStreamStop(IMediaCaster arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeDvrConverterListener(IDvrConverterActionNotify arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, IClient arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, ILiveStreamPacketizer arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, RTPSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, IHTTPStreamerSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, WebRTCSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolvePlayAlias(String arg0, IWebSocketSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolveStreamAlias(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolveStreamAlias(String arg0, IMediaCaster arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolveStreamAlias(String arg0, IWebSocketSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String resolveStreamAlias(String arg0, WebRTCSession arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setRepeaterAppType(boolean arg0) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -28,6 +28,9 @@ import com.wowza.wms.stream.MediaStreamMap;
 import com.wowza.wms.stream.livedvr.ILiveStreamDvrRecorder;
 import com.wowza.wms.stream.livepacketizer.ILiveStreamPacketizer;
 import com.wowza.wms.stream.livetranscoder.ILiveStreamTranscoder;
+import com.wowza.wms.transcoder.encoder.TranscoderEncoderStreamInfo;
+import com.wowza.wms.transcoder.model.TranscoderSessionDestination;
+
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -1494,5 +1497,43 @@ public class IMediaStreamMock implements IMediaStream {
     public long getPublishFrameCountVideoKey() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public boolean getIsWebRTC() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public TranscoderEncoderStreamInfo getTranscoderEncoderStreamInfo() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TranscoderSessionDestination getTranscoderSessionDestination() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isTranscoderEncoderStreamRoot() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setIsWebRTC(boolean arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setTranscoderEncoderStreamInfo(TranscoderEncoderStreamInfo arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+ 
 
 }
