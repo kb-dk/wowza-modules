@@ -106,6 +106,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <name>Kim Christensen</name>
+            <email>ktc@kb.dk</email>
+            <organization>The Royal Danish Library, Denmark</organization>
+            <organizationUrl>http://www.kb.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <scm>
