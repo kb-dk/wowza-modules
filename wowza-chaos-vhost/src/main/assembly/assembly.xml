@@ -7,18 +7,6 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>wowza_vhost_chaos_mcm3/applications/lib</outputDirectory>
-            <directoryMode>0775</directoryMode>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <scope>runtime</scope>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>wowza_vhost_chaos_mcm3_doms/applications/lib</outputDirectory>
-            <directoryMode>0775</directoryMode>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <scope>runtime</scope>
-        </dependencySet>
-        <dependencySet>
             <outputDirectory>wowza_vhost_chaos_chaosv6/applications/lib</outputDirectory>
             <directoryMode>0775</directoryMode>
             <useTransitiveDependencies>true</useTransitiveDependencies>
@@ -45,70 +33,6 @@
     </dependencySets>
 
     <fileSets>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3/applications/chaos</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3/applications/chaosnonapple</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3/streamingContent</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3/conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_chaos_mcm3/conf</directory>
-            <directoryMode>0775</directoryMode>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3_doms/applications/chaos</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3_doms/applications/chaosnonapple</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3_doms/streamingContent</outputDirectory>
-            <directory>src/main/assembly</directory>
-            <directoryMode>0775</directoryMode>
-            <excludes>
-                <!-- Create empty directory -->
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>wowza_vhost_chaos_mcm3_doms/conf</outputDirectory>
-            <directory>src/main/config/wowza_vhost_chaos_mcm3_doms/conf</directory>
-            <directoryMode>0775</directoryMode>
-        </fileSet>
         <fileSet>
             <outputDirectory>wowza_vhost_chaos_chaosv6/applications/chaos</outputDirectory>
             <directory>src/main/assembly</directory>
