@@ -1,8 +1,4 @@
-package dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects;
-
-import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
-import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
+package dk.statsbiblioteket.medieplatform.wowza.plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,15 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TicketToolMock implements TicketToolInterface {
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 
-    private int counter;
+/**
+ * In-memory ticket store to be used for local tests. 
+ * Kept as a real class for simplifying mocking 
+ */
+public class TestTicketStore {
+    
     private HashMap<String, Ticket> ticketMap;
 
-    public TicketToolMock() {
-        super();
+    public TestTicketStore() {
         this.ticketMap = new HashMap<String, Ticket>();
-        this.counter = 0;
     }
 
     public synchronized Ticket issueTicket(
@@ -45,7 +45,6 @@ public class TicketToolMock implements TicketToolInterface {
         return result;
     }
 
-    @Override
     public synchronized Ticket resolveTicket(String ticketID) {
         Ticket ticket = ticketMap.get(ticketID);
         return ticket;

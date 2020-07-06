@@ -32,7 +32,7 @@
         <module>wowza-content-resolver-module</module>
         <module>wowza-statistics-module</module>
         <module>wowza-common</module>
-        <module>wowza-mock</module>
+            <!--        <module>wowza-mock</module>-->
         <module>wowza-mediestream-vhost</module>
         <module>wowza-mcm-authorization-module</module>
         <module>wowza-mcm3-authorization-module</module>
@@ -592,7 +592,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.9.5</version>
+                <version>3.3.3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

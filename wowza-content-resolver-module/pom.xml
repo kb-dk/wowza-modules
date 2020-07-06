@@ -11,11 +11,6 @@
     <artifactId>wowza-content-resolver-module</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mock</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
@@ -79,6 +74,30 @@
 
         <dependency>
             <groupId>com.wms</groupId>
+            <artifactId>wms-stream-publish</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-sourcecontrol</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-webrtc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.wms</groupId>
+            <artifactId>wms-mediacache</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wms</groupId>
             <artifactId>wms-pushpublish</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -106,7 +125,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

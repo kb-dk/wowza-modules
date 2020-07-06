@@ -3,13 +3,14 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db;
 import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.stream.IMediaStream;
+
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
 
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
@@ -58,8 +59,7 @@ public class StreamingDatabaseEventLoggerTest {
     @Before
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
-        IClient client = new IClientMock("sessionID=sample.mp4&objectID=643703&includeFiles=true");
-        IMediaStreamMock stream = new IMediaStreamMock("sample2.mp4", client);
+        IMediaStream stream = mock(IMediaStream.class);
         MCMPortalInterfaceStatisticsImpl.createInstanceForTestPurpose(new MCMPortalInterfaceStatisticsMock(logger));
         new StatisticLoggingStreamListener(logger, stream, streamingEventLogger);
         createDBEventTable(logger, this.connection);
@@ -78,7 +78,6 @@ public class StreamingDatabaseEventLoggerTest {
             "wayf_attr VARCHAR, " +
             "PRIMARY KEY (event_id))";
         stmt2.executeUpdate(query);
-        Statement stmt1 = connection.createStatement();
         logger.info("Execute: " + query);
     }
     

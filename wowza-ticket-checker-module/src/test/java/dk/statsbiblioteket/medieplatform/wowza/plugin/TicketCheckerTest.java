@@ -8,13 +8,17 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+
+
 
 import java.util.ArrayList;
 
@@ -26,11 +30,9 @@ public class TicketCheckerTest {
     public static final String QUERY_STRING = "ticket=";
     private Logger logger;
 
-    TicketToolMock ticketToolMock;
+    TicketToolInterface ticketTool;
 
-    IApplicationInstance iAppInstance = new IApplicationInstanceMock();
-
-
+    IApplicationInstance iAppInstance = mock(IApplicationInstance.class);
 
     String goodIP = "127.0.0.1";
     String badIP = "127.0.0.2-Invalid-ip";
@@ -47,7 +49,7 @@ public class TicketCheckerTest {
     @Before
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
-        ticketToolMock = new TicketToolMock();
+        ticketTool = mock(TicketToolInterface.class); 
     }
 
     @After
@@ -58,12 +60,21 @@ public class TicketCheckerTest {
     @Test
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
-        Ticket ticket = ticketToolMock.issueTicket(badIP, programID, new ArrayList<Property>());
+        TestTicketStore tss = new TestTicketStore();
+        when(ticketTool.resolveTicket(anyString())).thenAnswer(
+                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
+        
+        Ticket ticket = tss.issueTicket(badIP, programID, new ArrayList<Property>());
+        
         String queryString = QUERY_STRING + ticket.getId();
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getName()).thenReturn(name);
+        TicketChecker ticketChecker = new TicketChecker("Stream", ticketTool);
         // Run test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
@@ -75,9 +86,13 @@ public class TicketCheckerTest {
         // Setup environment
         String queryString = QUERY_STRING + "InvalidID";
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getName()).thenReturn(name);
+        TicketChecker ticketChecker = new TicketChecker("Stream", ticketTool);
         // Run test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
@@ -87,12 +102,21 @@ public class TicketCheckerTest {
     @Test
     public void testGetFileToStreamSucces() {
         // Setup
-        Ticket ticket = ticketToolMock.issueTicket(goodIP, programID, new ArrayList<Property>());
+        TestTicketStore tss = new TestTicketStore();
+        when(ticketTool.resolveTicket(anyString())).thenAnswer(
+                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
+        
+        Ticket ticket = tss.issueTicket(goodIP, programID, new ArrayList<Property>());
         String queryString = QUERY_STRING + ticket.getId();
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        when(iClient.getIp()).thenReturn(goodIP);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getName()).thenReturn(name);
+        TicketChecker ticketChecker = new TicketChecker("Stream", ticketTool);
         // Test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate
@@ -102,12 +126,20 @@ public class TicketCheckerTest {
     @Test
     public void testWrongProgramId() {
         // Setup
-        Ticket ticket = ticketToolMock.issueTicket(goodIP, "anotherprogram", new ArrayList<Property>());
+        TestTicketStore tss = new TestTicketStore();
+        when(ticketTool.resolveTicket(anyString())).thenAnswer(
+                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
+        
+        Ticket ticket = tss.issueTicket(goodIP, "anotherprogram", new ArrayList<Property>());
         String queryString = QUERY_STRING + ticket.getId();
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
-        TicketChecker ticketChecker = new TicketChecker("Stream", ticketToolMock);
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getName()).thenReturn(name);
+        TicketChecker ticketChecker = new TicketChecker("Stream", ticketTool);
         // Test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate

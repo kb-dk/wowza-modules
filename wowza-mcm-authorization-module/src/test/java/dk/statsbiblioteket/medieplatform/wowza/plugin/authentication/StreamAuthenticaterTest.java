@@ -1,16 +1,20 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.authentication;
 
+import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.*;
 
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.SessionAndFilenameValidaterMock;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -82,63 +86,102 @@ public class StreamAuthenticaterTest {
     @Test
     public void testOnPlayValidInput() {
         String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM);
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", false, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, never()).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayWrongSession() {
         String queryString = "ObjectID=" + validObjectID + "&SessionID=" + invalidSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayWrongObject() {
         String queryString = "ObjectID=" + invalidObjectID + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+        
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayWrongFilename() {
         String queryString = "ObjectID=" + invalidObjectID + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(invalidFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(invalidFilename);
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayMalformedURLException() {
         String queryString = "ObjectID=" + "MalformedURLExceptionTrigger" + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+ 
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayIOException() {
         String queryString = "ObjectID=" + "IOExceptionTrigger" + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+        
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 
     @Test
     public void testOnPlayMCMOutputException() {
         String queryString = "ObjectID=" + "MCMOutputExceptionTrigger" + "&SessionID=" + validSessionID;
-        IClientMock iClientM = new IClientMock(queryString);
-        IMediaStream iMediaStream = new IMediaStreamMock(validFilename, iClientM); 
+        IClient iClient = mock(IClient.class);
+        when(iClient.getQueryStr()).thenReturn(queryString);
+        
+        IMediaStream iMediaStream = mock(IMediaStream.class);
+        when(iMediaStream.getClient()).thenReturn(iClient);
+        when(iMediaStream.getQueryStr()).thenReturn(queryString);
+        when(iMediaStream.getName()).thenReturn(validFilename);
+
         streamAuthenticater.onPlay(iMediaStream, null, 0, 0, 0);
-        assertEquals("Unexpected return value.", true, iClientM.getHasSetShutdownClientBeenCalled());
+        verify(iClient, times(1)).setShutdownClient(anyBoolean());
     }
 }

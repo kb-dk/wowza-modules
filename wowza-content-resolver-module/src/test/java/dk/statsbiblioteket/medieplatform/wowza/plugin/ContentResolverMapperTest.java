@@ -7,15 +7,11 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +32,7 @@ public class ContentResolverMapperTest {
     String storageDir = new File(
             getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
             .toString();
-    IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
-
+    IApplicationInstance iAppInstance = mock(IApplicationInstance.class);
 
 
     String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
@@ -67,8 +62,13 @@ public class ContentResolverMapperTest {
 
 
          //rtmp://iapetus.statsbiblioteket.dk:1937/mediestream?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+        IClient iClient = mock(IClient.class);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
+
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
@@ -119,8 +119,13 @@ public class ContentResolverMapperTest {
         String queryString = RTMP_HYPOTHETICAL_URL;
         IMediaStreamFileMapper defaultMapper = null;
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+        IClient iClient = mock(IClient.class); 
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
+        
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
@@ -137,9 +142,13 @@ public class ContentResolverMapperTest {
         String queryString = RTMP_HYPOTHETICAL_URL;
         IMediaStreamFileMapper defaultMapper = null;
 
+        IClient iClient = mock(IClient.class);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
