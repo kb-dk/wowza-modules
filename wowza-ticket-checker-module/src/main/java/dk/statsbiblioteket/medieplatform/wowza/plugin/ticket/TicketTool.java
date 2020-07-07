@@ -1,12 +1,10 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse.Status;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.StatusType;
+
+import org.apache.cxf.jaxrs.client.WebClient;
+
 import com.wowza.wms.logging.WMSLogger;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
@@ -14,14 +12,11 @@ import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 public class TicketTool implements TicketToolInterface {
 
     private WMSLogger logger;
-    private WebResource restApi;
+    private WebClient restApi;
 
     public TicketTool(String serviceURL, WMSLogger logger) {
         super();
-        ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-        Client client = Client.create(clientConfig);
-        restApi = client.resource(serviceURL);
+        restApi = WebClient.create(serviceURL);
         this.logger = logger;
     }
 
@@ -35,9 +30,8 @@ public class TicketTool implements TicketToolInterface {
             logger.debug("resolveTicket: Ticket received: '" + ticketID + "'");
             return ticketXml;
 
-        } catch (UniformInterfaceException e) {
-            // If the ticket does not exist, i.e. the session has timed out.
-            Status responseStatus = e.getResponse().getClientResponseStatus();
+        } catch (WebApplicationException e) {
+            StatusType responseStatus = e.getResponse().getStatusInfo();
             logger.debug("The session might have timed out for ticket '"
                                  + ticketID + "'. Ticket service response status: " + responseStatus.getStatusCode());
             return null;

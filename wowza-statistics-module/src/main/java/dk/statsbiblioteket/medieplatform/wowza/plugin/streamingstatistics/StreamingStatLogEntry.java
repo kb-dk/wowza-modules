@@ -1,8 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
-import com.wowza.wms.stream.IMediaStream;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 
 import java.io.IOException;

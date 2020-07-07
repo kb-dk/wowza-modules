@@ -1,15 +1,11 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
+
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 
 import org.junit.jupiter.api.Disabled;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 
 import javax.ws.rs.core.MediaType;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +42,7 @@ public class TicketToolTest {
     @Disabled
     public void testValidateTicket() {
         // Setup environment
-        TicketToolInterface ticketTool = new TicketTool("http://alhena:7950/ticket-system-service/tickets", logger);
+        TicketToolInterface ticketTool = new TicketTool("http://iapetus:9651/ticket-system-service/tickets", logger);
         String username = "aUsername";
         String url = "doms_reklamefilm:uuid:35a1aa76-97a1-4f1b-b5aa-ad2a246eeeec";
         Map<String, String> ticketMap = issueTicket(username, url, Arrays.asList(new Property("ip_role_mapper.SBIPRoleMapper", "SB_PUB")));
@@ -62,20 +59,16 @@ public class TicketToolTest {
     }
 
     private Map<String,String> issueTicket(String username, String resource, List<Property> properties) {
-        try {
-            ClientConfig clientConfig = new DefaultClientConfig();
-            clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-            Client client = Client.create(clientConfig);
-            WebResource query = client.resource("http://alhena:7950/ticket-system-service/tickets")
-                    .path("/issueTicket").queryParam("ipAddress", username)
-                    .queryParam("id", resource).queryParam("type","Streame");
-            for (Property prop : properties) {
-                query = query.queryParam(prop.getName(), prop.getValue());
-            }
-            return query.accept(MediaType.APPLICATION_JSON).post(Map.class);
-        } catch (UniformInterfaceException e) {
-            throw new RuntimeException("Unexpected event", e);
+        WebClient client = WebClient.create("http://iapetus:9651/ticket-system-service/tickets");
+        WebClient clientRequest = client.path("/issueTicket")
+            .query("ipAddress", username)
+            .query("id", resource)
+            .query("type","Streame");
+        for (Property prop : properties) {
+            clientRequest = clientRequest.query(prop.getName(), prop.getValue());
         }
+        Map<String, String> resp = clientRequest.accept(MediaType.APPLICATION_JSON).post(new Object(), Map.class);
+        return resp;
     }
 
 }
