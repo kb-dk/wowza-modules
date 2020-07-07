@@ -60,8 +60,8 @@
     <developers>
         <developer>
             <name>Asger Askov Blekinge</name>
-            <email>abr@statsbiblioteket.dk</email>
-            <organization>The State and University Library, Denmark</organization>
+            <email>abr@kb.dk</email>
+            <organization>The Royal Danish Library, Denmark</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
@@ -78,8 +78,8 @@
         </developer>
         <developer>
             <name>Kåre Fiedler Christiansen</name>
-            <email>kfc@statsbiblioteket.dk</email>
-            <organization>The State and University Library, Denmark</organization>
+            <email>kfc@kb.dk</email>
+            <organization>The Royal Danish Library, Denmark</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
