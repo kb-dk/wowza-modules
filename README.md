@@ -1,8 +1,9 @@
-These are modules for Wowza 4.5.0 used at the State and University Library, Denmark.
+# wowza-modules
+These are modules for Wowza 4.8.5 used at the Royal Danish Library, Denmark.
 
 It consists of 8 modules and three example VHosts
 
-= The modules =
+## The modules 
 wowza-content-resolver-module
   Given configuration, lookup streams in diferent directory structure
 
@@ -30,8 +31,8 @@ wowza-db-statistics-module
   Log events from wowza to a database, including MCM session information.
 
 
-= The VHosts =
-wowza-mediestream-vhost
+## The VHosts 
+### wowza-mediestream-vhost
 
 A complete VHost that contains configuration and the modules
  * wowza-content-resolver-module
@@ -41,17 +42,28 @@ Example configuration can be found in conf/mediestream/wowza-modules.properties
 The streamingContent directory in the VHost should point to the content to be served.
 conf/Vhost.xml should probably be updated with correct port numbers
 
-wowza-chaos-vhost
+### wowza-chaos-vhost
 
-Six complete VHosts that contain configuration and the modules
- * wowza-content-resolver-module (only in three VHost)
- * wowza-mcm3-authorization-module (only in two VHosts)
- * wowza-chaosv6-authorization-module (in the remaining four VHosts)
+Four complete VHosts that contain configuration and the modules
+ * wowza-content-resolver-module (only in two VHost)
+ * wowza-chaosv6-authorization-module
  * wowza-db-statistics-module
 Example configuration can be found in conf/chaos/wowza-modules.properties
 The streamingContent directory in the VHost should point to the content to be served.
 conf/Vhost.xml should probably be updated with correct port numbers
 
-wowza-cosound-vhost
+## Requirements
+The project requires Java 11 be build and run. Known to build with OpenJDK 11, other JDKs may work
 
-A variant of the wowza-chaos-vhost used for the CoSound project
+The project depends on java libraies from WowzaStreamingEngine, and as a commercial product can't be included. To obtain the needed libraies an installation of WowzaStreamingEngine is required. 
+WowzaStreamingEngine installation program and developer license can be obtained from [Wowza](http://www.wowza.com/streaming/developers).
+The installer itself offers arguments to specify non-standard installation directory but does not respect the value, and additionally requires super-user rights to install itself in the default location of `/usr/local/WowzaStreamingEngine-${wms.version}`.
+Part of the maven project lifecycle (`verify` phase) the needed libraries will be installed from `/usr/local/WowzaStreamingEngine-${wms.version}/lib` into the local maven repository/cache. 
+
+## Building
+Use maven to build the project i.e. `mvn clean package`
+
+## Test 
+There are unit tests that are run during the default build (see above). 
+
+Operative tests of the product requires an installation, available streaming content and additional infrastructure (content-resolver, ticket system). Internally at The Royal Danish Library we have a setup for that currently running on the server `iapetus`.
