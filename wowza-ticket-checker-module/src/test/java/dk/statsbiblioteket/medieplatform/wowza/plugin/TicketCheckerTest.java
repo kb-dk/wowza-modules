@@ -5,9 +5,10 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.invocation.InvocationOnMock;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
@@ -18,12 +19,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.*;
 
-
-
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class TicketCheckerTest {
 
@@ -46,13 +43,13 @@ public class TicketCheckerTest {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
         ticketTool = mock(TicketToolInterface.class); 
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -78,7 +75,7 @@ public class TicketCheckerTest {
         // Run test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
-        assertFalse("Expected not to be allowed", result);
+        assertFalse(result, "Expected not to be allowed");
     }
 
     @Test
@@ -96,7 +93,7 @@ public class TicketCheckerTest {
         // Run test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate result
-        assertFalse("Expected not to be allowed", result);
+        assertFalse(result, "Expected not to be allowed");
     }
 
     @Test
@@ -120,7 +117,7 @@ public class TicketCheckerTest {
         // Test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate
-        assertTrue("Expected success", result);
+        assertTrue(result, "Expected success");
     }
 
     @Test
@@ -143,6 +140,6 @@ public class TicketCheckerTest {
         // Test
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate
-        assertFalse("Expected not to be allowed", result);
+        assertFalse(result, "Expected not to be allowed");
     }
 }

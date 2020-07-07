@@ -16,9 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
@@ -30,7 +31,6 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.Streaming
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
-import junit.framework.Assert;
 
 /** Test event logging */
 public class StreamingDatabaseEventLoggerTest {
@@ -58,7 +58,7 @@ public class StreamingDatabaseEventLoggerTest {
         this.streamingEventLogger = StreamingDatabaseEventLogger.getInstance();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
         IMediaStream stream = mock(IMediaStream.class);
@@ -91,7 +91,7 @@ public class StreamingDatabaseEventLoggerTest {
         logger.info("Execute: " + query);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
         dropDBTable(logger, connection);
@@ -119,10 +119,10 @@ public class StreamingDatabaseEventLoggerTest {
         LocalDateTime localDateTime = LocalDateTime.of(2011, 02, 23, 10, 56, 30, 654000000);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.ROOT);
         
-        Assert.assertEquals("Result is:", 2, eventID);
-        Assert.assertEquals("Result is:", 1, userID);
-        Assert.assertEquals("Result is:", dtf.format(localDateTime), sdf.format(eventTime));
-        Assert.assertEquals("Result is:", "PLAY", event);
+        assertEquals(2, eventID, "Result is:");
+        assertEquals(1, userID, "Result is:");
+        assertEquals(dtf.format(localDateTime), sdf.format(eventTime), "Result is:");
+        assertEquals("PLAY", event, "Result is:");
     }
 
     /**
@@ -155,10 +155,10 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Result is:", logEntry.getEventID(), eventID);
-        Assert.assertEquals("Result is:", clientID, userID);
-        Assert.assertEquals("Result is:", logEntry.getTimestamp(), timestamp);
-        Assert.assertEquals("Result is:", Event.PLAY.toString(), event);
+        assertEquals(logEntry.getEventID(), eventID, "Result is:");
+        assertEquals(clientID, userID, "Result is:");
+        assertEquals(logEntry.getTimestamp(), timestamp, "Result is:");
+        assertEquals(Event.PLAY.toString(), event,"Result is:");
     }
     
     /**
@@ -180,7 +180,7 @@ public class StreamingDatabaseEventLoggerTest {
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY, "");
         streamingEventLogger.logEvent(logEntry);
         long maxAfterUpdate = getMaxEventID();
-        Assert.assertEquals("Test that the new log entry is 1 larger that previous max", maxPriorToUpdate+1, maxAfterUpdate);
+        assertEquals(maxPriorToUpdate+1, maxAfterUpdate, "Test that the new log entry is 1 larger that previous max");
         
         // Fetch event information in db
         String eventHappensAfterThisDate = sdf.format(dateBeforeConnection);
@@ -196,7 +196,7 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Test that the new eventID is equal to max of eventID's", maxAfterUpdate, eventID);
+        assertEquals(maxAfterUpdate, eventID, "Test that the new eventID is equal to max of eventID's");
     }
     
     private long getMaxEventID() throws SQLException {
@@ -239,10 +239,10 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Result is:", logEntry.getEventID(), eventID);
-        Assert.assertEquals("Result is:", clientID, userID);
-        Assert.assertEquals("Result is:", logEntry.getTimestamp(), timestamp);
-        Assert.assertEquals("Result is:", Event.PLAY.toString(), event);
+        assertEquals(logEntry.getEventID(), eventID, "Result is:");
+        assertEquals(clientID, userID, "Result is:");
+        assertEquals(logEntry.getTimestamp(), timestamp, "Result is:");
+        assertEquals(Event.PLAY.toString(), event, "Result is:");
     }
 
 

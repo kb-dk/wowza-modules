@@ -9,15 +9,14 @@ import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
-import static junit.framework.Assert.assertNotNull;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,12 +43,12 @@ public class ContentResolverMapperTest {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -75,8 +74,9 @@ public class ContentResolverMapperTest {
         // Run test
         File result = contentResolverMapper.streamToFileForRead(stream);
         // Validate result
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
-                     result.getAbsolutePath());
+        assertEquals(new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
+                     result.getAbsolutePath(), 
+                     "Expected equal result");
     }
 
     @Test
@@ -132,8 +132,9 @@ public class ContentResolverMapperTest {
         // Test
         File result = contentResolverMapper.streamToFileForRead(stream);
         // Validate
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
-                     result.getAbsolutePath());
+        assertEquals(new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
+                     result.getAbsolutePath(),
+                     "Expected equal result");
     }
 
     @Test
@@ -157,6 +158,6 @@ public class ContentResolverMapperTest {
         String result = contentResolverMapper.streamToFileForRead(stream)
                 .getPath();
         // Validate
-        assertEquals("Expected equal result", "0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result);
+        assertEquals("0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result, "Expected equal result");
     }
 }

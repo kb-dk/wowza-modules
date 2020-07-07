@@ -3,9 +3,10 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
@@ -14,11 +15,9 @@ import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.TestTicketStore;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
-import junit.framework.TestCase;
 
 
-
-public class StreamingStatLogEntryTest extends TestCase {
+public class StreamingStatLogEntryTest {
 
     private WMSLogger logger;
     
@@ -32,12 +31,12 @@ public class StreamingStatLogEntryTest extends TestCase {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -56,7 +55,7 @@ public class StreamingStatLogEntryTest extends TestCase {
         // Test
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logEvent, ticket, "");
         // Validate
-        assertEquals("StreamingStatLogEntry value", Event.PLAY, logEntry.getEvent());
+        assertEquals(Event.PLAY, logEntry.getEvent(), "StreamingStatLogEntry value");
         assertTrue(logEntry.getLogString().contains("\"schacHomeOrganization\":[\"au.dk\"]"));
         assertTrue(logEntry.getLogString().contains("\"eduPersonTargetedID\":[\"1x1\"]"));
     }
@@ -75,7 +74,7 @@ public class StreamingStatLogEntryTest extends TestCase {
         // Test
         String logEntry = new StreamingStatLogEntry(logEvent, ticket, "").getLogString();
         String logHeader = StreamingStatLogEntry.getLogStringHeadline();
-        assertEquals("Expected same amount of entries in header and logline", logEntry.split(";").length,
-                logHeader.split(";").length);
+        assertEquals(logEntry.split(";").length, logHeader.split(";").length, 
+                "Expected same amount of entries in header and logline");
     }
 }

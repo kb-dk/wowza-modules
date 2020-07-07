@@ -4,9 +4,10 @@ import com.wowza.wms.client.IClient;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 import com.wowza.wms.stream.IMediaStream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,8 +19,6 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.SessionAndFile
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test authorization based on sessionid, objectid and filename.
@@ -48,12 +47,12 @@ public class StreamAuthenticaterTest {
         this.invalidFilename = new File("P3_2000_2200_890325_001_invalid.mp3").getAbsolutePath();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -62,25 +61,25 @@ public class StreamAuthenticaterTest {
     public void testCheckAuthorizationEverythingOK() {
         
         boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, validFilename);
-        assertEquals("Input expected to be valid.", true, result);
+        assertEquals(true, result, "Input expected to be valid.");
     }
 
     @Test
     public void testCheckAuthorizationInvalidSessionID() {
         boolean result = streamAuthenticater.checkAuthorization(invalidSessionID, validObjectID, validFilename);
-        assertEquals("Input is not expected to be valid.", false, result);
+        assertEquals(false, result, "Input is not expected to be valid.");
     }
 
     @Test
     public void testCheckAuthorizationInvalidObjectID() {
         boolean result = streamAuthenticater.checkAuthorization(validSessionID, invalidObjectID, validFilename);
-        assertEquals("Input is not expected to be valid.", false, result);
+        assertEquals(false, result, "Input is not expected to be valid.");
     }
 
     @Test
     public void testCheckAuthorizationInvalidFilename() {
         boolean result = streamAuthenticater.checkAuthorization(validSessionID, validObjectID, invalidFilename);
-        assertEquals("Input is not expected to be valid.", false, result);
+        assertEquals(false, result, "Input is not expected to be valid.");
     }
 
     @Test

@@ -2,11 +2,12 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.TestCase;
+
 import org.apache.log4j.BasicConfigurator;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.mock;
 
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class StreamingEventLoggerTest extends TestCase {
+public class StreamingEventLoggerTest {
 
     private WMSLogger logger;
     private TicketToolInterface ticketTool;
@@ -35,12 +36,12 @@ public class StreamingEventLoggerTest extends TestCase {
         ticketTool = mock(TicketToolInterface.class);  
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         BasicConfigurator.resetConfiguration();
     }
@@ -112,10 +113,10 @@ public class StreamingEventLoggerTest extends TestCase {
         StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
         Writer beforeWriter = eventLogger.getStatLogWriter();
         Writer afterWriter = eventLogger.getStatLogWriter();
-        assertTrue("Same writer expected.", beforeWriter.equals(afterWriter));
+        assertTrue(beforeWriter.equals(afterWriter), "Same writer expected.");
         eventLogger.setDateForNewLogFile(sdf.parse("2000-01-01"));
         afterWriter = eventLogger.getStatLogWriter();
-        assertFalse("New writer expected.", beforeWriter.equals(afterWriter));
+        assertFalse(beforeWriter.equals(afterWriter), "New writer expected.");
     }
 
     @Test
@@ -129,7 +130,7 @@ public class StreamingEventLoggerTest extends TestCase {
         Date someDate = sdf.parse("2011-01-14 13:20");
         // Test
         Date followingMidnight = eventLogger.getFollowingMidnight(someDate);
-        assertTrue("Evaluating the following midnight.", sdf.format(followingMidnight).equals("2011-01-15 00:00"));
+        assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
     }
 
     private void createDir(String folderPath) {

@@ -8,11 +8,12 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 
@@ -30,18 +31,18 @@ public class TicketToolTest {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testValidateTicket() {
         // Setup environment
         TicketToolInterface ticketTool = new TicketTool("http://alhena:7950/ticket-system-service/tickets", logger);
@@ -55,8 +56,8 @@ public class TicketToolTest {
         logger.debug("Issued ticket: " + issuedTicketId);
         dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolvedTicket = ticketTool.resolveTicket(issuedTicketId);
         logger.debug("Resolved ticket: " + resolvedTicket);
-        Assert.assertEquals(url, resolvedTicket.getResources().get(0));
-        Assert.assertEquals(username, resolvedTicket.getIpAddress());
+        assertEquals(url, resolvedTicket.getResources().get(0));
+        assertEquals(username, resolvedTicket.getIpAddress());
 
     }
 
