@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class StatisticLoggingStreamListenerTest extends TestCase {
     
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
 
     private WMSLogger logger;
     private Connection connection;

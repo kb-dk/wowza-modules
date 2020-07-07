@@ -17,9 +17,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class StreamingEventLoggerTest extends TestCase {
 
@@ -44,7 +47,7 @@ public class StreamingEventLoggerTest extends TestCase {
 
     @Test
     public void testWriteEventLogAppendToExisting() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
         deleteDir(logFolder);
         createDir(logFolder);
@@ -78,7 +81,7 @@ public class StreamingEventLoggerTest extends TestCase {
     private int getAmountOfLinesInFile(File file) {
         BufferedReader br;
         try {
-            br = new BufferedReader(new FileReader(file));
+            br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             return 0;
         }
@@ -102,7 +105,7 @@ public class StreamingEventLoggerTest extends TestCase {
 
     @Test
     public void testGetStatLogWriterChangingLogFile() throws IOException, ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
         deleteDir(logFolder);
         createDir(logFolder);
@@ -122,7 +125,7 @@ public class StreamingEventLoggerTest extends TestCase {
         deleteDir(logFolder);
         createDir(logFolder);
         StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ROOT);
         Date someDate = sdf.parse("2011-01-14 13:20");
         // Test
         Date followingMidnight = eventLogger.getFollowingMidnight(someDate);

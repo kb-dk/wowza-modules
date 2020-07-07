@@ -1,22 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db;
 
-import com.wowza.wms.client.IClient;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-import com.wowza.wms.stream.IMediaStream;
-
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.Mockito.mock;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,13 +11,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.stream.IMediaStream;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
+import junit.framework.Assert;
 
 /** Test event logging */
 public class StreamingDatabaseEventLoggerTest {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
 
     private WMSLogger logger;
     private Connection connection;
@@ -114,10 +116,12 @@ public class StreamingDatabaseEventLoggerTest {
         Date eventTime = new Date(rs.getTimestamp("timestamp").getTime());
         String event = rs.getString("event_type");
         // Create date representing the date inserted to the db. Gregorian time does not work with ms.
-        Date date = new Date(new GregorianCalendar(2011, 01 /*0-based month*/, 23, 10, 56, 30).getTime().getTime() + 654);
+        LocalDateTime localDateTime = LocalDateTime.of(2011, 02, 23, 10, 56, 30, 654000000);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.ROOT);
+        
         Assert.assertEquals("Result is:", 2, eventID);
         Assert.assertEquals("Result is:", 1, userID);
-        Assert.assertEquals("Result is:", sdf.format(date), sdf.format(eventTime));
+        Assert.assertEquals("Result is:", dtf.format(localDateTime), sdf.format(eventTime));
         Assert.assertEquals("Result is:", "PLAY", event);
     }
 
