@@ -1,5 +1,5 @@
 # wowza-modules
-These are modules for Wowza 4.8.5 used at the Royal Danish Library, Denmark.
+These are modules for Wowza 4.8.5 used at the Royal Danish Library.
 
 It consists of 8 modules and three example VHosts
 
