@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>wowza-chaos-vhost</artifactId>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
