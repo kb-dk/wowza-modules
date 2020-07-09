@@ -1,10 +1,14 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.wowza.wms.logging.WMSLogger;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
@@ -16,7 +20,9 @@ public class TicketTool implements TicketToolInterface {
 
     public TicketTool(String serviceURL, WMSLogger logger) {
         super();
-        restApi = WebClient.create(serviceURL);
+        List<Object> providers = new ArrayList<>();
+        providers.add(new JacksonJaxbJsonProvider());
+        restApi = WebClient.create(serviceURL, providers);
         this.logger = logger;
     }
 
