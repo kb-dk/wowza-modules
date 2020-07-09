@@ -61,7 +61,7 @@
         <developer>
             <name>Asger Askov Blekinge</name>
             <email>abr@kb.dk</email>
-            <organization>The Royal Danish Library, Denmark</organization>
+            <organization>The Royal Danish Library</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
@@ -79,7 +79,7 @@
         <developer>
             <name>Kåre Fiedler Christiansen</name>
             <email>kfc@kb.dk</email>
-            <organization>The Royal Danish Library, Denmark</organization>
+            <organization>The Royal Danish Library</organization>
             <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
@@ -106,7 +106,7 @@
         <developer>
             <name>Gustav Sverre Kampp</name>
             <email>gsk@kb.dk</email>
-            <organization>The Royal Danish Library, Denmark</organization>
+            <organization>The Royal Danish Library</organization>
             <organizationUrl>http://www.kb.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
@@ -115,7 +115,7 @@
         <developer>
             <name>Kim Christensen</name>
             <email>ktc@kb.dk</email>
-            <organization>The Royal Danish Library, Denmark</organization>
+            <organization>The Royal Danish Library</organization>
             <organizationUrl>http://www.kb.dk</organizationUrl>
             <roles>
                 <role>Developer</role>
