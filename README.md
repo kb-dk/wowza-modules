@@ -53,7 +53,7 @@ The streamingContent directory in the VHost should point to the content to be se
 conf/Vhost.xml should probably be updated with correct port numbers
 
 ## Requirements
-The project requires Java 11 be build and run. Known to build with OpenJDK 11, other JDKs may work
+The project requires Java 11 be built and run. Known to build with OpenJDK 11, other JDKs may work
 
 The project depends on java libraies from WowzaStreamingEngine, and as a commercial product can't be included. To obtain the needed libraies an installation of WowzaStreamingEngine is required. 
 WowzaStreamingEngine installation program and developer license can be obtained from [Wowza](http://www.wowza.com/streaming/developers).
