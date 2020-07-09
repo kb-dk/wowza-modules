@@ -45,7 +45,7 @@ conf/Vhost.xml should probably be updated with correct port numbers
 ### wowza-chaos-vhost
 
 Four complete VHosts that contain configuration and the modules
- * wowza-content-resolver-module (only in two VHost)
+ * wowza-content-resolver-module (only in two VHosts)
  * wowza-chaosv6-authorization-module
  * wowza-db-statistics-module
 Example configuration can be found in conf/chaos/wowza-modules.properties
