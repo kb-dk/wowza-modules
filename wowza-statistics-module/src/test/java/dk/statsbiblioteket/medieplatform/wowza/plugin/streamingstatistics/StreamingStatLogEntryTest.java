@@ -1,19 +1,23 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.TestTicketStore;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
 
 
@@ -43,14 +47,13 @@ public class StreamingStatLogEntryTest {
 
     @Test
     public void testConstructorValueMapping() {
-        // Setup environment
-        List<Property> properties = new ArrayList<Property>();
-        // Setup user info
-        properties.add(new Property("schacHomeOrganization", "au.dk"));
-        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup ticket
-        TestTicketStore tss = new TestTicketStore();
-        Ticket ticket = tss.issueTicket(defaultUsername, defaultResource, properties);
+        Ticket ticket = mock(Ticket.class);
+        HashMap<String, List<String>> userAttr = new HashMap<String, List<String>>();
+        userAttr.put("schacHomeOrganization", Arrays.asList("au.dk"));
+        userAttr.put("eduPersonTargetedID", Arrays.asList("1x1"));
+        when(ticket.getUserAttributes()).thenReturn(userAttr);
+        
         Event logEvent = Event.PLAY;
         // Test
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logEvent, ticket, "");
@@ -62,14 +65,13 @@ public class StreamingStatLogEntryTest {
 
     @Test
     public void testGetLogStringHeadline() {
-        // Setup environment
-        List<Property> properties = new ArrayList<Property>();
-        // Setup user info
-        properties.add(new Property("schacHomeOrganization", "au.dk"));
-        properties.add(new Property("eduPersonTargetedID", "1x1"));
         // Setup ticket
-        TestTicketStore tss = new TestTicketStore();
-        Ticket ticket = tss.issueTicket(defaultUsername, defaultResource, properties);
+        Ticket ticket = mock(Ticket.class);
+        HashMap<String, List<String>> userAttr = new HashMap<String, List<String>>();
+        userAttr.put("schacHomeOrganization", Arrays.asList("au.dk"));
+        userAttr.put("eduPersonTargetedID", Arrays.asList("1x1"));
+        when(ticket.getUserAttributes()).thenReturn(userAttr);
+        
         Event logEvent = Event.PLAY;
         // Test
         String logEntry = new StreamingStatLogEntry(logEvent, ticket, "").getLogString();
