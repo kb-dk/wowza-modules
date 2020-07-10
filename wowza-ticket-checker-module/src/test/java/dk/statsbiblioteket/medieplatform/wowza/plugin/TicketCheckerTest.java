@@ -20,6 +20,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class TicketCheckerTest {
@@ -57,11 +61,11 @@ public class TicketCheckerTest {
     @Test
     public void testUserNotAllowedToPlayFile() {
         // Setup environment
-        TestTicketStore tss = new TestTicketStore();
+        Map<String, Ticket> tickets = new HashMap<>();
+        Ticket ticket = getTicket(badIP, programID);
+        tickets.put(ticket.getId(), ticket);
         when(ticketTool.resolveTicket(anyString())).thenAnswer(
-                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
-        
-        Ticket ticket = tss.issueTicket(badIP, programID, new ArrayList<Property>());
+                (InvocationOnMock invocation) -> tickets.get((String) invocation.getArguments()[0]));
         
         String queryString = QUERY_STRING + ticket.getId();
 
@@ -99,11 +103,12 @@ public class TicketCheckerTest {
     @Test
     public void testGetFileToStreamSucces() {
         // Setup
-        TestTicketStore tss = new TestTicketStore();
+        Map<String, Ticket> tickets = new HashMap<>();
+        Ticket ticket = getTicket(goodIP, programID);
+        tickets.put(ticket.getId(), ticket);
         when(ticketTool.resolveTicket(anyString())).thenAnswer(
-                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
-        
-        Ticket ticket = tss.issueTicket(goodIP, programID, new ArrayList<Property>());
+                (InvocationOnMock invocation) -> tickets.get((String) invocation.getArguments()[0]));
+               
         String queryString = QUERY_STRING + ticket.getId();
 
         IClient iClient = mock(IClient.class);
@@ -123,11 +128,12 @@ public class TicketCheckerTest {
     @Test
     public void testWrongProgramId() {
         // Setup
-        TestTicketStore tss = new TestTicketStore();
+        Map<String, Ticket> tickets = new HashMap<>();
+        Ticket ticket = getTicket(goodIP, "anotherprogram");
+        tickets.put(ticket.getId(), ticket);
         when(ticketTool.resolveTicket(anyString())).thenAnswer(
-                (InvocationOnMock invocation) -> tss.resolveTicket((String) invocation.getArguments()[0]));
+                (InvocationOnMock invocation) -> tickets.get((String) invocation.getArguments()[0]));
         
-        Ticket ticket = tss.issueTicket(goodIP, "anotherprogram", new ArrayList<Property>());
         String queryString = QUERY_STRING + ticket.getId();
 
         IClient iClient = mock(IClient.class);
@@ -141,5 +147,10 @@ public class TicketCheckerTest {
         boolean result = ticketChecker.checkTicket(stream, stream.getClient());
         // Validate
         assertFalse(result, "Expected not to be allowed");
+    }
+    
+    private Ticket getTicket(String username, String resource) {
+        Ticket ticket = new Ticket("Stream", username, Arrays.asList(resource), new HashMap<String, List<String>>());
+        return ticket;
     }
 }
