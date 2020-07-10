@@ -7,21 +7,16 @@ import com.wowza.wms.stream.IMediaStream;
 import com.wowza.wms.stream.IMediaStreamFileMapper;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.ContentResolver;
 import dk.statsbiblioteket.medieplatform.contentresolver.lib.DirectoryBasedContentResolver;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IApplicationInstanceMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.ConfigReader;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
-import static junit.framework.Assert.assertNotNull;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,8 +31,7 @@ public class ContentResolverMapperTest {
     String storageDir = new File(
             getClass().getClassLoader().getResource("streamingDir/README.streamingDir").getPath()).getParent()
             .toString();
-    IApplicationInstance iAppInstance = new IApplicationInstanceMock(storageDir);
-
+    IApplicationInstance iAppInstance = mock(IApplicationInstance.class);
 
 
     String programID = "0ef8f946-4e90-4c9d-843a-a03504d2ee6c";
@@ -49,12 +43,12 @@ public class ContentResolverMapperTest {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -67,16 +61,22 @@ public class ContentResolverMapperTest {
 
 
          //rtmp://iapetus.statsbiblioteket.dk:1937/mediestream?ticket=[ticketId]/flv:853a0b31-c944-44a5-8e42-bc9b5bc697be.flv
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+        IClient iClient = mock(IClient.class);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
+
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
         // Run test
         File result = contentResolverMapper.streamToFileForRead(stream);
         // Validate result
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
-                     result.getAbsolutePath());
+        assertEquals(new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
+                     result.getAbsolutePath(), 
+                     "Expected equal result");
     }
 
     @Test
@@ -119,16 +119,22 @@ public class ContentResolverMapperTest {
         String queryString = RTMP_HYPOTHETICAL_URL;
         IMediaStreamFileMapper defaultMapper = null;
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
+        IClient iClient = mock(IClient.class); 
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
+        
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "file://" + storageDir + "/%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
         // Test
         File result = contentResolverMapper.streamToFileForRead(stream);
         // Validate
-        assertEquals("Expected equal result", new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
-                     result.getAbsolutePath());
+        assertEquals(new File(storageDir + "/0/e/f/8/" + programID + ".flv").getAbsolutePath(),
+                     result.getAbsolutePath(),
+                     "Expected equal result");
     }
 
     @Test
@@ -137,9 +143,13 @@ public class ContentResolverMapperTest {
         String queryString = RTMP_HYPOTHETICAL_URL;
         IMediaStreamFileMapper defaultMapper = null;
 
+        IClient iClient = mock(IClient.class);
+        IMediaStream stream = mock(IMediaStream.class);
+        when(stream.getClient()).thenReturn(iClient);
+        when(stream.getQueryStr()).thenReturn(queryString);
+        when(stream.getExt()).thenReturn("flv");
+        when(stream.getName()).thenReturn(name);
 
-        IClient iClient = new IClientMock(iAppInstance, logger, queryString);
-        IMediaStream stream = new IMediaStreamMock(logger, name, iClient);
         ContentResolver contentResolver = new DirectoryBasedContentResolver("Stream", new File(storageDir), 4,
                                                                             "%s\\.flv", "%s");
         ContentResolverMapper contentResolverMapper = new ContentResolverMapper("Stream", defaultMapper, contentResolver);
@@ -148,6 +158,6 @@ public class ContentResolverMapperTest {
         String result = contentResolverMapper.streamToFileForRead(stream)
                 .getPath();
         // Validate
-        assertEquals("Expected equal result", "0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result);
+        assertEquals("0/e/f/8/0ef8f946-4e90-4c9d-843a-a03504d2ee6c.flv", result, "Expected equal result");
     }
 }

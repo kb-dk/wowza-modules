@@ -12,9 +12,11 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.Streaming
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Action listerner, that logs events in a StreamingEventLogger.
@@ -22,7 +24,7 @@ import java.util.Date;
 public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2 {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
 
     private WMSLogger logger;
     private StreamingEventLoggerIF streamingEventLogger;
@@ -156,7 +158,7 @@ public class StatisticLoggingStreamListener implements IMediaStreamActionNotify2
         String wayfAttr;
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", stream.getClient().getQueryStr());
-            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr), StandardCharsets.UTF_8);
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }

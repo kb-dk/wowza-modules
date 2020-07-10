@@ -13,12 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>wowza-mock</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
             <artifactId>wowza-common</artifactId>
         </dependency>
 
@@ -71,7 +65,7 @@
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk15on</artifactId>
+            <artifactId>bcprov-jdk15on</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -82,23 +76,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
 

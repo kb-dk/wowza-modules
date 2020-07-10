@@ -2,8 +2,10 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Locale;
 
 import com.wowza.wms.application.IApplicationInstance;
 import com.wowza.wms.application.WMSProperties;
@@ -33,7 +35,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
             StatisticLoggingMCMModuleBase.class.getPackage().getImplementationVersion();
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
     private static final String PROPERTY_GENERAL_MCM_SERVER_URL = "GeneralMCMServerURL";
     private static final String PROPERTY_STATISTICS_LOGGING_MCM_STATISTICS_METHOD_CREATE_STAT_SESSION
             = "StatisticsLoggingMCMStatisticsMethodCreateStatSession";
@@ -207,7 +209,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         String wayfAttr;
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
-            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr), StandardCharsets.UTF_8);
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }
@@ -260,7 +262,7 @@ public class StatisticLoggingMCMModuleBase extends ModuleBase implements IModule
         String wayfAttr;
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
-            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+            wayfAttr = new String(Base64.getDecoder().decode(wayfAttr), StandardCharsets.UTF_8);
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
         }

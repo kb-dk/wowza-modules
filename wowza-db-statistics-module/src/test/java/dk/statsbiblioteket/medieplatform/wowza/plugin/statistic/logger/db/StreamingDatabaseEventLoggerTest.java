@@ -1,21 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.db;
 
-import com.wowza.wms.client.IClient;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IClientMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.IMediaStreamMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
-import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
+import static org.mockito.Mockito.mock;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,13 +11,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+import com.wowza.wms.stream.IMediaStream;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.MCMPortalInterfaceStatisticsMock;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.StatisticLoggingStreamListener;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingEventLoggerIF;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.StreamingStatLogEntry.Event;
+import dk.statsbiblioteket.medieplatform.wowza.plugin.statistic.logger.mcm.MCMPortalInterfaceStatisticsImpl;
 
 /** Test event logging */
 public class StreamingDatabaseEventLoggerTest {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
 
     private WMSLogger logger;
     private Connection connection;
@@ -55,11 +58,10 @@ public class StreamingDatabaseEventLoggerTest {
         this.streamingEventLogger = StreamingDatabaseEventLogger.getInstance();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
-        IClient client = new IClientMock("sessionID=sample.mp4&objectID=643703&includeFiles=true");
-        IMediaStreamMock stream = new IMediaStreamMock("sample2.mp4", client);
+        IMediaStream stream = mock(IMediaStream.class);
         MCMPortalInterfaceStatisticsImpl.createInstanceForTestPurpose(new MCMPortalInterfaceStatisticsMock(logger));
         new StatisticLoggingStreamListener(logger, stream, streamingEventLogger);
         createDBEventTable(logger, this.connection);
@@ -78,7 +80,6 @@ public class StreamingDatabaseEventLoggerTest {
             "wayf_attr VARCHAR, " +
             "PRIMARY KEY (event_id))";
         stmt2.executeUpdate(query);
-        Statement stmt1 = connection.createStatement();
         logger.info("Execute: " + query);
     }
     
@@ -90,7 +91,7 @@ public class StreamingDatabaseEventLoggerTest {
         logger.info("Execute: " + query);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
         dropDBTable(logger, connection);
@@ -115,11 +116,13 @@ public class StreamingDatabaseEventLoggerTest {
         Date eventTime = new Date(rs.getTimestamp("timestamp").getTime());
         String event = rs.getString("event_type");
         // Create date representing the date inserted to the db. Gregorian time does not work with ms.
-        Date date = new Date(new GregorianCalendar(2011, 01 /*0-based month*/, 23, 10, 56, 30).getTime().getTime() + 654);
-        Assert.assertEquals("Result is:", 2, eventID);
-        Assert.assertEquals("Result is:", 1, userID);
-        Assert.assertEquals("Result is:", sdf.format(date), sdf.format(eventTime));
-        Assert.assertEquals("Result is:", "PLAY", event);
+        LocalDateTime localDateTime = LocalDateTime.of(2011, 02, 23, 10, 56, 30, 654000000);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.ROOT);
+        
+        assertEquals(2, eventID, "Result is:");
+        assertEquals(1, userID, "Result is:");
+        assertEquals(dtf.format(localDateTime), sdf.format(eventTime), "Result is:");
+        assertEquals("PLAY", event, "Result is:");
     }
 
     /**
@@ -152,10 +155,10 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Result is:", logEntry.getEventID(), eventID);
-        Assert.assertEquals("Result is:", clientID, userID);
-        Assert.assertEquals("Result is:", logEntry.getTimestamp(), timestamp);
-        Assert.assertEquals("Result is:", Event.PLAY.toString(), event);
+        assertEquals(logEntry.getEventID(), eventID, "Result is:");
+        assertEquals(clientID, userID, "Result is:");
+        assertEquals(logEntry.getTimestamp(), timestamp, "Result is:");
+        assertEquals(Event.PLAY.toString(), event,"Result is:");
     }
     
     /**
@@ -177,7 +180,7 @@ public class StreamingDatabaseEventLoggerTest {
         StreamingStatLogEntry logEntry = new StreamingStatLogEntry(logger, streamName, clientID, mcmSessionID, mcmObjectSessionID, 0, 0, Event.PLAY, "");
         streamingEventLogger.logEvent(logEntry);
         long maxAfterUpdate = getMaxEventID();
-        Assert.assertEquals("Test that the new log entry is 1 larger that previous max", maxPriorToUpdate+1, maxAfterUpdate);
+        assertEquals(maxPriorToUpdate+1, maxAfterUpdate, "Test that the new log entry is 1 larger that previous max");
         
         // Fetch event information in db
         String eventHappensAfterThisDate = sdf.format(dateBeforeConnection);
@@ -193,7 +196,7 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Test that the new eventID is equal to max of eventID's", maxAfterUpdate, eventID);
+        assertEquals(maxAfterUpdate, eventID, "Test that the new eventID is equal to max of eventID's");
     }
     
     private long getMaxEventID() throws SQLException {
@@ -236,10 +239,10 @@ public class StreamingDatabaseEventLoggerTest {
 
         logger.debug("Log entry: " + logEntry);
         logger.debug("DB result: (" + eventID + "," + userID + "," + timestamp + "," + event +")");
-        Assert.assertEquals("Result is:", logEntry.getEventID(), eventID);
-        Assert.assertEquals("Result is:", clientID, userID);
-        Assert.assertEquals("Result is:", logEntry.getTimestamp(), timestamp);
-        Assert.assertEquals("Result is:", Event.PLAY.toString(), event);
+        assertEquals(logEntry.getEventID(), eventID, "Result is:");
+        assertEquals(clientID, userID, "Result is:");
+        assertEquals(logEntry.getTimestamp(), timestamp, "Result is:");
+        assertEquals(Event.PLAY.toString(), event, "Result is:");
     }
 
 

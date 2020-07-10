@@ -1,13 +1,12 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
-import com.wowza.wms.stream.IMediaStream;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class StreamingStatLogEntry {
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
@@ -58,7 +57,7 @@ public class StreamingStatLogEntry {
      * @return The log line
      */
     public String getLogString() {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
         StringBuilder sb = new StringBuilder();
         sb.append(sdf.format(timestamp));
         sb.append(";");

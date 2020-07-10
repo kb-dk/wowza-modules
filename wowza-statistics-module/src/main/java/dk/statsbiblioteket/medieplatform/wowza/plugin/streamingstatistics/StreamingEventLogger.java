@@ -1,7 +1,20 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Locale;
+
 import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.stream.IMediaStream;
 
 import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics.StreamingStatLogEntry.Event;
@@ -9,19 +22,11 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.IllegallyFormattedQueryStringException;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUtil;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 public class StreamingEventLogger {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String FILENAME_PREFIX = "StreamingStat-";
     private String statLogFileHomeDir;
-    private FileWriter statLogWriter;
+    private BufferedWriter statLogWriter;
     private Date dateForNewLogFile;
 
     private WMSLogger logger;
@@ -79,7 +84,7 @@ public class StreamingEventLogger {
 
     protected synchronized void writeEventLog(String logString) {
         try {
-            Writer statLogWriter = getStatLogWriter();
+            BufferedWriter statLogWriter = getStatLogWriter();
             statLogWriter.write(logString);
             statLogWriter.write(this.newlineString);
             statLogWriter.flush();
@@ -88,7 +93,7 @@ public class StreamingEventLogger {
         }
     }
 
-    protected Writer getStatLogWriter() throws IOException {
+    protected BufferedWriter getStatLogWriter() throws IOException {
         File currentStatLogFile;
         Date now = new Date();
         if ((statLogWriter == null) || (this.dateForNewLogFile.before(now))) {
@@ -100,7 +105,8 @@ public class StreamingEventLogger {
             this.logger.info("Creating log file: " + currentStatLogFile.getAbsolutePath());
             this.dateForNewLogFile = getFollowingMidnight(now);
             boolean newLogFile = !currentStatLogFile.exists();
-            this.statLogWriter = new FileWriter(currentStatLogFile, true);
+            this.statLogWriter = Files.newBufferedWriter(currentStatLogFile.toPath(), StandardCharsets.UTF_8, 
+                    StandardOpenOption.APPEND, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
             if (newLogFile) {
                 this.statLogWriter.write(StreamingStatLogEntry.getLogStringHeadline());
                 this.statLogWriter.write(this.newlineString);
@@ -111,14 +117,10 @@ public class StreamingEventLogger {
     }
 
     protected Date getFollowingMidnight(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTime();
+        ZoneId zone = ZoneId.of("Europe/Copenhagen");
+        LocalDate localDate = date.toInstant().atZone(zone).toLocalDate();
+        LocalDateTime tomorroMidnight = LocalDateTime.of(localDate, LocalTime.MIDNIGHT).plusDays(1);
+        return Date.from(tomorroMidnight.atZone(zone).toInstant());
     }
 
     protected void setDateForNewLogFile(Date dateForNewLogFile) {
@@ -126,7 +128,7 @@ public class StreamingEventLogger {
     }
 
     public static String getFilename(Date time) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.ROOT);
         return FILENAME_PREFIX + sdf.format(time) + ".log";
     }
 }

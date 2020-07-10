@@ -57,23 +57,23 @@
 			</HostPort>
 			
 			<!-- 443 with SSL -->
-			<!--
 			<HostPort>
 				<Name>Default SSL Streaming</Name>
 				<Type>Streaming</Type>
 				<ProcessorCount>${com.wowza.wms.TuningAuto}</ProcessorCount>
 				<IpAddress>*</IpAddress>
-				<Port>443</Port>
+				<Port>1947</Port>
 				<HTTPIdent2Response></HTTPIdent2Response>
 				<SSLConfig>
-					<KeyStorePath>${com.wowza.wms.context.VHostConfigHome}/conf/keystore.jks</KeyStorePath>
+					<KeyStorePath>${user.home}/services/keystore.jks</KeyStorePath>
 					<KeyStorePassword>[password]</KeyStorePassword>
 					<KeyStoreType>JKS</KeyStoreType>
 					<DomainToKeyStoreMapPath></DomainToKeyStoreMapPath>
 					<SSLProtocol>TLS</SSLProtocol>
 					<Algorithm>SunX509</Algorithm>
-					<CipherSuites></CipherSuites>
-					<Protocols></Protocols>
+					<CipherSuites>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA</CipherSuites>
+					<Protocols>TLSv1.2</Protocols>
+					<AllowHttp2>false</AllowHttp2>
 				</SSLConfig>
 				<SocketConfiguration>
 					<ReuseAddress>true</ReuseAddress>
@@ -107,7 +107,6 @@
 					</HTTPProvider>
 				</HTTPProviders>
 			</HostPort>
-			-->
 			
 			<!-- Admin HostPort -->
 			<HostPort>

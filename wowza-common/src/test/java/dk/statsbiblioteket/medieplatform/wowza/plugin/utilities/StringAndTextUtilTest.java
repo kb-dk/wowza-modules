@@ -2,13 +2,13 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.utilities;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Tests for extracting values from querystring.
@@ -48,7 +48,7 @@ public class StringAndTextUtilTest {
         String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
         String key = "ObjectID";
         String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
-        assertEquals("Unexpected return value.", validObjectID, value);
+        assertEquals(validObjectID, value, "Unexpected return value.");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class StringAndTextUtilTest {
         String queryString = "ObjectID=" + validObjectID + "&SessionID=" + validSessionID;
         String key = "SessionID";
         String value = StringAndTextUtil.extractValueFromQueryStringAndKey(key, queryString);
-        assertEquals("Unexpected return value.", validSessionID, value);
+        assertEquals(validSessionID, value, "Unexpected return value.");
     }
 
     @Test

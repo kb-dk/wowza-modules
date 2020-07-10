@@ -8,10 +8,11 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.MCM3SessionAndFilenameValidater;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Test MCM3 authorization validator */
 public class MCM3SessionAndFilenameValidaterTest {
@@ -23,12 +24,12 @@ public class MCM3SessionAndFilenameValidaterTest {
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
@@ -42,7 +43,7 @@ public class MCM3SessionAndFilenameValidaterTest {
         MCM3SessionAndFilenameValidater validater = new MCM3SessionAndFilenameValidater(wmsLogger, "connectionURLString", "validationMethodAtServer");
         boolean doesValidate = validater.validateFilerequestWithMCMResult(pathAndFilename, validatingFilenames);
         
-        assertEquals("Filename validation:", true, doesValidate);
+        assertEquals(true, doesValidate, "Filename validation:");
     }
 
     @Test
@@ -53,6 +54,6 @@ public class MCM3SessionAndFilenameValidaterTest {
         validatingFilenames.add("P1_0000_0200_910201_001.mp3");
         MCM3SessionAndFilenameValidater validater = new MCM3SessionAndFilenameValidater(wmsLogger, "connectionURLString", "validationMethodAtServer");
         boolean doesValidate = validater.validateFilerequestWithMCMResult(pathAndFilename, validatingFilenames);
-        assertEquals("Filename validation:", true, doesValidate);
+        assertEquals(true, doesValidate, "Filename validation:");
     }
 }

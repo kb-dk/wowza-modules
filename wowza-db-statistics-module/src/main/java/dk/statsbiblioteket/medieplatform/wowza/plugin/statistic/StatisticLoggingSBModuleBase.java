@@ -19,6 +19,7 @@ import dk.statsbiblioteket.medieplatform.wowza.plugin.utilities.StringAndTextUti
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 
@@ -165,7 +166,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
             if(!wayfAttr.startsWith("{")){
-                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr), StandardCharsets.UTF_8);
             }
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
@@ -204,7 +205,7 @@ public class StatisticLoggingSBModuleBase extends ModuleBase
         try {
             wayfAttr = StringAndTextUtil.extractValueFromQueryStringAndKey("wayfAttr", queryString);
             if(!wayfAttr.startsWith("{")){
-                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr));
+                wayfAttr = new String(Base64.getDecoder().decode(wayfAttr), StandardCharsets.UTF_8);
             }
         } catch (IllegallyFormattedQueryStringException e) {
             wayfAttr = "";
