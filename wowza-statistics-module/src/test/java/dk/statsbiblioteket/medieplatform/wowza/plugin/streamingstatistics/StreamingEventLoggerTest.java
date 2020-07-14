@@ -2,47 +2,53 @@ package dk.statsbiblioteket.medieplatform.wowza.plugin.streamingstatistics;
 
 import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
-import junit.framework.TestCase;
-import org.apache.log4j.BasicConfigurator;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import dk.statsbiblioteket.medieplatform.wowza.plugin.mockobjects.TicketToolMock;
+import org.apache.log4j.BasicConfigurator;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.mockito.Mockito.mock;
+
+import dk.statsbiblioteket.medieplatform.wowza.plugin.ticket.TicketToolInterface;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
-public class StreamingEventLoggerTest extends TestCase {
+public class StreamingEventLoggerTest {
 
     private WMSLogger logger;
-    private TicketToolMock ticketTool;
+    private TicketToolInterface ticketTool;
 
     public StreamingEventLoggerTest() {
         super();
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
-        ticketTool = new TicketToolMock();
+        ticketTool = mock(TicketToolInterface.class);  
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         BasicConfigurator.resetConfiguration();
     }
 
     @Test
     public void testWriteEventLogAppendToExisting() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
         deleteDir(logFolder);
         createDir(logFolder);
@@ -76,7 +82,7 @@ public class StreamingEventLoggerTest extends TestCase {
     private int getAmountOfLinesInFile(File file) {
         BufferedReader br;
         try {
-            br = new BufferedReader(new FileReader(file));
+            br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             return 0;
         }
@@ -100,17 +106,17 @@ public class StreamingEventLoggerTest extends TestCase {
 
     @Test
     public void testGetStatLogWriterChangingLogFile() throws IOException, ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         String logFolder = "target/tmp/unit-test/" + this.getClass().getSimpleName() + "/logs";
         deleteDir(logFolder);
         createDir(logFolder);
         StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
         Writer beforeWriter = eventLogger.getStatLogWriter();
         Writer afterWriter = eventLogger.getStatLogWriter();
-        assertTrue("Same writer expected.", beforeWriter.equals(afterWriter));
+        assertTrue(beforeWriter.equals(afterWriter), "Same writer expected.");
         eventLogger.setDateForNewLogFile(sdf.parse("2000-01-01"));
         afterWriter = eventLogger.getStatLogWriter();
-        assertFalse("New writer expected.", beforeWriter.equals(afterWriter));
+        assertFalse(beforeWriter.equals(afterWriter), "New writer expected.");
     }
 
     @Test
@@ -120,11 +126,11 @@ public class StreamingEventLoggerTest extends TestCase {
         deleteDir(logFolder);
         createDir(logFolder);
         StreamingEventLogger eventLogger = new StreamingEventLogger(ticketTool, logger, logFolder);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ROOT);
         Date someDate = sdf.parse("2011-01-14 13:20");
         // Test
         Date followingMidnight = eventLogger.getFollowingMidnight(someDate);
-        assertTrue("Evaluating the following midnight.", sdf.format(followingMidnight).equals("2011-01-15 00:00"));
+        assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
     }
 
     private void createDir(String folderPath) {

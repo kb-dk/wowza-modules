@@ -1,53 +1,59 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.wowza.wms.logging.WMSLogger;
-import com.wowza.wms.logging.WMSLoggerFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
-import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
+
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.wowza.wms.logging.WMSLogger;
+import com.wowza.wms.logging.WMSLoggerFactory;
+
+import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
+
 public class TicketToolTest {
 
     private WMSLogger logger;
-
+    private static final String TICKET_SERVICE_URL = "http://iapetus:9651/ticket-system-service/tickets";
+    
     public TicketToolTest() {
         super();
         this.logger = WMSLoggerFactory.getLogger(this.getClass());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         org.apache.log4j.BasicConfigurator.configure();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         org.apache.log4j.BasicConfigurator.resetConfiguration();
     }
 
+    /* 
+     * Test that is for internal use only, requires access to infrasture not reachable from the internet. 
+     * Can be used to verify that tickets can be requested and validated.
+     */
     @Test
-    @Ignore
+    //@Disabled
     public void testValidateTicket() {
         // Setup environment
-        TicketToolInterface ticketTool = new TicketTool("http://alhena:7950/ticket-system-service/tickets", logger);
-        String username = "aUsername";
-        String url = "doms_reklamefilm:uuid:35a1aa76-97a1-4f1b-b5aa-ad2a246eeeec";
-        Map<String, String> ticketMap = issueTicket(username, url, Arrays.asList(new Property("ip_role_mapper.SBIPRoleMapper", "SB_PUB")));
+        TicketToolInterface ticketTool = new TicketTool(TICKET_SERVICE_URL, logger);
+        String username = "172.18.98.246"; //aUsername";
+        String url = "doms_radioTVCollection:uuid:371157ee-b120-4504-bfaf-364c15a4137c";
+        Map<String, String> ticketMap = issueTicket(username, url, Arrays.asList(new Property("SBIPRoleMapper", "inhouse")));
         String issuedTicketId = null;
         for (String key : ticketMap.keySet()) {
             issuedTicketId = ticketMap.get(key);
@@ -55,26 +61,25 @@ public class TicketToolTest {
         logger.debug("Issued ticket: " + issuedTicketId);
         dk.statsbiblioteket.medieplatform.ticketsystem.Ticket resolvedTicket = ticketTool.resolveTicket(issuedTicketId);
         logger.debug("Resolved ticket: " + resolvedTicket);
-        Assert.assertEquals(url, resolvedTicket.getResources().get(0));
-        Assert.assertEquals(username, resolvedTicket.getIpAddress());
+        assertEquals(url, resolvedTicket.getResources().get(0));
+        assertEquals(username, resolvedTicket.getIpAddress());
 
     }
 
     private Map<String,String> issueTicket(String username, String resource, List<Property> properties) {
-        try {
-            ClientConfig clientConfig = new DefaultClientConfig();
-            clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-            Client client = Client.create(clientConfig);
-            WebResource query = client.resource("http://alhena:7950/ticket-system-service/tickets")
-                    .path("/issueTicket").queryParam("ipAddress", username)
-                    .queryParam("id", resource).queryParam("type","Streame");
-            for (Property prop : properties) {
-                query = query.queryParam(prop.getName(), prop.getValue());
-            }
-            return query.accept(MediaType.APPLICATION_JSON).post(Map.class);
-        } catch (UniformInterfaceException e) {
-            throw new RuntimeException("Unexpected event", e);
+        List<Object> providers = new ArrayList<>();
+        providers.add(new JacksonJaxbJsonProvider());
+        WebClient client = WebClient.create(TICKET_SERVICE_URL, providers);
+        WebClient clientRequest = client.path("/issueTicket")
+            .query("ipAddress", username)
+            .query("id", resource)
+            .query("resource", resource)
+            .query("type","Stream");
+        for (Property prop : properties) {
+            clientRequest = clientRequest.query(prop.getName(), prop.getValue());
         }
+        Map<String, String> resp = clientRequest.accept(MediaType.APPLICATION_JSON).post(null, Map.class);
+        return resp;
     }
 
 }

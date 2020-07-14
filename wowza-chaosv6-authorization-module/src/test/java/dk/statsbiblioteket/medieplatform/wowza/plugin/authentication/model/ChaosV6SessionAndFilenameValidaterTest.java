@@ -8,10 +8,11 @@ import com.wowza.wms.logging.WMSLoggerFactory;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.ChaosV6API;
 import dk.statsbiblioteket.medieplatform.wowza.plugin.authentication.ChaosV6SessionAndFilenameValidater;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +29,7 @@ public class ChaosV6SessionAndFilenameValidaterTest {
                                                                                               chaosV6API);
         boolean doesValidate = validater.validateRightsToPlayFile("a", "b", "c");
         
-        assertEquals("Filename validation:", true, doesValidate);
+        assertEquals(true, doesValidate, "Filename validation:");
     }
 
     @Test
@@ -41,7 +42,7 @@ public class ChaosV6SessionAndFilenameValidaterTest {
                                                                                               chaosV6API);
         boolean doesValidate = validater.validateRightsToPlayFile("a", "b", "c");
 
-        assertEquals("Filename validation:", false, doesValidate);
+        assertEquals(false, doesValidate, "Filename validation:");
     }
 
     @Test

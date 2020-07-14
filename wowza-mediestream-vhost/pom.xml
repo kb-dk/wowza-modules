@@ -9,6 +9,8 @@
     </parent>
 
     <artifactId>wowza-mediestream-vhost</artifactId>
+    <packaging>pom</packaging>
+    
 
     <build>
         <plugins>
