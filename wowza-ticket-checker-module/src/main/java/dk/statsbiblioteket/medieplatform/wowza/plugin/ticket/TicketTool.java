@@ -1,7 +1,6 @@
 package dk.statsbiblioteket.medieplatform.wowza.plugin.ticket;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.StatusType;
@@ -16,13 +15,11 @@ import dk.statsbiblioteket.medieplatform.ticketsystem.Ticket;
 public class TicketTool implements TicketToolInterface {
 
     private WMSLogger logger;
-    private WebClient restApi;
+    private final String serviceUrl;
 
     public TicketTool(String serviceURL, WMSLogger logger) {
         super();
-        List<Object> providers = new ArrayList<>();
-        providers.add(new JacksonJaxbJsonProvider());
-        restApi = WebClient.create(serviceURL, providers);
+        this.serviceUrl = serviceURL;
         this.logger = logger;
     }
 
@@ -31,8 +28,9 @@ public class TicketTool implements TicketToolInterface {
       */
     @Override
     public Ticket resolveTicket(String ticketID) {
+    	WebClient client = getWebclient();
         try {
-            Ticket ticketXml = restApi.path("/resolveTicket/").path(ticketID).get(Ticket.class);
+            Ticket ticketXml = client.path("/resolveTicket/").path(ticketID).get(Ticket.class);
             logger.debug("resolveTicket: Ticket received: '" + ticketID + "'");
             return ticketXml;
 
@@ -41,6 +39,13 @@ public class TicketTool implements TicketToolInterface {
             logger.debug("The session might have timed out for ticket '"
                                  + ticketID + "'. Ticket service response status: " + responseStatus.getStatusCode());
             return null;
+        } finally {
+        	client.close();
         }
+    }
+    
+    private WebClient getWebclient() {
+    	WebClient client = WebClient.create(serviceUrl, Arrays.asList(new JacksonJaxbJsonProvider())); 
+    	return client;
     }
 }

@@ -22,11 +22,6 @@
         </dependency>
 
         <dependency>
-            <groupId>dk.statsbiblioteket.medieplatform</groupId>
-            <artifactId>content-resolver-lib</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.wms</groupId>
             <artifactId>wms-server</artifactId>
             <scope>provided</scope>
