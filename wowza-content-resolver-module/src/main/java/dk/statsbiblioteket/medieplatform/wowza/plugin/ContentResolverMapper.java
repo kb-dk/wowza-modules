@@ -102,6 +102,7 @@ public class ContentResolverMapper extends MediaStreamFileMapperBase implements 
         logger.debug("Looking up '" + name + "'");
         List<Resource> resources = contentResolver.getContent(name).getResources();
         if (resources != null) {
+            logger.debug("Found resources, size: '" + resources.size() + "'");
             for (Resource resource : resources) {
                 if (resource.getType().equals(presentationType)) {
                     String pathname = resource.getUris().get(0).getPath();
