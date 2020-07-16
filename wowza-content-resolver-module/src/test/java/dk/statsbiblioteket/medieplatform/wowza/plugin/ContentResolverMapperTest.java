@@ -86,7 +86,7 @@ public class ContentResolverMapperTest {
         ConfigReader cr = mock(ConfigReader.class);
         when(cr.get("subdirectory","")).thenReturn("");
         when(cr.get("characterDirs","4")).thenReturn("4");
-        when(cr.get("characterDirsWidth","0")).thenReturn("0");
+        when(cr.get("characterDirsWidth","1")).thenReturn("0");
         when(cr.get("filenameRegexPattern", "missing-filename-regex-pattern-in-property-file")).thenReturn("missing-filename-regex-pattern-in-property-file");
         ContentResolver contentResolver = cm.getContentResolver(cr, storageDir);
         assertNotNull(contentResolver);
@@ -94,7 +94,7 @@ public class ContentResolverMapperTest {
         when(cr.get("contentResolverNames")).thenReturn("name1");
         when(cr.get("name1.subdirectory","")).thenReturn("subdir");
         when(cr.get("name1.characterDirs","4")).thenReturn("5");
-        when(cr.get("name1.characterDirsWidth","0")).thenReturn("2");
+        when(cr.get("name1.characterDirsWidth","1")).thenReturn("2");
         when(cr.get("name1.filenameRegexPattern", "missing-filename-regex-pattern-in-property-file")).thenReturn("missing-filename-regex-pattern-in-property-file");
         ContentResolver contentResolver2 = cm.getContentResolver(cr, storageDir);
         assertNotNull(contentResolver2);
