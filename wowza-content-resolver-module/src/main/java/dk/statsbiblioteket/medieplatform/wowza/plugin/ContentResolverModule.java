@@ -118,7 +118,7 @@ public class ContentResolverModule extends ModuleBase
     protected ContentResolver getContentResolver(ConfigReader cr, String topdir, String contentProviderName) {
         File baseDirectory = new File(topdir + File.separator + cr.get(contentProviderName + "subdirectory","")).getAbsoluteFile();
         int characterDirs = Integer.parseInt(cr.get(contentProviderName + "characterDirs", "4"));
-        int characterDirsWidth = Integer.parseInt(cr.get(contentProviderName + "characterDirsWidth", "0"));
+        int characterDirsWidth = Integer.parseInt(cr.get(contentProviderName + "characterDirsWidth", "1"));
         String filenameRegexPattern = cr
                 .get(contentProviderName + "filenameRegexPattern", "missing-filename-regex-pattern-in-property-file");
         String uriPattern = "file://" + baseDirectory + "/%s";
