@@ -1,6 +1,10 @@
 4.7
 [Hotfix] Add an extra application for CHAOS VHosts (like we already have in Mediestream VHost), which enables a packatized version of mp3 streams, which will play on non-apple devices
 [Hotfix] Support https streaming in CHAOS VHosts
+Add support for https streaming in Mediestream vhost
+Update to Wowza 4.8.5
+Change needed java runtime to OpenJDK 11
+Update to new versions of ticket checker and content resolver
 
 4.6
 New content resolver in 4.5 had a resource leak. New content resolver depency that fixes this leak.
