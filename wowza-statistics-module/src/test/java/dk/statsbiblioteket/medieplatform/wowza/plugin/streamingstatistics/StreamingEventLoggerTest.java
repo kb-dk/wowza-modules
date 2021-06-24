@@ -22,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Locale;
 
@@ -129,8 +132,21 @@ public class StreamingEventLoggerTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ROOT);
         Date someDate = sdf.parse("2011-01-14 13:20");
         // Test
-        Date followingMidnight = eventLogger.getFollowingMidnight(someDate);
+        System.out.println("Adjusting time " + getTimeZoneOffset() 
+        	+ "s to handle difference between local timezone and Europe/Copenhagen which the software expects");
+        long time = eventLogger.getFollowingMidnight(someDate).getTime() - getTimeZoneOffset();
+        Date followingMidnight = new Date(time);
+        
         assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
+    }
+    
+    private long getTimeZoneOffset() {
+        LocalDateTime systemDefaultToUTC = LocalDateTime.now(ZoneId.systemDefault());
+        LocalDateTime eurCopToUTC = LocalDateTime.now(ZoneId.of("Europe/Copenhagen"));
+        ZoneId zone = ZoneId.of("Europe/Copenhagen");
+        ZoneOffset zoneOffDefault = zone.getRules().getOffset(systemDefaultToUTC);
+        ZoneOffset zoneOffEurCop = zone.getRules().getOffset(eurCopToUTC);
+        return zoneOffDefault.getTotalSeconds() - zoneOffEurCop.getTotalSeconds();
     }
 
     private void createDir(String folderPath) {
