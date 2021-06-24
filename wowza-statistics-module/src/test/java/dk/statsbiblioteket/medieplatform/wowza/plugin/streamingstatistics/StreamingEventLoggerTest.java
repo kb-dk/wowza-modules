@@ -137,8 +137,14 @@ public class StreamingEventLoggerTest {
         long time = eventLogger.getFollowingMidnight(someDate).getTime() - getTimeZoneOffset();
         Date followingMidnight = new Date(time);
         
-        System.out.println("######### Expectes: " + sdf.parse("2011-01-15 00:00").getTime());
-        System.out.println("######### Gets: " + followingMidnight.getTime());
+        long exp = sdf.parse("2011-01-15 00:00").getTime();
+        long actual = followingMidnight.getTime();
+        long diff = exp - actual;
+        
+        System.out.println("######### Expectes: " + exp);
+        System.out.println("######### Gets: " + actual);       
+        System.out.println("######### diff: " + diff);
+
         
         
 
