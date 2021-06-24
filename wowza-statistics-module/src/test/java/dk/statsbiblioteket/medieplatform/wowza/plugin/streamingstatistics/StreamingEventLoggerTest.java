@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -132,9 +133,9 @@ public class StreamingEventLoggerTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ROOT);
         Date someDate = sdf.parse("2011-01-14 13:20");
         // Test
-        System.out.println("Adjusting time " + getTimeZoneOffset() 
+        System.out.println("Adjusting time " + getTimeZoneOffset(someDate) 
         	+ "s to handle difference between local timezone and Europe/Copenhagen which the software expects");
-        long time = eventLogger.getFollowingMidnight(someDate).getTime() - getTimeZoneOffset();
+        long time = eventLogger.getFollowingMidnight(someDate).getTime() - getTimeZoneOffset(someDate);
         Date followingMidnight = new Date(time);
         
         long exp = sdf.parse("2011-01-15 00:00").getTime();
@@ -144,18 +145,20 @@ public class StreamingEventLoggerTest {
         System.out.println("######### Expectes: " + exp);
         System.out.println("######### Gets: " + actual);       
         System.out.println("######### diff: " + diff);
-        System.out.println("######### default zoneId: " + ZoneId.systemDefault());
-
+        
+        Instant i = someDate.toInstant();
+        long etcutc = ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds();
+        long eurcop = ZoneId.of("Europe/Copenhagen").getRules().getOffset(i).getTotalSeconds();
+        System.out.println("######## etcutc offset: " + etcutc + ", eurcop: " + eurcop + ", diff: " + (etcutc - eurcop));
+        
         assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
     }
     
-    private long getTimeZoneOffset() {
-        LocalDateTime systemDefaultToUTC = LocalDateTime.now(ZoneId.systemDefault());
-        LocalDateTime eurCopToUTC = LocalDateTime.now(ZoneId.of("Europe/Copenhagen"));
-        ZoneId zone = ZoneId.of("Europe/Copenhagen");
-        ZoneOffset zoneOffDefault = zone.getRules().getOffset(systemDefaultToUTC);
-        ZoneOffset zoneOffEurCop = zone.getRules().getOffset(eurCopToUTC);
-        return zoneOffDefault.getTotalSeconds() - zoneOffEurCop.getTotalSeconds();
+    private long getTimeZoneOffset(Date date) {
+        Instant i = date.toInstant();
+        long systemDefaultOffset = ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds();
+        long europeCopenhagenOffset = ZoneId.of("Europe/Copenhagen").getRules().getOffset(i).getTotalSeconds();
+        return systemDefaultOffset - europeCopenhagenOffset;
     }
 
     private void createDir(String folderPath) {
