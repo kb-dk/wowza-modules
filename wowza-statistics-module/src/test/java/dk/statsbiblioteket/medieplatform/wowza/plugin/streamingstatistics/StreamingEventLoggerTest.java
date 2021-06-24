@@ -144,11 +144,8 @@ public class StreamingEventLoggerTest {
         System.out.println("######### Expectes: " + exp);
         System.out.println("######### Gets: " + actual);       
         System.out.println("######### diff: " + diff);
+        System.out.println("######### default zoneId: " + ZoneId.systemDefault());
 
-        
-        
-
-        
         assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
     }
     
