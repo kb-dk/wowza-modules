@@ -137,20 +137,7 @@ public class StreamingEventLoggerTest {
         	+ "s to handle difference between local timezone and Europe/Copenhagen which the software expects");
         long time = eventLogger.getFollowingMidnight(someDate).getTime() - getTimeZoneOffset(someDate);
         Date followingMidnight = new Date(time);
-        
-        long exp = sdf.parse("2011-01-15 00:00").getTime();
-        long actual = followingMidnight.getTime();
-        long diff = exp - actual;
-        
-        System.out.println("######### Expectes: " + exp);
-        System.out.println("######### Gets: " + actual);       
-        System.out.println("######### diff: " + diff);
-        
-        Instant i = someDate.toInstant();
-        long etcutc = ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds();
-        long eurcop = ZoneId.of("Europe/Copenhagen").getRules().getOffset(i).getTotalSeconds();
-        System.out.println("######## etcutc offset: " + etcutc + ", eurcop: " + eurcop + ", diff: " + (etcutc - eurcop));
-        
+       
         assertTrue(sdf.format(followingMidnight).equals("2011-01-15 00:00"), "Evaluating the following midnight.");
     }
     
