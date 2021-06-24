@@ -158,7 +158,7 @@ public class StreamingEventLoggerTest {
         Instant i = date.toInstant();
         long systemDefaultOffset = ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds();
         long europeCopenhagenOffset = ZoneId.of("Europe/Copenhagen").getRules().getOffset(i).getTotalSeconds();
-        return systemDefaultOffset - europeCopenhagenOffset;
+        return (systemDefaultOffset - europeCopenhagenOffset) * 1000;
     }
 
     private void createDir(String folderPath) {
