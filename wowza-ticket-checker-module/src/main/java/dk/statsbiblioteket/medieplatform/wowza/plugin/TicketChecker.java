@@ -39,7 +39,7 @@ public class TicketChecker {
             logger.debug("No client, returning ", stream);
             return false;
         }
-        return checkTicket(stream.getName(), client.getQueryStr(), client.getIp());
+        return checkTicket(stream.getName(), client.getQueryStr(), getClientIp(client));
     }
 
     /**
@@ -121,5 +121,10 @@ public class TicketChecker {
         }
 
         return name;
+    }
+    
+    private String getClientIp(IClient client) {
+    	String IP = (client.getForwardedIP​()) != null ? client.getForwardedIP​() : client.getIp();
+    	return IP;
     }
 }
