@@ -13,3 +13,5 @@ mkdir -p /app/content/mediestream/{doms,kuana,kuanaradio}
 ln -s /app/content/mediestream/doms /app/conf/wowza-mediestream-vhost/streamingContent/doms
 ln -s /app/content/mediestream/kuana /app/conf/wowza-mediestream-vhost/streamingContent/kuana
 ln -s /app/content/mediestream/kuanaradio /app/conf/wowza-mediestream-vhost/streamingContent/kuanaradio
+
+mkdir /app/var/logs
