@@ -52,7 +52,7 @@ public class TicketChecker {
      * @see #checkTicket(java.lang.String, java.lang.String, java.lang.String) 
      */
     public boolean checkTicket(IHTTPStreamerSession httpSession) {
-        return checkTicket(httpSession.getStreamName(), httpSession.getQueryStr(), httpSession.getIpAddress());
+        return checkTicket(httpSession.getStreamName(), httpSession.getQueryStr(), getClientIp(httpSession));
     }
 
     private boolean checkTicket(String name, String query, String ip) {
@@ -125,6 +125,11 @@ public class TicketChecker {
     
     private String getClientIp(IClient client) {
     	String IP = (client.getForwardedIP​()) != null ? client.getForwardedIP​() : client.getIp();
+    	return IP;
+    }
+    
+    private String getClientIp(IHTTPStreamerSession httpSession) {
+    	String IP = (httpSession.getForwardedIP​()) != null ? httpSession.getForwardedIP​() : httpSession.getIpAddress​();
     	return IP;
     }
 }
