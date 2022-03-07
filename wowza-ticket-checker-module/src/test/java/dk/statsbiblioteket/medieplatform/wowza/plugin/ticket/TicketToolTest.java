@@ -25,7 +25,7 @@ import dk.statsbiblioteket.medieplatform.ticketsystem.Property;
 public class TicketToolTest {
 
     private WMSLogger logger;
-    private static final String TICKET_SERVICE_URL = "http://iapetus:9651/ticket-system-service/tickets";
+    private static final String TICKET_SERVICE_URL = "http://iapetus.statsbiblioteket.dk:9651/ticket-system-service/tickets";
     
     public TicketToolTest() {
         super();
