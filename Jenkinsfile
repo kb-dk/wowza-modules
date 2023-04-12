@@ -86,12 +86,7 @@ openshift.withCluster() { // Use "default" cluster or fallback to OpenShift clus
         } catch (e) {
             currentBuild.result = 'FAILURE'
             throw e
-        } finally {
-            configFileProvider([configFile(fileId: "notifier", variable: 'notifier')]) {  
-                def notifier = load notifier             
-                notifier.notifyInCaseOfFailureOrImprovement(true, "#playground")
-            } 
-        }
+        } 
     }
 }
 
