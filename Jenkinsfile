@@ -51,7 +51,7 @@ openshift.withCluster() { // Use "default" cluster or fallback to OpenShift clus
                         stage("Create build and deploy application") { 
                             openshift.newBuild("--strategy source", "--binary", "-i kb-infra/kb-s2i-wowza", "--name wowza")
                             openshift.startBuild("wowza", "--from-dir=.", "--follow")
-                            openshift.newApp("wowza:latest")
+                            openshift.newApp("wowza", "-e BUILD_NUMBER=latest")
                             openshift.create("route", "edge", "--service=wowza")
                         }
                     }
